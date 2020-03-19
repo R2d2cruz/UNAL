@@ -14,20 +14,24 @@ class Game:
         self.player.createAnimations()
 
     def render(self):
+        self.player.rezise((self.screen.get_width(), self.screen.get_height()))
         while self.run:
             self.clock.tick()
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     self.run = False
-                self.player.act(self.clock.get_time())
                 if event.type == pygame.KEYDOWN:
-                    self.player.commands.get(event.key)
+                    print(event.key)
+                    self.player.update(event.key)
                 if event.type == pygame.KEYUP:
                     self.player.wait()
             # RGB - red, green, blue
 
-            self.player.draw(self.screen)
             self.screen.fill((0, 0, 0))
+
+            self.player.act(self.clock.get_time())
+            self.player.draw(self.screen)
+
             pygame.display.update()
 
 
@@ -67,10 +71,10 @@ class Estudiante:
     def __init__(self, name):
         self.name = name
         self.commands = {
-            pygame.K_UP: self.up(),
-            pygame.K_DOWN: self.DOWN(),
-            pygame.K_RIGHT: self.RIGHT(),
-            pygame.K_LEFT: self.LEFT()
+            pygame.K_UP: self.up,
+            pygame.K_DOWN: self.DOWN,
+            pygame.K_RIGHT: self.RIGHT,
+            pygame.K_LEFT: self.LEFT
         }
 
     def setAttack(self, attack):
@@ -83,25 +87,29 @@ class Estudiante:
         return self.name
 
     def act(self, delta):
-        self.x += self.velocityx
-        self.y += self.velocityy
+        self.x += self.velocityx * delta
+        self.y += self.velocityy * delta
         actual = self.animations[self.side]
         actual.update(delta)
         self.actualFrame = actual.get_frame()
 
-    def draw(self, screen=pygame.display.set_mode((1280, 720))):
-        screen.blit(self.actualFrame, (50, 50))
+    def draw(self, screen):
+        screen.blit(self.actualFrame, (self.realX, self.realY))
 
     def rezise(self, screen):  # screen = (width, height)
-        self.realX = (screen[0] - self.actualFrame.get_width) / 2
-        self.realY = (screen[1] - self.actualFrame.get_height) / 2
+        self.realX = (screen[0] - self.actualFrame.get_width()) / 2
+        self.realY = (screen[1] - self.actualFrame.get_height()) / 2
 
+    def update(self, key):
+        print("in update")
+        self.commands.get(key, lambda: None)()
 
     def up(self):
         self.side = 0
         self.walk()
 
     def DOWN(self):
+        print("down")
         self.side = 1
         self.walk()
 
@@ -114,15 +122,16 @@ class Estudiante:
         self.walk()
 
     def wait(self):
+        self.side -= 4
         self.velocityx = 0
         self.velocityy = 0
         self.animations[self.side].reset()
 
     def walk(self):
+        print("x")
         m = self.switcher.get(self.side)
         self.velocityx = m[0]
         self.velocityy = m[1]
-        
 
     def createAnimations(self):
         pass
@@ -134,12 +143,16 @@ class Player(Estudiante):
 
     def createAnimations(self):
         self.animations = {
-            0: Animation([pygame.image.load("frent.png")]),
-            1: Animation([pygame.image.load("back.png")]),
-            2: Animation({pygame.image.load("side.png")}),
-            3: Animation({pygame.transform.flip(pygame.image.load("side.png"), True, False)}),
-            4: Animation({pygame.image.load("sidewalk1.png"), pygame.image.load("sidewalk2.png")}),
-            5: Animation({pygame.transform.flip(pygame.image.load("sidewalk1.png"), True, False), pygame.transform.flip(pygame.image.load("sidewalk2.png"), True, False)})
+            1: Animation([pygame.transform.scale(pygame.image.load("frent.png"), (64, 64))]),
+            0: Animation([pygame.transform.scale(pygame.image.load("back.png"), (64, 64))]),
+            2: Animation([pygame.transform.scale(pygame.image.load("side.png"), (64, 64))]),
+            3: Animation(
+                [pygame.transform.scale(pygame.transform.flip(pygame.image.load("side.png"), True, False), (64, 64))]),
+            4: Animation([pygame.transform.scale(pygame.image.load("sidewalk1.png"), (64, 64)), pygame.transform.scale(
+                pygame.image.load("sidewalk2.png"), (64, 64))]),
+            5: Animation([pygame.transform.scale(pygame.transform.flip(pygame.image.load("sidewalk1.png"), True, False),
+                                                 (64, 64)), pygame.transform.scale(pygame.transform.flip(
+                pygame.image.load("sidewalk2.png"), True, False), (64, 64))])
 
         }
         self.actualAnimation = self.animations.get(self.side)
