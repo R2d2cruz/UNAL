@@ -1,4 +1,8 @@
 import pygame
+import os
+print(os.getcwd())
+
+directory = str(os.getcwd())
 
 pygame.init()
 
@@ -38,17 +42,15 @@ class Game:
 # clase estudiantes
 
 
-class Estudiante:
+class Student:
     name = ""
     attack = 0
     defense = 0
     animations = []
     x = 0
     y = 0
-    realX = 320
-    realY = 180
     actualFrame = None
-    side = 0
+    side = 1
     velocityx = 0
     velocityy = 0
     actualAnimation = None
@@ -94,11 +96,8 @@ class Estudiante:
         self.actualFrame = actual.get_frame()
 
     def draw(self, screen):
-        screen.blit(self.actualFrame, (self.realX, self.realY))
+        screen.blit(self.actualFrame, (self.x, self.y))
 
-    def rezise(self, screen):  # screen = (width, height)
-        self.realX = (screen[0] - self.actualFrame.get_width()) / 2
-        self.realY = (screen[1] - self.actualFrame.get_height()) / 2
 
     def update(self, key):
         print("in update")
@@ -139,7 +138,11 @@ class Estudiante:
 
 # clase player
 
-class Player(Estudiante):
+class Player(Student):
+
+
+    realX = 320
+    realY = 180
 
     def createAnimations(self):
         self.animations = {
@@ -158,6 +161,13 @@ class Player(Estudiante):
         self.actualAnimation = self.animations.get(self.side)
         self.actualFrame = self.actualAnimation.get_frame()
         print("n")
+
+    def rezise(self, screen):  # screen = (width, height)
+        self.realX = (screen[0] - self.actualFrame.get_width()) / 2
+        self.realY = (screen[1] - self.actualFrame.get_height()) / 2
+
+    def draw(self, screen):
+        screen.blit(self.actualFrame, (self.realX, self.realY))
 
 
 # clase Animation
@@ -191,6 +201,33 @@ class Animation:
             return self.frames[n - 1]
         else:
             return self.frames[n]
+
+
+class backGroundMap:
+    map = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+           [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+           [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+           [0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+           [0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+           [0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+           [0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+           [0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+           [0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+           [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]
+    frames = {}
+
+    #
+    # 0 = grass
+    # 1 = bricks
+    #
+    #
+    #
+
+    def __init__(self):
+        self.frames = {
+
+        }
+
 
 
 game = Game()
