@@ -33,8 +33,9 @@ class Game:
 
             self.screen.fill((0, 0, 0))
 
-            self.player.act(self.clock.get_time())
+            self.player.act()
             self.player.draw(self.screen)
+            self.clock.tick(20)
 
             pygame.display.update()
 
@@ -88,11 +89,10 @@ class Student:
     def getName(self):
         return self.name
 
-    def act(self, delta):
-        self.x += self.velocityx * delta
-        self.y += self.velocityy * delta
+    def act(self):
+        self.x += self.velocityx
+        self.y += self.velocityy
         actual = self.animations[self.side]
-        actual.update(delta)
         self.actualFrame = actual.get_frame()
 
     def draw(self, screen):
@@ -121,7 +121,6 @@ class Student:
         self.walk()
 
     def wait(self):
-        self.side -= 4
         self.velocityx = 0
         self.velocityy = 0
         self.animations[self.side].reset()
