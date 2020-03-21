@@ -1,9 +1,10 @@
 import pygame
 import os
+from Player import Player
+from Background import BackGroundMap
+
 print(os.getcwd())
-
 directory = str(os.getcwd())
-
 pygame.init()
 
 
@@ -14,31 +15,20 @@ class Game:
     clock = pygame.time.Clock()
 
     def __init__(self):
-        self.player = Player("Henry")
-        self.player.createAnimations()
+        self.player = Player((640, 360))
+        self.map = BackGroundMap()
 
     def render(self):
-        self.player.rezise((self.screen.get_width(), self.screen.get_height()))
         while self.run:
-            self.clock.tick()
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     self.run = False
-                if event.type == pygame.KEYDOWN:
-                    print(event.key)
-                    self.player.update(event.key)
-                if event.type == pygame.KEYUP:
-                    self.player.wait()
-            # RGB - red, green, blue
+            self.player.handle_event(event)
 
             self.screen.fill((0, 0, 0))
-
-            self.player.act()
-            self.player.draw(self.screen)
-            self.clock.tick(20)
-
+            self.player.blit(self.screen)
             pygame.display.update()
-
+            self.clock.tick(30)
 
 # clase estudiantes
 
@@ -52,8 +42,8 @@ class Student:
     y = 0
     actualFrame = None
     side = 1
-    velocityx = 0
-    velocityy = 0
+    velocityX = 0
+    velocityY = 0
     actualAnimation = None
 
     # 0 = front
@@ -90,14 +80,13 @@ class Student:
         return self.name
 
     def act(self):
-        self.x += self.velocityx
-        self.y += self.velocityy
+        self.x += self.velocityX
+        self.y += self.velocityY
         actual = self.animations[self.side]
         self.actualFrame = actual.get_frame()
 
     def draw(self, screen):
         screen.blit(self.actualFrame, (self.x, self.y))
-
 
     def update(self, key):
         print("in update")
@@ -121,15 +110,15 @@ class Student:
         self.walk()
 
     def wait(self):
-        self.velocityx = 0
-        self.velocityy = 0
+        self.velocityX = 0
+        self.velocityY = 0
         self.animations[self.side].reset()
 
     def walk(self):
         print("x")
         m = self.switcher.get(self.side)
-        self.velocityx = m[0]
-        self.velocityy = m[1]
+        self.velocityX = m[0]
+        self.velocityY = m[1]
 
     def createAnimations(self):
         pass
@@ -137,8 +126,7 @@ class Student:
 
 # clase player
 
-class Player(Student):
-
+class player(Student):
 
     realX = 320
     realY = 180
@@ -152,16 +140,21 @@ class Player(Student):
                 [pygame.transform.scale(pygame.transform.flip(pygame.image.load("side.png"), True, False), (64, 64))]),
             4: Animation([pygame.transform.scale(pygame.image.load("sidewalk1.png"), (64, 64)), pygame.transform.scale(
                 pygame.image.load("sidewalk2.png"), (64, 64))]),
-            5: Animation([pygame.transform.scale(pygame.transform.flip(pygame.image.load("sidewalk1.png"), True, False),
-                                                 (64, 64)), pygame.transform.scale(pygame.transform.flip(
-                pygame.image.load("sidewalk2.png"), True, False), (64, 64))])
+            5: Animation([pygame.transform.scale(
+                   pygame.transform.flip(
+                       pygame.image.load("sidewalk1.png"), True, False
+                   ), (64, 64)
+                 ), pygame.transform.scale(
+                    pygame.transform.flip(pygame.image.load("sidewalk2.png"), True, False), (64, 64)
+                )
+            ])
 
         }
         self.actualAnimation = self.animations.get(self.side)
         self.actualFrame = self.actualAnimation.get_frame()
         print("n")
 
-    def rezise(self, screen):  # screen = (width, height)
+    def resize(self, screen):  # screen = (width, height)
         self.realX = (screen[0] - self.actualFrame.get_width()) / 2
         self.realY = (screen[1] - self.actualFrame.get_height()) / 2
 
@@ -169,7 +162,7 @@ class Player(Student):
         screen.blit(self.actualFrame, (self.realX, self.realY))
 
 
-# clase Animation
+# class Animation
 
 class Animation:
     frames = []
@@ -202,30 +195,6 @@ class Animation:
             return self.frames[n]
 
 
-class backGroundMap:
-    map = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-           [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-           [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-           [0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-           [0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-           [0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-           [0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-           [0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-           [0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-           [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]
-    frames = {}
-
-    #
-    # 0 = grass
-    # 1 = bricks
-    #
-    #
-    #
-
-    def __init__(self):
-        self.frames = {
-
-        }
 
 
 
