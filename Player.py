@@ -57,12 +57,16 @@ class Player(pygame.sprite.Sprite):
 
     def update(self, direction):
         if direction == "up":
+            self.velocity = (0, 4)
             self.clip(self.backWalk)
         if direction == "down":
+            self.velocity = (0, -4)
             self.clip(self.walk)
         if direction == "right":
+            self.velocity = (-4, 0)
             self.clip(self.rightWalk)
         if direction == "left":
+            self.velocity = (4, 0)
             self.clip(self.leftWalk)
 
         if direction == "stand_up":
@@ -81,7 +85,25 @@ class Player(pygame.sprite.Sprite):
             self.update(self.KEYDOWN.get(event.key))
 
         if event.type == pygame.KEYUP:
+            self.velocity = (0, 0)
             self.update((self.KEYUP.get(event.key)))
+
+    def act(self):
+        self.x += self.velocity[0]
+        self.y += self.velocity[1]
+        return self.velocity == (0, 0)
 
     def blit(self, screen):
         screen.blit(self.image, self.rect)
+
+    def get_x(self):
+        return self.x
+
+    def get_y(self):
+        return self.y
+
+    def get_velocity(self):
+        return self.velocity
+
+    def collitions(self, objeto):
+        pass

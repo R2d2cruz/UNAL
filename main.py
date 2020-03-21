@@ -16,7 +16,7 @@ class Game:
 
     def __init__(self):
         self.player = Player((640, 360))
-        self.map = BackGroundMap()
+        self.map = BackGroundMap(self.player.get_x(), self.player.get_y())
 
     def render(self):
         while self.run:
@@ -24,8 +24,11 @@ class Game:
                 if event.type == pygame.QUIT:
                     self.run = False
             self.player.handle_event(event)
-
+            if not self.player.act():
+                self.map.changeCoor(self.player.get_x(), self.player.get_y())
             self.screen.fill((0, 0, 0))
+            #blits
+            self.map.blit(self.screen)
             self.player.blit(self.screen)
             pygame.display.update()
             self.clock.tick(30)
