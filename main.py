@@ -1,7 +1,7 @@
 import pygame
 import os
 from Player import Player
-from Background import BackGroundMap
+from UniversityMap import UniversityMap
 
 print(os.getcwd())
 directory = str(os.getcwd())
@@ -15,21 +15,23 @@ class Game:
     clock = pygame.time.Clock()
 
     def __init__(self):
-        self.player = Player((640, 360))
-        self.map = BackGroundMap(self.player.get_x(), self.player.get_y())
+        #self.player = Player((640, 360))
+        self.map = UniversityMap()
 
     def render(self):
         while self.run:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     self.run = False
-            self.player.handle_event(event)
-            if not self.player.act():
-                self.map.changeCoor(self.player.get_x(), self.player.get_y())
+            self.map.handleEvents(event)
+            self.map.update()
+            #self.player.handle_event(event)
+            #if not self.player.act():
+                #self.map.changeCoor(self.player.get_x(), self.player.get_y())
             self.screen.fill((0, 0, 0))
             #blits
             self.map.blit(self.screen)
-            self.player.blit(self.screen)
+            #self.player.blit(self.screen)
             pygame.display.update()
             self.clock.tick(30)
 
