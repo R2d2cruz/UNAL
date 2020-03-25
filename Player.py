@@ -30,7 +30,7 @@ class Player(pygame.sprite.Sprite):
         self.sheet = pygame.image.load(self.name + ".png")
         self.sheet.set_clip(pygame.Rect(37, 1, 34, 56))
         self.image = self.sheet.subsurface(self.sheet.get_clip())
-        self.rect = self.image.get_rect()
+        self.rect = pygame.Rect(37, 1, 34, 32) #self.image.get_rect()
         self.rect.topleft = position
         self.frame = 0
         self.front = {0: (37, 1, 34, 56)}
@@ -91,7 +91,7 @@ class Player(pygame.sprite.Sprite):
     def act(self):
         self.x += self.velocity[0]
         self.y += self.velocity[1]
-        return self.velocity == (0, 0)
+        #return self.velocity == (0, 0)
 
     def blit(self, screen):
         screen.blit(self.image, self.rect)
