@@ -36,8 +36,9 @@ class Background:
         self.player.handle_event(event)
 
     def update(self):
-        self.player.collitions([self.characters, self.objects])
+        self.collitions()
         for i in self.characters:
+            self.player.collitions(i)
             i.update()
             i.act()
         if not self.player.act():
@@ -52,3 +53,7 @@ class Background:
         self.player.blit(screen)
         for k in self.objects:
             k.blit(screen)
+
+    def collitions(self):
+        for i in self.characters:
+            self.player.collitions(i)
