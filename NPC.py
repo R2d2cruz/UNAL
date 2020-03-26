@@ -9,15 +9,20 @@ class NPC(pygame.sprite.Sprite):
     xp = 0
     speed = 3
     velocity = [0, 0]
+    x = 0
+    y = 0
 
-    def __init__(self, position, name="Henry", *groups):
+    def __init__(self, position, reference, name="Henry", *groups):
         super().__init__(*groups)
         self.name = name
         self.sheet = pygame.image.load(self.name + ".png")
         self.sheet.set_clip(pygame.Rect(37, 1, 34, 56))
         self.image = self.sheet.subsurface(self.sheet.get_clip())
         self.rect = self.image.get_rect()
-        self.rect.topleft = position
+        self.x = position[0]
+        self.y = position[1]
+        print(reference)
+        self.change_reference_point(reference)
         self.frame = 0
         self.front = {0: (37, 1, 34, 56)}
         self.back = {0: (1, 1, 34, 56)}
@@ -41,18 +46,20 @@ class NPC(pygame.sprite.Sprite):
         self.x += self.velocity[0]
         self.y += self.velocity[1]
 
-
     def blit(self, screen):
         screen.blit(self.image, self.rect)
 
     def get_x(self):
-        return self.x
+        return self.rect.topleft[0]
 
     def get_y(self):
-        return self.y
+        return self.rect.topleft[1]
 
     def get_velocity(self):
         return self.velocity
 
     def collitions(self, objeto):
         pass
+
+    def change_reference_point(self, position):
+        self.rect.topleft = [self.x + position[0], self.y + position[1]]

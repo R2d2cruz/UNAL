@@ -2,6 +2,7 @@ import pygame
 
 from Player import Player
 from Backgroung import Background
+from Wanders import Wander
 
 
 class UniversityMap(Background):
@@ -35,7 +36,10 @@ class UniversityMap(Background):
             7: image.subsurface((32, 160, 32, 32))
         }
         self.characters = [
-
+            Wander((20, 0), [[0, 0], [200, 0]], [[-2, 0], [2, 0]], [self.x, self.y])
+        ]
+        self.objects = [
+            
         ]
         self.map = [[0, 0, 0, 0, 3, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
                     [0, 0, 0, 0, 3, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],

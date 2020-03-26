@@ -3,6 +3,8 @@
     <words>
       <w>keydown</w>
       <w>keyup</w>
+      <w>toplef</w>
+      <w>topleft</w>
     </words>
   </dictionary>
 </component>

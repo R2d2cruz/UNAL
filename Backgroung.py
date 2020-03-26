@@ -29,6 +29,8 @@ class Background:
     def changeCoor(self, x, y):
         self.x = x
         self.y = y
+        for i in self.characters:
+            i.change_reference_point([self.x, self.y])
 
     def handleEvents(self, event):
         self.player.handle_event(event)
@@ -36,6 +38,7 @@ class Background:
     def update(self):
         self.player.collitions([self.characters, self.objects])
         for i in self.characters:
+            i.update()
             i.act()
         if not self.player.act():
             self.changeCoor(self.player.get_x(), self.player.get_y())
@@ -44,8 +47,8 @@ class Background:
         for i in range(len(self.map)):
             for j in range(len(self.map[0])):
                 screen.blit(self.frames.get(self.map[i][j]), (self.x + (self.rect * j), self.y + (self.rect * i)))
-        self.player.blit(screen)
         for k in self.characters:
-            k.blit()
+            k.blit(screen)
+        self.player.blit(screen)
         for k in self.objects:
-            k.blit()
+            k.blit(screen)
