@@ -107,3 +107,6 @@ class Player(pygame.sprite.Sprite):
 
     def collitions(self, objeto):
         pass
+
+    def get_rect(self):
+        return pygame.Rect((self.x, self.y, 34, 56))
