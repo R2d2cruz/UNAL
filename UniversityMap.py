@@ -3,7 +3,7 @@ import pygame
 from Player import Player
 from Backgroung import Background
 from Wanders import Wander
-
+from Objects import *
 
 class UniversityMap(Background):
     rect = 32
@@ -39,7 +39,7 @@ class UniversityMap(Background):
             Wander((20, 0), [[0, 0], [200, 0]], [[-2, 0], [2, 0]], [self.x, self.y])
         ]
         self.objects = [
-            
+            Rock(32, 128)
         ]
         self.map = [[0, 0, 0, 0, 3, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
                     [0, 0, 0, 0, 3, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
