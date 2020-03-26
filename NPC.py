@@ -63,3 +63,6 @@ class NPC(pygame.sprite.Sprite):
 
     def change_reference_point(self, position):
         self.rect.topleft = [self.x + position[0], self.y + position[1]]
+
+    def get_rect(self):
+        return pygame.Rect((self.x, self.y, 34, 56))
