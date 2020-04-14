@@ -48,6 +48,7 @@ class NPC(pygame.sprite.Sprite):
 
     def blit(self, screen):
         screen.blit(self.image, self.rect)
+        pygame.draw.rect(screen, (0, 255, 0), self.rect)
 
     def get_x(self):
         return self.rect.topleft[0]

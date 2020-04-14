@@ -31,6 +31,8 @@ class Background:
         self.y = y
         for i in self.characters:
             i.change_reference_point([self.x, self.y])
+        for i in self.objects:
+            i.change_reference_point([self.x, self.y])
 
     def handleEvents(self, event):
         self.player.handle_event(event)
