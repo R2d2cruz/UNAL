@@ -57,5 +57,7 @@ class Background:
             k.blit(screen)
 
     def collitions(self):
-        for i in self.characters:
-            self.player.collitions(i)
+        for i in range(len(self.characters)):
+            print(self.characters[i].get_rect())
+            self.player.collitions(self.characters[i])
+            self.characters[i].collitions(self.player)

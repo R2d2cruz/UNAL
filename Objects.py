@@ -8,6 +8,7 @@ class Objects:
 
     ]
     i = 0
+    flag = "object"
 
     def __init__(self, x, y, *groups):
         super().__init__(*groups)

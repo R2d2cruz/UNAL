@@ -22,7 +22,7 @@ class Player(pygame.sprite.Sprite):
     y = 100
     xp = 0
     speed = 3
-    velocity = (0, 0)
+    velocity = [0, 0]
 
     def __init__(self, position, name="Henry", *groups):
         super().__init__(*groups)
@@ -95,7 +95,7 @@ class Player(pygame.sprite.Sprite):
 
     def blit(self, screen):
         screen.blit(self.image, self.rect)
-        pygame.draw.rect(screen, (255, 0, 0), self.rect)
+        #pygame.draw.rect(screen, (255, 0, 0), self.get_rect())
 
     def get_x(self):
         return self.x
@@ -107,11 +107,12 @@ class Player(pygame.sprite.Sprite):
         return self.velocity
 
     def collitions(self, object):
-        print(object.get_rect())
-        if self.overlap(object.get_rect().x, object.get_rect().width, self.x, 34) and \
-                self.overlap(object.get_rect().y, object.get_rect().height, self.x, 56):
-            print("collide")
-            self.velocity = [0, 0]
+        if self.get_rect().colliderect(object.get_rect()) == 1:
+            if object.get_flag() == "NPC":
+                self.x -= self.velocity[0]
+                self.y -= self.velocity[1]
+                self.velocity = [0, 0]
+        return True
 
     # pensar como hacer colisiones
 
@@ -119,4 +120,4 @@ class Player(pygame.sprite.Sprite):
         return x1 + d1 > x2 if x1 < x2 else x2 + d2 > x1
 
     def get_rect(self):
-        return pygame.Rect((self.x, self.y, 34, 56))
+        return pygame.Rect((self.rect.x, self.rect.y + 32, 34, 32))

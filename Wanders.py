@@ -32,5 +32,10 @@ class Wander(NPC):
         self.velocity = self.velocities[self.index]
 
     def collitions(self, objeto):
-        if self.rect.colliderect(objeto.get_rect()):
+        print(objeto.get_rect())
+        print(self.get_rect())
+        if self.get_rect().colliderect(objeto.get_rect()) == 1:
+            print("collition with something")
+            self.x -= self.velocity[0]
+            self.y -= self.velocity[1]
             self.velocity = [0, 0]

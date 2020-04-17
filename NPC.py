@@ -11,6 +11,7 @@ class NPC(pygame.sprite.Sprite):
     velocity = [0, 0]
     x = 0
     y = 0
+    flag = "NPC"
 
     def __init__(self, position, reference, name="Henry", *groups):
         super().__init__(*groups)
@@ -48,7 +49,7 @@ class NPC(pygame.sprite.Sprite):
 
     def blit(self, screen):
         screen.blit(self.image, self.rect)
-        pygame.draw.rect(screen, (0, 255, 0), self.rect)
+        #pygame.draw.rect(screen, (0, 255, 0), self.get_rect())
 
     def get_x(self):
         return self.rect.topleft[0]
@@ -66,4 +67,7 @@ class NPC(pygame.sprite.Sprite):
         self.rect.topleft = [self.x + position[0], self.y + position[1]]
 
     def get_rect(self):
-        return pygame.Rect((self.x, self.y, 34, 56))
+        return pygame.Rect((self.rect.x, self.rect.y + 32, 34, 32))
+
+    def get_flag(self):
+        return self.flag
