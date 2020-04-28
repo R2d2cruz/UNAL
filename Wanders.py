@@ -13,6 +13,7 @@ class Wander(NPC):
     ]
 
     index = 1
+    colliding = False
 
     def __init__(self, position, points, velocities, reference, *groups):
 
@@ -29,13 +30,10 @@ class Wander(NPC):
             self.index += 1
             if self.index == len(self.points):
                 self.index = 0
-        self.velocity = self.velocities[self.index]
+        if self.colliding:
+            self.velocity = [0, 0]
+        else:
+            self.velocity = self.velocities[self.index]
 
     def collitions(self, objeto):
-        print(objeto.get_rect())
-        print(self.get_rect())
-        if self.get_rect().colliderect(objeto.get_rect()) == 1:
-            print("collition with something")
-            self.x -= self.velocity[0]
-            self.y -= self.velocity[1]
-            self.velocity = [0, 0]
+        self.colliding = self.get_rect().colliderect(objeto.get_rect()) == 1

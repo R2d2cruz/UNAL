@@ -40,9 +40,10 @@ class Background:
     def update(self):
         self.collitions()
         for i in self.characters:
-            self.player.collitions(i)
             i.update()
             i.act()
+        for i in self.objects:
+            self.player.collitions(i)
         if not self.player.act():
             self.changeCoor(self.player.get_x(), self.player.get_y())
 
@@ -58,6 +59,5 @@ class Background:
 
     def collitions(self):
         for i in range(len(self.characters)):
-            print(self.characters[i].get_rect())
             self.player.collitions(self.characters[i])
             self.characters[i].collitions(self.player)

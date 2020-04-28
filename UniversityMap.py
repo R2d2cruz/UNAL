@@ -1,9 +1,8 @@
-import pygame
-
 from Player import Player
 from Backgroung import Background
 from Wanders import Wander
 from Objects import *
+
 
 class UniversityMap(Background):
     rect = 32

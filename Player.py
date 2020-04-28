@@ -23,6 +23,9 @@ class Player(pygame.sprite.Sprite):
     xp = 0
     speed = 3
     velocity = [0, 0]
+    isCollide = False
+    lastVelocity = [0, 0]
+    objectCollition = None
 
     def __init__(self, position, name="Henry", *groups):
         super().__init__(*groups)
@@ -57,16 +60,16 @@ class Player(pygame.sprite.Sprite):
 
     def update(self, direction):
         if direction == "up":
-            self.velocity = (0, 4)
+            self.velocity = [0, 4]
             self.clip(self.backWalk)
         if direction == "down":
-            self.velocity = (0, -4)
+            self.velocity = [0, -4]
             self.clip(self.walk)
         if direction == "right":
-            self.velocity = (-4, 0)
+            self.velocity = [-4, 0]
             self.clip(self.rightWalk)
         if direction == "left":
-            self.velocity = (4, 0)
+            self.velocity = [4, 0]
             self.clip(self.leftWalk)
 
         if direction == "stand_up":
@@ -85,12 +88,13 @@ class Player(pygame.sprite.Sprite):
             self.update(self.KEYDOWN.get(event.key))
 
         if event.type == pygame.KEYUP:
-            self.velocity = (0, 0)
+            self.velocity = [0, 0]
             self.update((self.KEYUP.get(event.key)))
 
     def act(self):
-        self.x += self.velocity[0]
-        self.y += self.velocity[1]
+        if self.lastVelocity != self.velocity:
+            self.x += self.velocity[0]
+            self.y += self.velocity[1]
         # return self.velocity == [0, 0]
 
     def blit(self, screen):
@@ -108,16 +112,33 @@ class Player(pygame.sprite.Sprite):
 
     def collitions(self, object):
         if self.get_rect().colliderect(object.get_rect()) == 1:
-            if object.get_flag() == "NPC":
-                self.x -= self.velocity[0]
-                self.y -= self.velocity[1]
+            if not self.isCollide:
                 self.velocity = [0, 0]
-        return True
+                self.isCollide = True
+                self.objectCollition = object
 
-    # pensar como hacer colisiones
+            else:
+                if object == self.objectCollition:
+                    if (object.get_rect().x - self.get_rect().x) < object.get_rect().width:
+                        vel = [0, -4 if object.get_rect().y > self.get_rect().y else 4]
+                    else:
+                        vel = [-4 if object.get_rect().y > self.get_rect().y else 4, 0]
+
+                    if self.velocity == vel:
+                        self.velocity = [0, 0]
+                    elif self.get_rect().colliderect(object.get_rect()):
+                        self.isCollide = False
+
+        #print(self.isCollide)
 
     def overlap(self, x1, d1, x2, d2):
         return x1 + d1 > x2 if x1 < x2 else x2 + d2 > x1
 
     def get_rect(self):
         return pygame.Rect((self.rect.x, self.rect.y + 32, 34, 32))
+
+    def prox_rect(self):
+        x = self.rect.x + self.velocity[0]
+        print(x)
+        y = self.rect.y + self.velocity[1]
+        return pygame.Rect((x, y, 34, 32))
