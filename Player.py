@@ -111,23 +111,11 @@ class Player(pygame.sprite.Sprite):
         return self.velocity
 
     def collitions(self, object):
-        if self.get_rect().colliderect(object.get_rect()) == 1:
-            if not self.isCollide:
-                self.velocity = [0, 0]
-                self.isCollide = True
-                self.objectCollition = object
-
-            else:
-                if object == self.objectCollition:
-                    if (object.get_rect().x - self.get_rect().x) < object.get_rect().width:
-                        vel = [0, -4 if object.get_rect().y > self.get_rect().y else 4]
-                    else:
-                        vel = [-4 if object.get_rect().y > self.get_rect().y else 4, 0]
-
-                    if self.velocity == vel:
-                        self.velocity = [0, 0]
-                    elif self.get_rect().colliderect(object.get_rect()):
-                        self.isCollide = False
+        this = self.get_rect().copy()
+        this.x -= self.velocity[0]
+        this.y -= self.velocity[1]
+        if this.colliderect(object) == 1:
+            self.velocity = [0, 0]
 
         #print(self.isCollide)
 

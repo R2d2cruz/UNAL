@@ -53,9 +53,9 @@ class Background:
                 screen.blit(self.frames.get(self.map[i][j]), (self.x + (self.rect * j), self.y + (self.rect * i)))
         for k in self.characters:
             k.blit(screen)
-        self.player.blit(screen)
         for k in self.objects:
             k.blit(screen)
+        self.player.blit(screen)
 
     def collitions(self):
         for i in range(len(self.characters)):

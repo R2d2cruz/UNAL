@@ -3,7 +3,7 @@ import pygame
 
 class Objects:
 
-    rect = pygame.Rect((0, 0, 32, 32))
+
     frames = [
 
     ]
@@ -12,13 +12,13 @@ class Objects:
 
     def __init__(self, x, y, *groups):
         super().__init__(*groups)
-        self.rect.topleft = [x, y]
+        self.rect = pygame.Rect(x, y, 32, 32)
         self.x = x
         self.y = y
 
     def blit(self, screen):
         screen.blit(self.frames[self.i], self.rect)
-        pygame.draw.rect(screen, (0, 255, 0), self.get_rect())
+        #pygame.draw.rect(screen, (0, 255, 0), self.get_rect())
 
     def get_rect(self):
         return self.rect
@@ -53,4 +53,13 @@ class Three(Objects):
         image = pygame.image.load("RPG Nature Tileset.png")
         self.frames = {
             0: image.subsurface((0, 0, 32, 64))
+        }
+
+class wall(Objects):
+
+    def __init__(self, x, y, *groups):
+        super().__init__(x, y, *groups)
+        image = pygame.image.load("RPG Nature Tileset.png")
+        self.frames = {
+            0: image.subsurface((96, 64, 32, 32))
         }

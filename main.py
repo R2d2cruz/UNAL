@@ -2,6 +2,7 @@ import pygame
 import os
 from Player import Player
 from UniversityMap import UniversityMap
+from laberinto import Laberinto
 
 print(os.getcwd())
 directory = str(os.getcwd())
@@ -16,7 +17,7 @@ class Game:
 
     def __init__(self):
         #self.player = Player((640, 360))
-        self.map = UniversityMap()
+        self.map = Laberinto()
 
     def render(self):
         while self.run:
