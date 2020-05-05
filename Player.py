@@ -98,8 +98,9 @@ class Player(pygame.sprite.Sprite):
         # return self.velocity == [0, 0]
 
     def blit(self, screen):
-        screen.blit(self.image, self.rect)
         #pygame.draw.rect(screen, (255, 0, 0), self.get_rect())
+        screen.blit(self.image, self.rect)
+
 
     def get_x(self):
         return self.x
@@ -123,7 +124,7 @@ class Player(pygame.sprite.Sprite):
         return x1 + d1 > x2 if x1 < x2 else x2 + d2 > x1
 
     def get_rect(self):
-        return pygame.Rect((self.rect.x, self.rect.y + 32, 34, 32))
+        return pygame.Rect((self.rect.x, self.rect.y + 24, 34, 32))
 
     def prox_rect(self):
         x = self.rect.x + self.velocity[0]
