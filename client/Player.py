@@ -1,4 +1,5 @@
 import pygame
+import json
 
 
 class Player(pygame.sprite.Sprite):
@@ -15,6 +16,17 @@ class Player(pygame.sprite.Sprite):
         pygame.K_LEFT: "stand_left",
         pygame.K_RIGHT: "stand_right"
     }
+
+    traductor = {
+        "stand_up": "stu",
+        "stand_down": "std",
+        "stand_left": "stl",
+        "stand_right": "str",
+        "up": "wlu",
+        "down": "wld",
+        "left": "wll",
+        "right": "wlr"
+    }
     attack = 30
     defense = 20
     HP = 500
@@ -26,6 +38,8 @@ class Player(pygame.sprite.Sprite):
     isCollide = False
     lastVelocity = [0, 0]
     objectCollition = None
+    action = "stand_down"
+    actualizate = False
 
     def __init__(self, position, name="Henry", *groups):
         super().__init__(*groups)
@@ -82,6 +96,8 @@ class Player(pygame.sprite.Sprite):
             self.clip(self.left)
 
         self.image = self.sheet.subsurface(self.sheet.get_clip())
+        self.action = direction
+        self.actualizate = True
 
     def handle_event(self, event):
         if event.type == pygame.KEYDOWN:
@@ -101,7 +117,6 @@ class Player(pygame.sprite.Sprite):
         #pygame.draw.rect(screen, (255, 0, 0), self.get_rect())
         screen.blit(self.image, self.rect)
 
-
     def get_x(self):
         return self.x
 
@@ -110,6 +125,17 @@ class Player(pygame.sprite.Sprite):
 
     def get_velocity(self):
         return self.velocity
+
+    def get_actualizate(self):
+        return self.actualizate
+
+    def get_compac(self):
+        self.actualizate = False
+        return json.dumps({
+            "x": self.x,
+            "y": self.y,
+            "a": self.traductor.get(self.action)
+        })
 
     def collitions(self, object):
         this = self.get_rect().copy()
@@ -128,6 +154,5 @@ class Player(pygame.sprite.Sprite):
 
     def prox_rect(self):
         x = self.rect.x + self.velocity[0]
-        print(x)
         y = self.rect.y + self.velocity[1]
         return pygame.Rect((x, y, 34, 32))

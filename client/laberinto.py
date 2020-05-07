@@ -1,9 +1,9 @@
 import pygame
 from copy import copy
 
-from Player import Player
-from Backgroung import Background
-from Objects import wall
+from client.Player import Player
+from client.Backgroung import Background
+from client.Objects import wall
 
 
 class Laberinto(Background):
@@ -27,7 +27,8 @@ class Laberinto(Background):
     #
     #
 
-    def __init__(self):
+    def __init__(self, game):
+        super().__init__(game)
         self.player = Player((640, 360))
         self.x = self.player.get_x()
         self.y = self.player.get_y()
@@ -106,8 +107,6 @@ class Laberinto(Background):
                 if objects[i][j] == 1:
                     x = j * 32
                     y = i * 32
-                    print(x)
-                    print(y)
                     obj = wall(x, y)
                     real_objects.append(copy(obj))
         return real_objects

@@ -1,6 +1,4 @@
-import pygame
-
-from NPC import NPC
+from client.NPC import NPC
 
 
 class Wander(NPC):

@@ -1,7 +1,7 @@
-from Player import Player
-from Backgroung import Background
-from Wanders import Wander
-from Objects import *
+from client.Player import Player
+from client.Backgroung import Background
+from client.Wanders import Wander
+from client.Objects import *
 
 
 class UniversityMap(Background):

@@ -1,8 +1,6 @@
 import pygame
 import os
-from Player import Player
-from UniversityMap import UniversityMap
-from laberinto import Laberinto
+from client.laberinto import Laberinto
 
 print(os.getcwd())
 directory = str(os.getcwd())

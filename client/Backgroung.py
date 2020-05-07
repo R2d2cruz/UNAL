@@ -22,9 +22,13 @@ class Background:
     ]
 
     player = None
+    players = {}
     x = 0
     y = 0
     rect = 32
+
+    def __init__(self, game):
+        self.game = game
 
     def changeCoor(self, x, y):
         self.x = x
@@ -39,6 +43,9 @@ class Background:
 
     def update(self):
         self.collitions()
+        if self.player.get_actualizate():
+            message = "update_" + self.game.get_id() + "_" + self.player.get_compac()
+            self.game.socket.send_string(message)
         for i in self.characters:
             i.update()
             i.act()
@@ -54,6 +61,8 @@ class Background:
         for k in self.characters:
             k.blit(screen)
         for k in self.objects:
+            k.blit(screen)
+        for k in self.players:
             k.blit(screen)
         self.player.blit(screen)
 
