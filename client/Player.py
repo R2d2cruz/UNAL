@@ -111,6 +111,8 @@ class Player(pygame.sprite.Sprite):
         if self.lastVelocity != self.velocity:
             self.x += self.velocity[0]
             self.y += self.velocity[1]
+        if self.velocity == [0, 0]:
+            self.actualizate = False
         # return self.velocity == [0, 0]
 
     def blit(self, screen):
@@ -132,8 +134,8 @@ class Player(pygame.sprite.Sprite):
     def get_compac(self):
         self.actualizate = False
         return json.dumps({
-            "x": self.x,
-            "y": self.y,
+            "x": self.rect.topleft[0] - self.x,
+            "y": self.rect.topleft[1] - self.y,
             "a": self.traductor.get(self.action)
         })
 
