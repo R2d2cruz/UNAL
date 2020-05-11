@@ -1,4 +1,4 @@
-from client.NPC import NPC
+from NPC import NPC
 
 
 class Wander(NPC):

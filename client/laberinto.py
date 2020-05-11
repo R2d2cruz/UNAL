@@ -1,9 +1,10 @@
 import pygame
 from copy import copy
 
-from client.Player import Player
-from client.Backgroung import Background
-from client.Objects import wall
+from constants import imgs
+from Player import Player
+from Backgroung import Background
+from Objects import wall
 
 
 class Laberinto(Background):
@@ -32,7 +33,7 @@ class Laberinto(Background):
         self.player = Player((640, 360))
         self.x = self.player.get_x()
         self.y = self.player.get_y()
-        image = pygame.image.load("RPG Nature Tileset.png")
+        image = pygame.image.load(imgs.get("ts1"))
         self.frames = {
             0: image.subsurface((0, 64, 32, 32)),
             1: image.subsurface((64, 64, 32, 32)),

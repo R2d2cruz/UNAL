@@ -16,7 +16,7 @@ class NPC(pygame.sprite.Sprite):
     def __init__(self, position, reference, name="Henry", *groups):
         super().__init__(*groups)
         self.name = name
-        self.sheet = pygame.image.load(self.name + ".png")
+        self.sheet = pygame.image.load("img/" + self.name + ".png")
         self.sheet.set_clip(pygame.Rect(37, 1, 34, 56))
         self.image = self.sheet.subsurface(self.sheet.get_clip())
         self.rect = self.image.get_rect()

@@ -1,6 +1,7 @@
 import pygame
 import os
-from client.laberinto import Laberinto
+from constants import imgs
+from laberinto import Laberinto
 
 print(os.getcwd())
 directory = str(os.getcwd())
@@ -10,7 +11,7 @@ pygame.init()
 class Game:
     screen = pygame.display.set_mode((1280, 720))
     run = True
-    pygame.display.set_icon(pygame.image.load("unallogo.jpg"))
+    pygame.display.set_icon(pygame.image.load(imgs.get("logo")))
     clock = pygame.time.Clock()
 
     def __init__(self):

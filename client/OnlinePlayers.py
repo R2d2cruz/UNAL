@@ -3,7 +3,7 @@ import pygame
 
 class OnlinePlayer(pygame.sprite.Sprite):
 
-    image = pygame.image.load("Diego.png")
+    image = pygame.image.load("img/Diego.png")
 
     def __init__(self, information, *groups):
         super().__init__(*groups)

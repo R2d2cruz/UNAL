@@ -44,7 +44,7 @@ class Player(pygame.sprite.Sprite):
     def __init__(self, position, name="Henry", *groups):
         super().__init__(*groups)
         self.name = name
-        self.sheet = pygame.image.load(self.name + ".png")
+        self.sheet = pygame.image.load("img/" + self.name + ".png")
         self.sheet.set_clip(pygame.Rect(37, 1, 34, 56))
         self.image = self.sheet.subsurface(self.sheet.get_clip())
         self.rect = pygame.Rect(37, 1, 34, 32)  # self.image.get_rect()

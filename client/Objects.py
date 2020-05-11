@@ -1,5 +1,6 @@
 import pygame
 
+from constants import imgs
 
 class Objects:
 
@@ -40,7 +41,7 @@ class Rock(Objects):
 
     def __init__(self, x, y):
         super().__init__(x, y)
-        image = pygame.image.load("RPG Nature Tileset.png")
+        image = pygame.image.load(imgs.get("ts1"))
         self.frames = {
             0: image.subsurface((64, 32, 32, 32))
         }
@@ -50,7 +51,7 @@ class Three(Objects):
 
     def __init__(self, x, y, *groups):
         super().__init__(x, y, *groups)
-        image = pygame.image.load("RPG Nature Tileset.png")
+        image = pygame.image.load(imgs.get("ts1"))
         self.frames = {
             0: image.subsurface((0, 0, 32, 64))
         }
@@ -59,7 +60,7 @@ class wall(Objects):
 
     def __init__(self, x, y, *groups):
         super().__init__(x, y, *groups)
-        image = pygame.image.load("RPG Nature Tileset.png")
+        image = pygame.image.load(imgs.get("ts1"))
         self.frames = {
             0: image.subsurface((96, 64, 32, 32))
         }

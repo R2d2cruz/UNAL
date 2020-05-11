@@ -1,4 +1,4 @@
-from client.OnlinePlayers import OnlinePlayer
+from OnlinePlayers import OnlinePlayer
 import json
 
 
@@ -75,7 +75,7 @@ class Background:
             self.player.collitions(i)
         if not self.player.act():
             self.changeCoord(self.player.get_x(), self.player.get_y())
-        print(self.y, self.player.rect.topleft[1])
+        ##print(self.y, self.player.rect.topleft[1])
 
     def blit(self, screen):
         for i in range(len(self.map)):

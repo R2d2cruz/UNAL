@@ -1,7 +1,8 @@
 import pygame
 import os
 import zmq
-from client.laberinto import Laberinto
+from constants import imgs
+from laberinto import Laberinto
 
 print(os.getcwd())
 directory = str(os.getcwd())
@@ -11,14 +12,14 @@ pygame.init()
 class Game:
     screen = pygame.display.set_mode((1280, 720))
     run = True
-    pygame.display.set_icon(pygame.image.load("unallogo.jpg"))
+    pygame.display.set_icon(pygame.image.load(imgs.get("logo")))
     clock = pygame.time.Clock()
 
     def __init__(self):
         context = zmq.Context()
         print("Connecting to hello world server…")
         self.socket = context.socket(zmq.REQ)
-        self.socket.connect("tcp://localhost:5555")
+        self.socket.connect("tcp://192.168.1.12:5555")
         self.socket.send_string("createPlayer")
         self.id = self.socket.recv_string()
         print(self.id)
