@@ -21,6 +21,7 @@ class Game:
         self.socket.connect("tcp://localhost:5555")
         self.socket.send_string("createPlayer")
         self.id = self.socket.recv_string()
+        print(self.id)
 
         self.map = Laberinto(self)
 
