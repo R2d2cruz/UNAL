@@ -2,12 +2,13 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="6f659020-7adf-4bc9-9be9-8756714b3afd" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/clientMain.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/serverMain.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/OnlinePlayers.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Backgroung.py" beforeDir="false" afterPath="$PROJECT_DIR$/Backgroung.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Player.py" beforeDir="false" afterPath="$PROJECT_DIR$/Player.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/laberinto.py" beforeDir="false" afterPath="$PROJECT_DIR$/laberinto.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/Backgroung.py" beforeDir="false" afterPath="$PROJECT_DIR$/client/Backgroung.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/IMG-20200317_092453.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/Player.py" beforeDir="false" afterPath="$PROJECT_DIR$/client/Player.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/clientMain.py" beforeDir="false" afterPath="$PROJECT_DIR$/client/clientMain.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/serverMain.py" beforeDir="false" afterPath="$PROJECT_DIR$/server/serverMain.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -45,11 +46,34 @@
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="E:\Workspace\Arturo\UNAL-master\UNAL\client" />
       <recent name="E:\Workspace\Arturo\UNAL-master\UNAL" />
       <recent name="F:\Workspace\Personal\U\Programacion\unal" />
     </key>
   </component>
   <component name="RunManager" selected="Python.clientMain (1)">
+    <configuration name="clientMain (1)" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="unal" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/client" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/client/clientMain.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <configuration name="clientMain" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="unal" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -142,6 +166,7 @@
       <list>
         <item itemvalue="Python.clientMain (1)" />
         <item itemvalue="Python.serverMain" />
+        <item itemvalue="Python.clientMain (1)" />
         <item itemvalue="Python.clientMain" />
         <item itemvalue="Python.main" />
       </list>
@@ -184,6 +209,11 @@
       <workItem from="1588684285772" duration="2041000" />
       <workItem from="1588686365634" duration="6062000" />
       <workItem from="1588794866100" duration="6067000" />
+      <workItem from="1588853271410" duration="6539000" />
+      <workItem from="1588877068063" duration="3050000" />
+      <workItem from="1588943830283" duration="860000" />
+      <workItem from="1588966056834" duration="621000" />
+      <workItem from="1589224230579" duration="2591000" />
     </task>
     <servers />
   </component>
@@ -211,38 +241,38 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="739" y="275" key="FileChooserDialogImpl/0.0.1920.1040@0.0.1920.1040" timestamp="1584643943793" />
-    <state width="1877" height="266" key="GridCell.Tab.0.bottom" timestamp="1588801091244">
+    <state width="1877" height="266" key="GridCell.Tab.0.bottom" timestamp="1589226824924">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="266" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1588801091244" />
-    <state width="1877" height="266" key="GridCell.Tab.0.center" timestamp="1588801091244">
+    <state width="1877" height="266" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1589226824924" />
+    <state width="1877" height="266" key="GridCell.Tab.0.center" timestamp="1589226824924">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="266" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1588801091244" />
-    <state width="1877" height="266" key="GridCell.Tab.0.left" timestamp="1588801091244">
+    <state width="1877" height="266" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1589226824924" />
+    <state width="1877" height="266" key="GridCell.Tab.0.left" timestamp="1589226824924">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="266" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1588801091244" />
-    <state width="1877" height="266" key="GridCell.Tab.0.right" timestamp="1588801091244">
+    <state width="1877" height="266" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1589226824924" />
+    <state width="1877" height="266" key="GridCell.Tab.0.right" timestamp="1589226824924">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="266" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1588801091244" />
-    <state width="1877" height="347" key="GridCell.Tab.1.bottom" timestamp="1588801084270">
+    <state width="1877" height="266" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1589226824924" />
+    <state width="1877" height="347" key="GridCell.Tab.1.bottom" timestamp="1588882814034">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="347" key="GridCell.Tab.1.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1588801084270" />
-    <state width="1877" height="347" key="GridCell.Tab.1.center" timestamp="1588801084270">
+    <state width="1877" height="347" key="GridCell.Tab.1.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1588882814034" />
+    <state width="1877" height="347" key="GridCell.Tab.1.center" timestamp="1588882814034">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="347" key="GridCell.Tab.1.center/0.0.1920.1040@0.0.1920.1040" timestamp="1588801084270" />
-    <state width="1877" height="347" key="GridCell.Tab.1.left" timestamp="1588801084270">
+    <state width="1877" height="347" key="GridCell.Tab.1.center/0.0.1920.1040@0.0.1920.1040" timestamp="1588882814034" />
+    <state width="1877" height="347" key="GridCell.Tab.1.left" timestamp="1588882814034">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="347" key="GridCell.Tab.1.left/0.0.1920.1040@0.0.1920.1040" timestamp="1588801084270" />
-    <state width="1877" height="347" key="GridCell.Tab.1.right" timestamp="1588801084270">
+    <state width="1877" height="347" key="GridCell.Tab.1.left/0.0.1920.1040@0.0.1920.1040" timestamp="1588882814034" />
+    <state width="1877" height="347" key="GridCell.Tab.1.right" timestamp="1588882814034">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="347" key="GridCell.Tab.1.right/0.0.1920.1040@0.0.1920.1040" timestamp="1588801084270" />
+    <state width="1877" height="347" key="GridCell.Tab.1.right/0.0.1920.1040@0.0.1920.1040" timestamp="1588882814034" />
     <state x="461" y="163" key="SettingsEditor" timestamp="1588685788572">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -256,19 +286,19 @@
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/server/serverMain.py</url>
-          <line>72</line>
-          <option name="timeStamp" value="7" />
+          <url>file://$PROJECT_DIR$/client/Backgroung.py</url>
+          <line>58</line>
+          <option name="timeStamp" value="12" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/server/serverMain.py</url>
-          <line>60</line>
-          <option name="timeStamp" value="8" />
+          <url>file://$PROJECT_DIR$/client/OnlinePlayers.py</url>
+          <line>13</line>
+          <option name="timeStamp" value="13" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/server/serverMain.py</url>
-          <line>27</line>
-          <option name="timeStamp" value="9" />
+          <url>file://$PROJECT_DIR$/client/OnlinePlayers.py</url>
+          <line>9</line>
+          <option name="timeStamp" value="14" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>
@@ -282,8 +312,8 @@
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/UNAL$main.coverage" NAME="main Coverage Results" MODIFIED="1588687298428" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/UNAL$clientMain__1_.coverage" NAME="clientMain (1) Coverage Results" MODIFIED="1588800930062" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/UNAL$serverMain.coverage" NAME="serverMain Coverage Results" MODIFIED="1588800927655" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/server" />
+    <SUITE FILE_PATH="coverage/UNAL$clientMain__1_.coverage" NAME="clientMain (1) Coverage Results" MODIFIED="1589226892885" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/client" />
+    <SUITE FILE_PATH="coverage/UNAL$serverMain.coverage" NAME="serverMain Coverage Results" MODIFIED="1589226832299" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/server" />
     <SUITE FILE_PATH="coverage/UNAL$serverName.coverage" NAME="serverName Coverage Results" MODIFIED="1588687305696" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>
