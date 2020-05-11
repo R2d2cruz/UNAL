@@ -1,6 +1,6 @@
-import time
 import zmq
 import json
+
 
 class player:
 
@@ -49,16 +49,17 @@ class Server:
         self.commands = {
             "createPlayer": self.createPlayer,
             "update": self.updatePlayer,
-
+            "act": self.returnPlayers
         }
 
     def render(self):
         while True:
-            print(self.index)
-            print(len(self.players))
             message = self.socket.recv_string()
 
-            self.commands.get((message.split("_"))[0])(message)
+            try:
+                self.commands.get((message.split("_"))[0])(message)
+            except:
+                print("error")
 
     def createPlayer(self, message):
         self.players[self.counter] = player()
@@ -66,20 +67,22 @@ class Server:
         self.counter += 1
         for i in self.players:
             print(i)
+        print(self.index)
+        print(len(self.players))
 
     def updatePlayer(self, message):
         information = message.split("_")
-        print(information)
         self.players.get(int(information[1])).update(information[2])
+        self.socket.send_string("")
 
     def returnPlayers(self, message):
         information = message.split("_")
         package = {}
         for i in self.players.keys():
-            if i == information[1]:
+            if i == int(information[1]):
                 continue
             package[i] = self.players.get(i).compac()
-        self.socket.send_json(json.dumps(package))
+        self.socket.send_string(json.dumps(package))
 
 
 # 0 = command
