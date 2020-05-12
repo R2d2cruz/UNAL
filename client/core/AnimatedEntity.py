@@ -8,7 +8,7 @@ class AnimatedEntity(pygame.sprite.Sprite):
         super().__init__(*groups)
         self.frame = 0
         self.sheet = None
-        self.image = 0
+        self.image = None
         self.rect = pygame.Rect((0, 0, 0, 0))
 
     def loadAnimation(self, fileName):

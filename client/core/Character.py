@@ -18,6 +18,8 @@ class Character(AnimatedEntity):
 
     def __init__(self, *groups):
         super().__init__(*groups)
+        self.frame = 0
+        self.sheet = None
         self.velocity = [0, 0]
         self.x = 0
         self.y = 0
