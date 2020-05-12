@@ -1,10 +1,19 @@
 import zmq
 import json
 import sys
-from Player import Player
+import os
+
+if os.name == "nt":
+    from server.Player import Player
+else:
+    # noinspection PyUnresolvedReferences
+    from Player import Player
+
 
 class Server:
     def __init__(self):
+        self.isRunning = False
+        self.socket = None
         self.port = 5555
         self.counter = 0
         self.players = {}

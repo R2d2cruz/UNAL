@@ -14,8 +14,8 @@ class Character(pygame.sprite.Sprite):
         "right": "wlr"
     }
 
-    def __init__(self):
-        pass
+    def __init__(self, *groups):
+        super().__init__(*groups)
 
     def get_x(self):
         return self.x
