@@ -3,16 +3,12 @@ import json
 from Player import Player
 
 class Server:
-
     def __init__(self):
         context = zmq.Context()
         self.socket = context.socket(zmq.REP)
         self.socket.bind("tcp://*:5555")
         self.counter = 0
-        self.index = 0
-        self.players = {
-
-        }
+        self.players = {}
         self.commands = {
             "createPlayer": self.createPlayer,
             "update": self.updatePlayer,
@@ -32,7 +28,6 @@ class Server:
         self.socket.send_string(str(self.counter))
         self.counter += 1
         self.printPlayers()
-        print(self.index)
 
     def printPlayers(self):
         print('Players (' + str(len(self.players)) + ') = [ ', end= '')
@@ -51,7 +46,7 @@ class Server:
         for i in self.players.keys():
             if i == int(information[1]):
                 continue
-            package[i] = self.players.get(i).compac()
+            package[i] = self.players.get(i).to_json()
         self.socket.send_string(json.dumps(package))
 
 # 0 = command

@@ -1,7 +1,30 @@
 import pygame
-
+import json
 
 class Character(pygame.sprite.Sprite):
+
+    def __init__(self):
+        pass
+
+    def get_x(self):
+        return self.x
+
+    def get_y(self):
+        return self.y
+
+    def to_json(self):
+        return json.dumps({
+            "x": self.rect.topleft[0] - self.x,
+            "y": self.rect.topleft[1] - self.y,
+            "a": self.traductor.get(self.action)
+        })
+
+    def loadImg(self, fileName):
+        self.sheet = pygame.image.load(fileName)
+        self.sheet.set_clip(pygame.Rect(37, 1, 34, 56))
+        self.image = self.sheet.subsurface(self.sheet.get_clip())
+        self.rect = pygame.Rect(37, 1, 34, 32)  # self.image.get_rect()
+
     def blit(self, screen):
         #pygame.draw.rect(screen, (0, 255, 0), self.get_rect())
         screen.blit(self.image, self.rect)

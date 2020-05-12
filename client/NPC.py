@@ -15,10 +15,10 @@ class NPC(Character):
     y = 0
     flag = "NPC"
 
-    def __init__(self, position, reference, name="Henry", *groups):
-        super().__init__(*groups)
+    def __init__(self, position, reference, name="Henry"):
+        super().__init__()
         self.name = name
-        self.loadImg()
+        self.loadImg(imgs.get(self.name))
         self.x = position[0]
         self.y = position[1]
         print(reference)
@@ -29,13 +29,7 @@ class NPC(Character):
         self.left = {0: (217, 1, 32, 56)}
         self.right = {0: (251, 1, 32, 56)}
 
-    def loadImg(self):
-        self.sheet = pygame.image.load(imgs.get(self.name)
-        self.sheet.set_clip(pygame.Rect(37, 1, 34, 56))
-        self.image = self.sheet.subsurface(self.sheet.get_clip())
-        self.rect = pygame.Rect(37, 1, 34, 32)  # self.image.get_rect()
-
-    def act(self):
+    def update(self):
         self.x += self.velocity[0]
         self.y += self.velocity[1]
 

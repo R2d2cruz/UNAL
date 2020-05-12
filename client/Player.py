@@ -27,12 +27,12 @@ class Player(Character):
     lastVelocity = [0, 0]
     objectCollition = None
     action = "stand_down"
-    actualizate = False
+    hasChanged = False
 
-    def __init__(self, position, name="Henry", *groups):
-        super().__init__(*groups)
+    def __init__(self, position, name="Henry"):
+        super().__init__()
         self.name = name
-        self.loadImg()
+        self.loadImg(imgs.get(self.name))
         self.rect.topleft = position
         self.frame = 0
         self.front = {0: (37, 1, 34, 56)}
@@ -44,13 +44,7 @@ class Player(Character):
         self.leftWalk = {0: (109, 1, 34, 56), 1: (217, 1, 32, 56), 2: (181, 1, 34, 56), 3: (217, 1, 32, 56)}
         self.rightWalk = {0: (73, 1, 34, 56), 1: (251, 1, 32, 56), 2: (145, 1, 34, 56), 3: (251, 1, 32, 56)}
 
-    def loadImg(self):
-        self.sheet = pygame.image.load(imgs.get(self.name))
-        self.sheet.set_clip(pygame.Rect(37, 1, 34, 56))
-        self.image = self.sheet.subsurface(self.sheet.get_clip())
-        self.rect = pygame.Rect(37, 1, 34, 32)  # self.image.get_rect()
-
-    def update(self, direction):
+    def move(self, direction):
         if direction == "up":
             self.velocity = [0, 4]
             self.clip(self.backWalk)
@@ -65,42 +59,29 @@ class Player(Character):
             self.clip(self.leftWalk)
 
         if direction == "stand_up":
+            self.velocity = [0, 0]
             self.clip(self.back)
         if direction == "stand_down":
+            self.velocity = [0, 0]
             self.clip(self.front)
         if direction == "stand_right":
+            self.velocity = [0, 0]
             self.clip(self.right)
         if direction == "stand_left":
+            self.velocity = [0, 0]
             self.clip(self.left)
 
         self.image = self.sheet.subsurface(self.sheet.get_clip())
         self.action = direction
-        self.actualizate = True
+        self.hasChanged = True
 
-    def act(self):
+    def update(self):
         if self.lastVelocity != self.velocity:
             self.x += self.velocity[0]
             self.y += self.velocity[1]
         if self.velocity == [0, 0]:
-            self.actualizate = False
+            self.hasChanged = False
         # return self.velocity == [0, 0]
-
-    def get_x(self):
-        return self.x
-
-    def get_y(self):
-        return self.y
-
-    def get_actualizate(self):
-        return self.actualizate
-
-    def get_compac(self):
-        self.actualizate = False
-        return json.dumps({
-            "x": self.rect.topleft[0] - self.x,
-            "y": self.rect.topleft[1] - self.y,
-            "a": self.traductor.get(self.action)
-        })
 
     def collitions(self, object):
         this = self.get_rect().copy()
@@ -108,11 +89,6 @@ class Player(Character):
         this.y -= self.velocity[1]
         if this.colliderect(object) == 1:
             self.velocity = [0, 0]
-
-        #print(self.isCollide)
-
-    def overlap(self, x1, d1, x2, d2):
-        return x1 + d1 > x2 if x1 < x2 else x2 + d2 > x1
 
     def get_rect(self):
         return pygame.Rect((self.rect.x, self.rect.y + 24, 34, 32))

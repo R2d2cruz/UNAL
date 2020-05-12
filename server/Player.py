@@ -25,7 +25,7 @@ class Player:
         self.y = message.get("y")
         self.movement = message.get("a")
 
-    def compac(self):
+    def to_json(self):
         return {
             "x": self.x,
             "y": self.y,
