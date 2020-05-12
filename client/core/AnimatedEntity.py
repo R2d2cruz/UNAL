@@ -15,7 +15,6 @@ class AnimatedEntity(Entity):
         self.timeStep = 50
 
     def loadAnimation(self, fileName):
-        self.clips = {}
         with open(fileName) as json_file:
             data = json.load(json_file)
             if os.name != "nt":

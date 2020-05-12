@@ -2,10 +2,18 @@ import pygame
 import json
 import os
 
-from core.AnimatedEntity import AnimatedEntity
+if os.name == "nt":
+    # noinspection PyUnresolvedReferences
+    from core.AnimatedEntity import AnimatedEntity
+else:
+    from client.core.AnimatedEntity import AnimatedEntity
+
 
 class Character(AnimatedEntity):
-    traductor = {
+
+    def __init__(self, *groups):
+        super().__init__(*groups)
+        self.traductor = {
         "stand_up": "stu",
         "stand_down": "std",
         "stand_left": "stl",
@@ -15,9 +23,6 @@ class Character(AnimatedEntity):
         "left": "wll",
         "right": "wlr"
     }
-
-    def __init__(self, *groups):
-        super().__init__(*groups)
         self.frame = 0
         self.sheet = None
         self.velocity = [0, 0]

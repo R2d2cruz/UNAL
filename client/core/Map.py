@@ -93,7 +93,7 @@ class Map:
         keys = self.players.keys()
         for i in information.keys():
             if i in keys:
-                self.players.get(i).update(information.get(i))
+                self.players.get(i).setPos(information.get(i))
             else:
                 self.players[i] = OnlinePlayer(information.get(i))
 
@@ -103,6 +103,8 @@ class Map:
             self.player.hasChanged = False
             self.game.client.sendPlayerStatus(self.player)
         self.updateOtherPlayers()
+        for i in self.players.keys():
+            self.players.get(i).update()
         for char in self.characters:
             char.update()
             char.update()
@@ -111,8 +113,6 @@ class Map:
             self.player.collitions(obj)
         self.player.update()
         if self.player.hasChanged:
-            self.changeCoord(self.player.get_x(), self.player.get_y())
-        # print(self.y, self.player.rect.topleft[1])
 
     def blit(self, screen):
         for i in range(len(self.map)):
