@@ -10,9 +10,9 @@ class AnimatedEntity(pygame.sprite.Sprite):
         self.sheet = None
         self.image = None
         self.rect = pygame.Rect((0, 0, 0, 0))
+        self.clips = {}
 
     def loadAnimation(self, fileName):
-        self.clips = {}
         with open(fileName) as json_file:
             data = json.load(json_file)
             if os.name != "nt":
