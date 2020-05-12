@@ -36,7 +36,6 @@ class Game:
         self.mixer = pygame.mixer.music
         with open(sounds.get("sounds")) as json_file:
             self.music = json.load(json_file)
-            print("====", self.music)
         self.client = Client(config)
         if self.client.connect():
             self.init()
@@ -52,7 +51,6 @@ class Game:
         self.clock = pygame.time.Clock()
         self.mixer.load(("../" if os.name == "nt" else "") + self.music.get("music"))
         self.mixer.set_volume(sounds.get("volume"))
-        print(self.mixer.get_volume())
         self.mixer.play()
         self.map = Laberinto(self)
 
