@@ -12,7 +12,7 @@ class Client:
         self.id = None
         self.socket = None
 
-    def connect(self):
+    def connect(self, config):
         config = Config()
         context = zmq.Context()
         maxAttempts = config.maxAttemptsPerServer

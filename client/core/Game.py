@@ -1,10 +1,9 @@
 import pygame
-import os
 import sys
 
 from constants import imgs
 from Laberinto import Laberinto
-from core.config import Config
+from core.Client import Client
 
 class Game:
     KEYDOWN = {
@@ -21,12 +20,9 @@ class Game:
         pygame.K_RIGHT: "stand_right"
     }
 
-    updateables = []
-    drawables = []
-
-    def __init__(self):
+    def __init__(self, config):
         self.client = Client()
-        if self.client.connect():
+        if self.client.connect(config):
             self.init()
         else:
             pygame.quit()
