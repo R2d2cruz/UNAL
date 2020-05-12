@@ -1,20 +1,16 @@
 import json
 import pygame
-from constants import imgs
-from core.Character import Character
+import os
+
+if os.name != "nt":
+    from constants import imgsOS as imgs
+    from core.Character import Character
+else:
+    from client.constants import imgsNT as imgs
+    from client.core.Character import Character
 
 
 class Player(Character):
-    traductor = {
-        "stand_up": "stu",
-        "stand_down": "std",
-        "stand_left": "stl",
-        "stand_right": "str",
-        "up": "wlu",
-        "down": "wld",
-        "left": "wll",
-        "right": "wlr"
-    }
     attack = 30
     defense = 20
     HP = 500

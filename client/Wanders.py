@@ -1,4 +1,9 @@
-from NPC import NPC
+import os
+
+if os.name != "nt":
+    from NPC import NPC
+else:
+    from client.NPC import NPC
 
 
 class Wander(NPC):

@@ -1,6 +1,12 @@
 import pygame
 
-from constants import imgs
+import os
+
+if os.name != "nt":
+    from constants import imgsOS as imgs
+else:
+    from client.constants import imgsNT as imgs
+
 
 class Objects:
 

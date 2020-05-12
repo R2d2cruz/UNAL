@@ -1,7 +1,12 @@
 import pygame
 import os
-from constants import imgs
-from core.Character import Character
+if os.name != "nt":
+    from constants import imgsOS as imgs
+    from core.Character import Character
+else:
+    from client.constants import imgsNT as imgs
+    from client.core.Character import Character
+
 
 class OnlinePlayer(Character):
     def __init__(self, information, *groups):

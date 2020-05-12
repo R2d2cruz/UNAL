@@ -1,8 +1,15 @@
 import json
 import pygame
 from copy import copy
-from OnlinePlayers import OnlinePlayer
-from Objects import wall
+
+import os
+
+if os.name != "nt":
+    from OnlinePlayers import OnlinePlayer
+    from Objects import wall
+else:
+    from client.OnlinePlayers import OnlinePlayer
+    from client.Objects import wall
 
 
 class Map:
@@ -49,7 +56,10 @@ class Map:
         frames = {}
         with open(fileName) as json_file:
             data = json.load(json_file)
-            image = pygame.image.load(data.get("image"))
+            if os.name != "nt":
+                image = pygame.image.load(data.get("image"))
+            else:
+                image = pygame.image.load("../" + data.get("image"))
             for frame in data.get("frames"):
                 frames[frame["id"]] = image.subsurface(frame["box"])
         return frames

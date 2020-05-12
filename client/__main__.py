@@ -3,8 +3,15 @@ import os
 import signal
 import sys
 
-from core.Game import Game
-from Config import Config
+import os
+
+if os.name != "nt":
+    from core.Game import Game
+    from Config import Config
+else:
+    from client.core.Game import Game
+    from client.Config import Config
+
 
 ## esta funcion sirve para que el juego se cierre cuando el usuario presiona Ctr + C en la consola
 def signal_handler(sig, frame):

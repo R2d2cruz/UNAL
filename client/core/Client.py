@@ -1,5 +1,6 @@
 import zmq
 
+
 class Client:
 
     def __init__(self, config):

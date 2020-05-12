@@ -1,9 +1,16 @@
 import pygame
 import sys
+import os
 
-from constants import imgs
-from Laberinto import Laberinto
-from core.Client import Client
+if os.name != "nt":
+    from constants import imgsOS as imgs
+    from Laberinto import Laberinto
+    from core.Client import Client
+else:
+    from client.constants import imgsNT as imgs
+    from client.Laberinto import Laberinto
+    from client.core.Client import Client
+
 
 class Game:
     KEYDOWN = {
@@ -30,7 +37,10 @@ class Game:
 
     def init(self):
         pygame.init()
-        pygame.display.set_icon(pygame.image.load(imgs.get("logo")))
+        try:
+            pygame.display.set_icon(pygame.image.load(imgs.get("logo")))
+        except pygame.error:
+            pygame.display.set_icon(pygame.image.load("../" + imgs.get("logo")))
         self.screen = pygame.display.set_mode((1280, 720))
         self.clock = pygame.time.Clock()
         self.map = Laberinto(self)

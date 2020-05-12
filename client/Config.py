@@ -1,20 +1,26 @@
 import json
 
+
 ## esta clase es un patron, se usa para hacer que otra clase que herede de esta
 ## se comporte como un unico objeto en toda la aplicacion
 class Singleton(type):
     _instances = {}
+
     def __call__(cls, *args, **kwargs):
         if cls not in cls._instances:
             cls._instances[cls] = super(Singleton, cls).__call__(*args, **kwargs)
         return cls._instances[cls]
+
 
 ## Solo debe existir un mismo config en toda la aplicacion
 class Config(metaclass=Singleton):
     def __init__(self):
         self.servers = []
         self.maxAttemptsPerServer = 0
-        self.load('client/config.json')
+        try:
+            self.load('client/config.json')
+        except FileNotFoundError:
+            self.load('config.json')
         if len(self.servers) == 0:
            raise Exception('🙄 No se han configurado servidores en el archivo de configuracion: config.json')
 

@@ -1,7 +1,18 @@
 import pygame
 import json
 
+
 class Character(pygame.sprite.Sprite):
+    traductor = {
+        "stand_up": "stu",
+        "stand_down": "std",
+        "stand_left": "stl",
+        "stand_right": "str",
+        "up": "wlu",
+        "down": "wld",
+        "left": "wll",
+        "right": "wlr"
+    }
 
     def __init__(self):
         pass

@@ -1,6 +1,12 @@
 import pygame
-from constants import imgs
-from core.Character import Character
+import os
+
+if os.name != "nt":
+    from constants import imgsOS as imgs
+    from core.Character import Character
+else:
+    from client.constants import imgsNT as imgs
+    from client.core.Character import Character
 
 
 class NPC(Character):
