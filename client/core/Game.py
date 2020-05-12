@@ -2,15 +2,9 @@ import pygame
 import os
 import sys
 
-if os.name == 'nt':
-    from client.constants import imgs
-    from client.laberinto import Laberinto
-    from client.core.config import Config
-else:
-    from constants import imgs
-    from Laberinto import Laberinto
-    from Config import Config
-    from core.Client import Client
+from constants import imgs
+from Laberinto import Laberinto
+from core.config import Config
 
 class Game:
     KEYDOWN = {
