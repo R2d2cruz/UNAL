@@ -113,6 +113,7 @@ class Map:
             self.player.collitions(obj)
         self.player.update()
         if self.player.hasChanged:
+            self.changeCoord(self.player.get_x(), self.player.get_y())
 
     def blit(self, screen):
         for i in range(len(self.map)):
