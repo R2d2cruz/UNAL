@@ -76,9 +76,6 @@ class Map:
         for i in self.players.keys():
             self.players[i].change_reference_point([self.x, self.y])
 
-    def handleEvents(self, event):
-        self.player.handle_event(event)
-
     def updateOtherPlayers(self):
         self.game.socket.send_string("act_" + self.game.get_id())
         message = self.game.socket.recv_string()
@@ -99,7 +96,7 @@ class Map:
             message = "update_" + self.game.get_id() + "_" + self.player.get_compac()
             try:
                 self.game.socket.send_string(message)
-                print(self.game.socket.recv_string())
+                #print(self.game.socket.recv_string())
             except:
                 pass
         self.updateOtherPlayers()
@@ -110,7 +107,7 @@ class Map:
             self.player.collitions(i)
         if not self.player.act():
             self.changeCoord(self.player.get_x(), self.player.get_y())
-        ##print(self.y, self.player.rect.topleft[1])
+        print(self.y, self.player.rect.topleft[1])
 
     def blit(self, screen):
         for i in range(len(self.map)):

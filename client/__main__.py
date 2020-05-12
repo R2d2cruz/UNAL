@@ -16,6 +16,6 @@ def signal_handler(sig, frame):
 signal.signal(signal.SIGINT, signal_handler)
 
 game = Game()
-game.render()
+game.run()
 pygame.quit()
 

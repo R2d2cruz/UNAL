@@ -5,20 +5,6 @@ from core.Character import Character
 
 
 class Player(Character):
-    KEYDOWN = {
-        pygame.K_UP: "up",
-        pygame.K_DOWN: "down",
-        pygame.K_LEFT: "left",
-        pygame.K_RIGHT: "right"
-    }
-
-    KEYUP = {
-        pygame.K_UP: "stand_up",
-        pygame.K_DOWN: "stand_down",
-        pygame.K_LEFT: "stand_left",
-        pygame.K_RIGHT: "stand_right"
-    }
-
     traductor = {
         "stand_up": "stu",
         "stand_down": "std",
@@ -90,14 +76,6 @@ class Player(Character):
         self.image = self.sheet.subsurface(self.sheet.get_clip())
         self.action = direction
         self.actualizate = True
-
-    def handle_event(self, event):
-        if event.type == pygame.KEYDOWN:
-            self.update(self.KEYDOWN.get(event.key))
-
-        if event.type == pygame.KEYUP:
-            self.velocity = [0, 0]
-            self.update((self.KEYUP.get(event.key)))
 
     def act(self):
         if self.lastVelocity != self.velocity:

@@ -9,11 +9,27 @@ if os.name == 'nt':
     from client.config import Config
 else:
     from constants import imgs
-    from laberinto import Laberinto
+    from Laberinto import Laberinto
     from Config import Config
 
 class Game:
+    KEYDOWN = {
+        pygame.K_UP: "up",
+        pygame.K_DOWN: "down",
+        pygame.K_LEFT: "left",
+        pygame.K_RIGHT: "right"
+    }
+
+    KEYUP = {
+        pygame.K_UP: "stand_up",
+        pygame.K_DOWN: "stand_down",
+        pygame.K_LEFT: "stand_left",
+        pygame.K_RIGHT: "stand_right"
+    }
+
     run = True
+    updateables = []
+    drawables = []
 
     def __init__(self):
         self.id = None
@@ -57,15 +73,30 @@ class Game:
     def get_id(self):
         return self.id
 
+    def handleEvents(self):
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                self.run = False
+            if self.map.player:
+                if event.type == pygame.KEYDOWN:
+                    self.map.player.update(self.KEYDOWN.get(event.key))
+
+                if event.type == pygame.KEYUP:
+                    self.map.player.velocity = [0, 0]
+                    self.map.player.update((self.KEYUP.get(event.key)))
+
+    def update(self):
+        self.map.update()
+
     def render(self):
+        self.screen.fill((0, 0, 0))
+        #blits
+        self.map.blit(self.screen)
+        pygame.display.update()
+        self.clock.tick(30)
+
+    def run(self):
         while self.run:
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    self.run = False
-            self.map.handleEvents(event)
-            self.map.update()
-            self.screen.fill((0, 0, 0))
-            #blits
-            self.map.blit(self.screen)
-            pygame.display.update()
-            self.clock.tick(30)
+            self.handleEvents()
+            self.update()
+            self.render()
