@@ -61,8 +61,7 @@ class Player(Character):
         if self.lastVelocity != self.velocity:
             self.x += self.velocity[0]
             self.y += self.velocity[1]
-        if self.velocity == [0, 0]:
-            self.hasChanged = False
+        self.hasChanged = self.velocity != [0, 0]
 
     def collitions(self, obj):
         this = self.get_rect().copy()
