@@ -2,12 +2,7 @@ import pygame
 import json
 import os
 
-if os.name == "nt":
-    # noinspection PyUnresolvedReferences
-    from core.AnimatedEntity import AnimatedEntity
-else:
-    from client.core.AnimatedEntity import AnimatedEntity
-
+from core.AnimatedEntity import AnimatedEntity
 
 class Character(AnimatedEntity):
 

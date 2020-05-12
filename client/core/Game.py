@@ -33,9 +33,17 @@ class Game:
         self.screen = None
         self.clock = None
         self.map = None
-        self.mixer = pygame.mixer.music
-        with open(sounds.get("sounds")) as json_file:
-            self.music = json.load(json_file)
+        self.connectClient(config)
+
+    def init(self):
+        pygame.init()
+        pygame.display.set_icon(pygame.image.load(imgs.get("logo")))
+        self.screen = pygame.display.set_mode((1280, 720))
+        self.clock = pygame.time.Clock()
+        self.map = Laberinto(self)
+        self.playSound()
+
+    def connectClient(self, config):
         self.client = Client(config)
         if self.client.connect():
             self.init()
@@ -44,15 +52,18 @@ class Game:
             pygame.quit()
             sys.exit()
 
-    def init(self):
-        pygame.init()
-        pygame.display.set_icon(pygame.image.load(imgs.get("logo")))
-        self.screen = pygame.display.set_mode((1280, 720))
-        self.clock = pygame.time.Clock()
-        self.mixer.load(("../" if os.name == "nt" else "") + self.music.get("music"))
-        self.mixer.set_volume(sounds.get("volume"))
-        self.mixer.play()
-        self.map = Laberinto(self)
+    def playSound(self):
+        pygame.mixer.init()
+        self.mixer = pygame.mixer.music
+        with open(sounds.get("sounds")) as json_file:
+            self.music = json.load(json_file)
+        try:
+            self.mixer.load(("../" if os.name == "nt" else "") + self.music.get("music"))
+            self.mixer.set_volume(sounds.get("volume"))
+            self.mixer.play()
+        except:
+            print("😞 No se pudo cargar audio.")
+            pass
 
     def handleEvents(self):
         for event in pygame.event.get():
