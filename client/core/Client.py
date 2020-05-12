@@ -1,51 +1,51 @@
 import zmq
-import os
-
-if os.name == 'nt':
-    from client.core.config import Config
-else:
-    from Config import Config
 
 class Client:
 
-    def __init__(self):
+    def __init__(self, config):
         self.id = None
         self.socket = None
-
-    def connect(self, config):
-        config = Config()
-        context = zmq.Context()
-        maxAttempts = config.maxAttemptsPerServer
-        attempt = 0
+        self.maxAttempts = config.maxAttemptsPerServer
+        self.servers = []
         for server in config.servers:
-            for i in range(1, maxAttempts + 1):
-              try:
-                  print("Conectandose a servidor " + server + " (intento " +  str(i) + ")")
-                  self.socket = context.socket(zmq.REQ)
-                  self.socket.setsockopt(zmq.SNDTIMEO, 1000)
-                  self.socket.setsockopt(zmq.RCVTIMEO, 1000)
-                  self.socket.setsockopt(zmq.LINGER, 1000)
-                  self.socket.connect("tcp://" + server)
-                  self.socket.send_string("createPlayer")
-                  self.id = self.socket.recv_string()
-                  print("Conexión exitosa. Id de cliente: " + self.id)
-                  return True
-              except Exception as e:
-                  print(e)
-                  self.socket.close()
-        print("No se pudo conectar. Por favor verifique que la configuración en config.json sea correcta y vuelva a intentar.")
-        return False
+            self.servers.append("tcp://" + server)
 
-    def get_id(self):
-        return self.id
+    def connect(self):
+        context = zmq.Context()
+        attempt = 0
+        for server in self.servers:
+            for i in range(1, self.maxAttempts + 1):
+                try:
+                    print('🤞Intentando conectarse a servidor ' + server + ' (intento ' +  str(i) + ')')
+                    self.socket = context.socket(zmq.REQ)
+                    self.socket.setsockopt(zmq.SNDTIMEO, 1000)
+                    self.socket.setsockopt(zmq.RCVTIMEO, 1000)
+                    self.socket.setsockopt(zmq.LINGER, 1000)
+                    self.socket.connect(server)
+                    self.id = self.getId()
+                    print('👍Conexión exitosa. Id de cliente: ' + self.id)
+                    return True
+                except zmq.Again as e:
+                    print('👎Conexión fallida. Cerrando socket...')
+                    self.socket.close()
+                except Exception as e:
+                    print('Error', e)
+                    self.socket.close()
+        print("😞No se pudo conectar. Por favor verifique que la configuración en config.json sea correcta y vuelva a intentar.")
+        return False
 
     def send(self, message):
         try:
             self.socket.send_string(message)
         except Exception as e:
-            print(e)
+            print('❌Client.send', message, e)
 
-    def sendId(self):
+    # este no debe usar `try` para permitir generar excepcion en connect
+    def getId(self):
+        self.socket.send_string("createPlayer")
+        return self.socket.recv_string()
+
+    def getStatus(self):
         self.send("act_" + self.id)
         return self.read()
       
@@ -57,6 +57,7 @@ class Client:
         try:
             return self.socket.recv_string()
         except Exception as e:
+            print('❌Client.read', e)
             print(e)
 
     def close(self):

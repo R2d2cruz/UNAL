@@ -77,7 +77,7 @@ class Map:
             self.players[i].change_reference_point([self.x, self.y])
 
     def updateOtherPlayers(self):
-        message = self.game.client.sendId()
+        message = self.game.client.getStatus()
         information = json.loads(message)
         #print(information)
         keys = self.players.keys()

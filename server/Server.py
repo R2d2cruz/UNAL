@@ -1,12 +1,11 @@
 import zmq
 import json
+import sys
 from Player import Player
 
 class Server:
     def __init__(self):
-        context = zmq.Context()
-        self.socket = context.socket(zmq.REP)
-        self.socket.bind("tcp://*:5555")
+        self.port = 5555
         self.counter = 0
         self.players = {}
         self.commands = {
@@ -15,15 +14,32 @@ class Server:
             "act": self.returnPlayers
         }
 
+    def listen(self):
+        print('🔥 Iniciando servidor en el puerto ' + str(self.port))
+        context = zmq.Context()
+        self.socket = context.socket(zmq.REP)
+        try:
+            self.socket.bind("tcp://*:" + str(self.port))
+        except zmq.ZMQError as e:
+            print('🙄 Hay otra aplicación que está usando el puerto ' + str(self.port) + ' en esta máquina.')
+            print('🤣Tal vez estas corriendo el servidor dos veces!')
+            sys.exit()
+
     def run(self):
-        while True:
-            message = self.socket.recv_string()
+        self.isRunning = True
+        self.listen()
+        while self.isRunning:
             try:
-                self.commands.get((message.split("_"))[0])(message)
-            except:
-                print("error")
+                message = self.socket.recv_string()
+                self.commands.get((message.split("_"))[0])(message) 
+            except KeyboardInterrupt:
+                self.isRunning = False
+            except Exception as e:
+                print("Error", e)
+        print('\n\🍺Se ha cerrado el server. Ahora vamos a por una cerveza!')
 
     def createPlayer(self, message):
+        print('👨‍💻Se ha conectado un jugador ')
         self.players[self.counter] = Player()
         self.socket.send_string(str(self.counter))
         self.counter += 1

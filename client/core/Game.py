@@ -21,8 +21,8 @@ class Game:
     }
 
     def __init__(self, config):
-        self.client = Client()
-        if self.client.connect(config):
+        self.client = Client(config)
+        if self.client.connect():
             self.init()
         else:
             pygame.quit()
