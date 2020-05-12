@@ -4,11 +4,11 @@ import os
 
 if os.name != "nt":
     # noinspection PyUnresolvedReferences
-    from constants import imgsOS as imgs
+    from constants import imgsOS as imgs, animsOS as anims
     # noinspection PyUnresolvedReferences
     from core.Character import Character
 else:
-    from client.constants import imgsNT as imgs
+    from client.constants import imgsNT as imgs, animsNT as anims
     from client.core.Character import Character
 
 
@@ -30,30 +30,8 @@ class Player(Character):
     def __init__(self, position, name="Henry"):
         super().__init__()
         self.name = name
-        self.loadImg(imgs.get(self.name))
+        self.loadSpriteAnimation(anims.get(self.name))
         self.rect.topleft = position
-        self.front = {0: (37, 1, 34, 56)}
-        self.back = {0: (1, 1, 34, 56)}
-        self.left = {0: (217, 1, 32, 56)}
-        self.right = {0: (251, 1, 32, 56)}
-        self.walk = {0: (357, 1, 34, 53), 1: (37, 1, 34, 56), 2: (393, 1, 34, 53), 3: (37, 1, 34, 56)}
-        self.backWalk = {0: (285, 1, 34, 54), 1: (1, 1, 34, 56), 2: (321, 1, 34, 54), 3: (1, 1, 34, 56)}
-        self.leftWalk = {0: (109, 1, 34, 56), 1: (217, 1, 32, 56), 2: (181, 1, 34, 56), 3: (217, 1, 32, 56)}
-        self.rightWalk = {0: (73, 1, 34, 56), 1: (251, 1, 32, 56), 2: (145, 1, 34, 56), 3: (251, 1, 32, 56)}
-
-        self.clips = {
-            "stand_up": self.back,
-            "stand_down": self.front,
-            "stand_left": self.left,
-            "stand_right": self.right,
-            "up": self.backWalk,
-            "down": self.walk,
-            "left": self.leftWalk,
-            "right": self.rightWalk
-        }
-
-        self.clip(self.front)
-        self.image = self.sheet.subsurface(self.sheet.get_clip())
 
     def move(self, direction):
         if direction == "up":
@@ -78,14 +56,13 @@ class Player(Character):
         self.hasChanged = True
 
     def update(self):
-        self.clip(self.clips.get(self.action))
-        self.image = self.sheet.subsurface(self.sheet.get_clip())
+        if self.action is not None:
+            self.clip(self.action)
         if self.lastVelocity != self.velocity:
             self.x += self.velocity[0]
             self.y += self.velocity[1]
         if self.velocity == [0, 0]:
             self.hasChanged = False
-        # return self.velocity == [0, 0]
 
     def collitions(self, obj):
         this = self.get_rect().copy()
