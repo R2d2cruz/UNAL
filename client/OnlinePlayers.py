@@ -18,3 +18,7 @@ class OnlinePlayer(Character):
         self.movement = information.get("a")
         self.rect = pygame.Rect(37, 1, 34, 32)
         self.rect.topleft = (self.x, self.y)
+
+    def update(self, information, *args):
+        self.x = information.get("x") - 12
+        self.y = information.get("y") - 4
