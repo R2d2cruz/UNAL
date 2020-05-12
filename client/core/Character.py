@@ -18,7 +18,7 @@ class Character(pygame.sprite.Sprite):
         super().__init__(*groups)
         self.frame = 0
         self.sheet = None
-        self.image = 0
+        self.image = None
         self.rect = None
         self.velocity = [0, 0]
         self.x = 0

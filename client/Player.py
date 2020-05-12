@@ -40,7 +40,6 @@ class Player(Character):
         self.backWalk = {0: (285, 1, 34, 54), 1: (1, 1, 34, 56), 2: (321, 1, 34, 54), 3: (1, 1, 34, 56)}
         self.leftWalk = {0: (109, 1, 34, 56), 1: (217, 1, 32, 56), 2: (181, 1, 34, 56), 3: (217, 1, 32, 56)}
         self.rightWalk = {0: (73, 1, 34, 56), 1: (251, 1, 32, 56), 2: (145, 1, 34, 56), 3: (251, 1, 32, 56)}
-
         self.clips = {
             "stand_up": self.back,
             "stand_down": self.front,
@@ -51,9 +50,7 @@ class Player(Character):
             "left": self.leftWalk,
             "right": self.rightWalk
         }
-
-        self.clip(self.front)
-        self.image = self.sheet.subsurface(self.sheet.get_clip())
+        self.image = self.sheet.subsurface(pygame.Rect(37, 1, 34, 56))
 
     def move(self, direction):
         if direction == "up":
