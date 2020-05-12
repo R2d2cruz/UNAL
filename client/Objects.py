@@ -23,7 +23,7 @@ class Objects:
         self.x = x
         self.y = y
 
-    def blit(self, screen):
+    def render(self, screen):
         screen.blit(self.frames[self.i], self.rect)
         #pygame.draw.rect(screen, (0, 255, 0), self.get_rect())
 

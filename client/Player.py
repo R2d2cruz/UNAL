@@ -30,7 +30,7 @@ class Player(Character):
     def __init__(self, position, name="Henry"):
         super().__init__()
         self.name = name
-        self.loadSpriteAnimation(anims.get(self.name))
+        self.loadAnimation(anims.get(self.name))
         self.rect.topleft = position
 
     def move(self, direction):

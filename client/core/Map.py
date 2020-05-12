@@ -117,12 +117,12 @@ class Map:
             for j in range(len(self.map[0])):
                 screen.blit(self.frames.get(self.map[i][j]), (self.x + (self.rect * j), self.y + (self.rect * i)))
         for k in self.characters:
-            k.blit(screen)
+            k.render(screen)
         for k in self.objects:
-            k.blit(screen)
+            k.render(screen)
         for k in self.players.values():
-            k.blit(screen)
-        self.player.blit(screen)
+            k.render(screen)
+        self.player.render(screen)
 
     def collitions(self):
         for i in range(len(self.characters)):
