@@ -93,7 +93,7 @@ class Map:
         keys = self.players.keys()
         for i in information.keys():
             if i in keys:
-                self.players.get(i).update(information.get(i))
+                self.players.get(i).setPos(information.get(i))
             else:
                 self.players[i] = OnlinePlayer(information.get(i))
 
@@ -103,6 +103,8 @@ class Map:
             self.player.hasChanged = False
             self.game.client.sendPlayerStatus(self.player)
         self.updateOtherPlayers()
+        for i in self.players.keys():
+            self.players.get(i).update()
         for i in self.characters:
             i.update()
             i.update()
