@@ -9,5 +9,5 @@
       "port": 5555
     }
   ],
-  "maxAttemptsPerServer": 5
+  "maxAttemptsPerServer": 1
 }

@@ -1,5 +1,6 @@
 import json
 import pygame
+from constants import imgs
 from core.Character import Character
 
 
@@ -45,10 +46,7 @@ class Player(Character):
     def __init__(self, position, name="Henry", *groups):
         super().__init__(*groups)
         self.name = name
-        self.sheet = pygame.image.load("img/" + self.name + ".png")
-        self.sheet.set_clip(pygame.Rect(37, 1, 34, 56))
-        self.image = self.sheet.subsurface(self.sheet.get_clip())
-        self.rect = pygame.Rect(37, 1, 34, 32)  # self.image.get_rect()
+        self.loadImg()
         self.rect.topleft = position
         self.frame = 0
         self.front = {0: (37, 1, 34, 56)}
@@ -60,6 +58,11 @@ class Player(Character):
         self.leftWalk = {0: (109, 1, 34, 56), 1: (217, 1, 32, 56), 2: (181, 1, 34, 56), 3: (217, 1, 32, 56)}
         self.rightWalk = {0: (73, 1, 34, 56), 1: (251, 1, 32, 56), 2: (145, 1, 34, 56), 3: (251, 1, 32, 56)}
 
+    def loadImg(self):
+        self.sheet = pygame.image.load(imgs.get(self.name))
+        self.sheet.set_clip(pygame.Rect(37, 1, 34, 56))
+        self.image = self.sheet.subsurface(self.sheet.get_clip())
+        self.rect = pygame.Rect(37, 1, 34, 32)  # self.image.get_rect()
 
     def update(self, direction):
         if direction == "up":

@@ -14,7 +14,7 @@ class Config(metaclass=Singleton):
     def __init__(self):
         self.servers = []
         self.maxAttemptsPerServer = 0
-        self.load('config.json')
+        self.load('client/config.json')
         if len(self.servers) == 0:
            raise Exception("No se han configurado servidores en el archivo de configuracion: config.json")
 

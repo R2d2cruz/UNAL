@@ -13,10 +13,7 @@ else:
     from Config import Config
 
 class Game:
-    screen = pygame.display.set_mode((1280, 720))
     run = True
-    pygame.display.set_icon(pygame.image.load(imgs.get("logo")))
-    clock = pygame.time.Clock()
 
     def __init__(self):
         self.id = None
@@ -24,6 +21,9 @@ class Game:
         self.socket = None
         self.connect()
         pygame.init()
+        pygame.display.set_icon(pygame.image.load(imgs.get("logo")))
+        self.screen = pygame.display.set_mode((1280, 720))
+        self.clock = pygame.time.Clock()
         self.map = Laberinto(self)
 
     def connect(self):
