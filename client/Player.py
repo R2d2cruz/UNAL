@@ -81,11 +81,11 @@ class Player(Character):
             self.hasChanged = False
         # return self.velocity == [0, 0]
 
-    def collitions(self, object):
+    def collitions(self, obj):
         this = self.get_rect().copy()
         this.x -= self.velocity[0]
         this.y -= self.velocity[1]
-        if this.colliderect(object) == 1:
+        if this.colliderect(obj) == 1:
             self.velocity = [0, 0]
 
     def get_rect(self):

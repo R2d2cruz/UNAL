@@ -2,9 +2,12 @@
   <dictionary name="r2d2c">
     <words>
       <w>clase</w>
+      <w>collition</w>
+      <w>collitions</w>
       <w>imgs</w>
       <w>keydown</w>
       <w>keyup</w>
+      <w>pygame</w>
       <w>toplef</w>
       <w>topleft</w>
     </words>

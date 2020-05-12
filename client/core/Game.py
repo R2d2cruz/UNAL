@@ -28,19 +28,21 @@ class Game:
     }
 
     def __init__(self, config):
+        self.isRunning = False
+        self.screen = None
+        self.clock = None
+        self.map = None
         self.client = Client(config)
         if self.client.connect():
             self.init()
         else:
+            self.client.close()
             pygame.quit()
             sys.exit()
 
     def init(self):
         pygame.init()
-        try:
-            pygame.display.set_icon(pygame.image.load(imgs.get("logo")))
-        except pygame.error:
-            pygame.display.set_icon(pygame.image.load("../" + imgs.get("logo")))
+        pygame.display.set_icon(pygame.image.load(imgs.get("logo")))
         self.screen = pygame.display.set_mode((1280, 720))
         self.clock = pygame.time.Clock()
         self.map = Laberinto(self)
@@ -49,7 +51,6 @@ class Game:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.isRunning = False
-            #if self.map.player:
             if event.type == pygame.KEYDOWN:
                 self.map.player.move(self.KEYDOWN.get(event.key))
 
@@ -61,7 +62,6 @@ class Game:
 
     def render(self):
         self.screen.fill((0, 0, 0))
-        #blits
         self.map.blit(self.screen)
         pygame.display.update()
         self.clock.tick(30)

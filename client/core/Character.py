@@ -16,6 +16,14 @@ class Character(pygame.sprite.Sprite):
 
     def __init__(self, *groups):
         super().__init__(*groups)
+        self.frame = 0
+        self.sheet = None
+        self.image = 0
+        self.rect = None
+        self.velocity = [0, 0]
+        self.x = 0
+        self.y = 0
+        self.action = None
 
     def get_x(self):
         return self.x
@@ -37,7 +45,7 @@ class Character(pygame.sprite.Sprite):
         self.rect = pygame.Rect(37, 1, 34, 32)  # self.image.get_rect()
 
     def blit(self, screen):
-        #pygame.draw.rect(screen, (0, 255, 0), self.get_rect())
+        # pygame.draw.rect(screen, (0, 255, 0), self.get_rect())
         screen.blit(self.image, self.rect)
 
     def get_frame(self, frame_set):

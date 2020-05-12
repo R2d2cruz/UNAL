@@ -13,7 +13,7 @@ class Config:
             raise Exception('🙄 No se han configurado servidores en el archivo de configuracion: config.json')
 
     def load(self, fileName):
-        print('⚙️ Cargando configuracion del archivo ' + fileName)
+        print('⚙ Cargando configuracion del archivo ' + fileName)
         with open(fileName) as json_file:
             data = json.load(json_file)
             for p in data['servers']:

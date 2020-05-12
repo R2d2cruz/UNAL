@@ -10,6 +10,7 @@ import json
 # wll = walk left
 # wlr = walk right
 
+
 class Player:
 
     prevx = 0

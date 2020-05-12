@@ -31,7 +31,7 @@ class Server:
             self.socket.bind("tcp://*:" + str(self.port))
         except zmq.ZMQError as e:
             print('🙄 Hay otra aplicación que está usando el puerto ' + str(self.port) + ' en esta máquina.')
-            print('🤣Tal vez estas corriendo el servidor dos veces!')
+            print('🤣 Tal vez estas corriendo el servidor dos veces!')
             sys.exit()
 
     def run(self):
@@ -45,10 +45,10 @@ class Server:
                 self.isRunning = False
             except Exception as e:
                 print("Error", e)
-        print('\n\🍺Se ha cerrado el server. Ahora vamos a por una cerveza!')
+        print('\n\🍺 Se ha cerrado el server. Ahora vamos a por una cerveza!')
 
     def createPlayer(self, message):
-        print('🎮Se ha conectado un jugador ')
+        print('🎮 Se ha conectado un jugador ')
         self.players[self.counter] = Player()
         self.socket.send_string(str(self.counter))
         self.counter += 1
