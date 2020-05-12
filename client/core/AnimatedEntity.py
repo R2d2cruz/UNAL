@@ -13,6 +13,8 @@ class AnimatedEntity(Entity):
         self.currentClip = None
         self.lastFrameTime = 0
         self.timeStep = 50
+        self.clips = {}
+
 
     def loadAnimation(self, fileName):
         with open(fileName) as json_file:
