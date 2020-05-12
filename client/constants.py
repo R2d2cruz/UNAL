@@ -39,3 +39,13 @@ tilesetsOS = {
 tilesetsNT = {
   "ts1": "../client/tilesets/ts1.json",
 }
+
+soundsOS = {
+  "sounds": "client/sounds/sounds.json",
+  "volume": 0.05
+}
+
+soundsNT = {
+  "sounds": "../client/sounds/sounds.json",
+  "volume": 0.05
+}

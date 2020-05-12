@@ -1,13 +1,14 @@
 import pygame
 import sys
 import os
+import json
 
 if os.name != "nt":
-    from constants import imgsOS as imgs
+    from constants import imgsOS as imgs, soundsOS as sounds
     from Laberinto import Laberinto
     from core.Client import Client
 else:
-    from client.constants import imgsNT as imgs
+    from client.constants import imgsNT as imgs, soundsNT as sounds
     from client.Laberinto import Laberinto
     from client.core.Client import Client
 
@@ -32,6 +33,10 @@ class Game:
         self.screen = None
         self.clock = None
         self.map = None
+        self.mixer = pygame.mixer.music
+        with open(sounds.get("sounds")) as json_file:
+            self.music = json.load(json_file)
+            print("====", self.music)
         self.client = Client(config)
         if self.client.connect():
             self.init()
@@ -45,6 +50,10 @@ class Game:
         pygame.display.set_icon(pygame.image.load(imgs.get("logo")))
         self.screen = pygame.display.set_mode((1280, 720))
         self.clock = pygame.time.Clock()
+        self.mixer.load(("../" if os.name == "nt" else "") + self.music.get("music"))
+        self.mixer.set_volume(sounds.get("volume"))
+        print(self.mixer.get_volume())
+        self.mixer.play()
         self.map = Laberinto(self)
 
     def handleEvents(self):
