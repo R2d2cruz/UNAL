@@ -25,12 +25,6 @@ class Character(AnimatedEntity):
         self.y = 0
         self.action = None
 
-    def get_x(self):
-        return self.x
-
-    def get_y(self):
-        return self.y
-
     def to_json(self):
         return json.dumps({
             "x": self.rect.topleft[0] - self.x,
@@ -40,6 +34,3 @@ class Character(AnimatedEntity):
 
     def get_velocity(self):
         return self.velocity
-
-    def change_reference_point(self, position):
-        self.rect.topleft = [self.x + position[0], self.y + position[1]]

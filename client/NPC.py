@@ -12,7 +12,6 @@ else:
 
 
 class NPC(Character):
-
     attack = 30
     defense = 20
     HP = 500
@@ -37,12 +36,6 @@ class NPC(Character):
     def update(self):
         self.x += self.velocity[0]
         self.y += self.velocity[1]
-
-    def get_x(self):
-        return self.rect.topleft[0]
-
-    def get_y(self):
-        return self.rect.topleft[1]
 
     def collitions(self, objeto):
         pass
