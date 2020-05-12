@@ -26,16 +26,13 @@ class NPC(Character):
     def __init__(self, position, reference, name="Henry"):
         super().__init__()
         self.name = name
-        self.loadImg(imgs.get(self.name))
+        self.loadSpriteAnimation(anims.get(self.name))
+        self.rect.topleft = position
         self.x = position[0]
         self.y = position[1]
         print(reference)
         self.change_reference_point(reference)
         self.frame = 0
-        self.front = {0: (37, 1, 34, 56)}
-        self.back = {0: (1, 1, 34, 56)}
-        self.left = {0: (217, 1, 32, 56)}
-        self.right = {0: (251, 1, 32, 56)}
 
     def update(self):
         self.x += self.velocity[0]

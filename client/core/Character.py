@@ -1,5 +1,6 @@
 import pygame
 import json
+import os
 
 
 class Character(pygame.sprite.Sprite):
@@ -19,7 +20,7 @@ class Character(pygame.sprite.Sprite):
         self.frame = 0
         self.sheet = None
         self.image = None
-        self.rect = None
+        self.rect = pygame.Rect((0, 0, 0, 0))
         self.velocity = [0, 0]
         self.x = 0
         self.y = 0
@@ -38,14 +39,21 @@ class Character(pygame.sprite.Sprite):
             "a": self.traductor.get(self.action)
         })
 
-    def loadImg(self, fileName):
-        self.sheet = pygame.image.load(fileName)
-        self.sheet.set_clip(pygame.Rect(37, 1, 34, 56))
-        self.image = self.sheet.subsurface(self.sheet.get_clip())
-        self.rect = pygame.Rect(37, 1, 34, 32)  # self.image.get_rect()
+    def loadSpriteAnimation(self, fileName):
+        self.clips = {}
+        with open(fileName) as json_file:
+            data = json.load(json_file)
+            if os.name != "nt":
+                imgFile = data.get("image")
+            else:
+                imgFile = "../" + data.get("image")
+            self.sheet = pygame.image.load(imgFile)
+            sprites = data.get("sprites")
+            for key in sprites:
+                self.clips[key] = sprites[key]
+        self.clip("stand_down")
 
     def blit(self, screen):
-        # pygame.draw.rect(screen, (0, 255, 0), self.get_rect())
         screen.blit(self.image, self.rect)
 
     def get_frame(self, frame_set):
@@ -54,12 +62,13 @@ class Character(pygame.sprite.Sprite):
             self.frame = 0
         return frame_set[self.frame]
 
-    def clip(self, clipped_rect):
-        if type(clipped_rect) is dict:
-            self.sheet.set_clip(pygame.Rect(self.get_frame(clipped_rect)))
-        else:
-            self.sheet.set_clip(clipped_rect)
-        return clipped_rect
+    def clip(self, clipName):
+        clipFrame = self.clips.get(clipName)
+        frame = self.get_frame(clipFrame)
+        self.sheet.set_clip(pygame.Rect(frame))
+        self.image = self.sheet.subsurface(self.sheet.get_clip())
+        self.rect.w = frame[2]
+        self.rect.h = frame[3]
 
     def get_velocity(self):
         return self.velocity

@@ -1,3 +1,11 @@
+animsOS = {
+  "Henry": "client/sprites/henry.json",
+}
+
+animsNT = {
+  "Henry": "../client/sprites/henry.json",
+}
+
 imgsOS = {
   "logo": "client/img/unallogo.jpg",
   "ts1": "client/img/RPG Nature Tileset.png",

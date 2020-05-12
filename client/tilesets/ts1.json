@@ -1,6 +1,6 @@
 {
   "image": "client/img/RPG Nature Tileset.png",
-  "frames": [
+  "tiles": [
     {
       "id": 0,
       "name": "grass",

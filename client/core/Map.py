@@ -60,7 +60,7 @@ class Map:
                 image = pygame.image.load(data.get("image"))
             else:
                 image = pygame.image.load("../" + data.get("image"))
-            for frame in data.get("frames"):
+            for frame in data.get("tiles"):
                 frames[frame["id"]] = image.subsurface(frame["box"])
         return frames
 
