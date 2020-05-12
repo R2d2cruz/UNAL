@@ -6,10 +6,10 @@ import os
 
 if os.name != "nt":
     from OnlinePlayers import OnlinePlayer
-    from Objects import wall
+    from Objects import Wall
 else:
     from client.OnlinePlayers import OnlinePlayer
-    from client.Objects import wall
+    from client.Objects import Wall
 
 
 class Map:
@@ -72,7 +72,7 @@ class Map:
                 if objects[i][j] == 1:
                     x = j * 32
                     y = i * 32
-                    obj = wall(x, y)
+                    obj = Wall(x, y)
                     real_objects.append(copy(obj))
         return real_objects
 
@@ -105,14 +105,15 @@ class Map:
         self.updateOtherPlayers()
         for i in self.players.keys():
             self.players.get(i).update()
-        for i in self.characters:
-            i.update()
-            i.update()
-        for i in self.objects:
-            self.player.collitions(i)
-        if not self.player.update():
+        for char in self.characters:
+            char.update()
+            char.update()
+        for obj in self.objects:
+            obj.update()
+            self.player.collitions(obj)
+        self.player.update()
+        if self.player.hasChanged:
             self.changeCoord(self.player.get_x(), self.player.get_y())
-        # print(self.y, self.player.rect.topleft[1])
 
     def blit(self, screen):
         for i in range(len(self.map)):

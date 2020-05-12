@@ -1,9 +1,11 @@
 animsOS = {
   "Henry": "client/sprites/henry.json",
+  "fire": "client/sprites/fire.json",
 }
 
 animsNT = {
   "Henry": "../client/sprites/henry.json",
+  "fire": "../client/sprites/fire.json",
 }
 
 imgsOS = {

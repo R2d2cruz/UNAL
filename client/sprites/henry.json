@@ -1,6 +1,7 @@
 {
   "name": "Henry",
   "image": "client/img/henry.png",
+  "default_sprite": "stand_down",
   "sprites": {
       "stand_up": [
         [1, 1, 34, 56]

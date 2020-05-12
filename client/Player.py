@@ -16,8 +16,6 @@ class Player(Character):
     attack = 30
     defense = 20
     HP = 500
-    x = 100
-    y = 100
     xp = 0
     speed = 3
     velocity = [0, 0]
@@ -25,13 +23,15 @@ class Player(Character):
     lastVelocity = [0, 0]
     objectCollition = None
     action = "stand_down"
-    hasChanged = False
+    hasChanged = True
 
     def __init__(self, position, name="Henry"):
         super().__init__()
         self.name = name
         self.loadAnimation(anims.get(self.name))
         self.rect.topleft = position
+        self.x = 100
+        self.y = 100
 
     def move(self, direction):
         if direction == "up":
