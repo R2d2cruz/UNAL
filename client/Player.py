@@ -1,8 +1,9 @@
-import pygame
 import json
+import pygame
+from core.Character import Character
 
 
-class Player(pygame.sprite.Sprite):
+class Player(Character):
     KEYDOWN = {
         pygame.K_UP: "up",
         pygame.K_DOWN: "down",
@@ -59,18 +60,6 @@ class Player(pygame.sprite.Sprite):
         self.leftWalk = {0: (109, 1, 34, 56), 1: (217, 1, 32, 56), 2: (181, 1, 34, 56), 3: (217, 1, 32, 56)}
         self.rightWalk = {0: (73, 1, 34, 56), 1: (251, 1, 32, 56), 2: (145, 1, 34, 56), 3: (251, 1, 32, 56)}
 
-    def get_frame(self, frame_set):
-        self.frame += 1
-        if self.frame > (len(frame_set) - 1):
-            self.frame = 0
-        return frame_set[self.frame]
-
-    def clip(self, clipped_rect):
-        if type(clipped_rect) is dict:
-            self.sheet.set_clip(pygame.Rect(self.get_frame(clipped_rect)))
-        else:
-            self.sheet.set_clip(clipped_rect)
-        return clipped_rect
 
     def update(self, direction):
         if direction == "up":
@@ -115,18 +104,11 @@ class Player(pygame.sprite.Sprite):
             self.actualizate = False
         # return self.velocity == [0, 0]
 
-    def blit(self, screen):
-        #pygame.draw.rect(screen, (255, 0, 0), self.get_rect())
-        screen.blit(self.image, self.rect)
-
     def get_x(self):
         return self.x
 
     def get_y(self):
         return self.y
-
-    def get_velocity(self):
-        return self.velocity
 
     def get_actualizate(self):
         return self.actualizate

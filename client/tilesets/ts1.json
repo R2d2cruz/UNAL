@@ -1,0 +1,77 @@
+{
+  "image": "img/RPG Nature Tileset.png",
+  "frames": [
+    {
+      "id": 0,
+      "name": "grass",
+      "box": [ 0, 64, 32, 32]
+    },
+    {
+      "id": 1,
+      "name": "bricks",
+      "box": [ 64, 64, 32, 32]
+    },
+    {
+      "id": 2,
+      "name": "grass_brick left",
+      "box": [ 0, 128, 32, 32]
+    },
+    {
+      "id": 3,
+      "name": "grass_brick right",
+      "box": [ 64, 128, 32, 32]
+    },
+    {
+      "id": 4,
+      "name": "grass_brick superior left",
+      "box": [ 0, 96, 32, 32]
+    },
+    {
+      "id": 5,
+      "name": "grass_brick inferior left",
+      "box": [ 0, 160, 32, 32]
+    },
+    {
+      "id": 6,
+      "name": "grass_brick up",
+      "box": [ 32, 96, 32, 32]
+    },
+    {
+      "id": 7,
+      "name": "grass_brick down",
+      "box": [ 32, 160, 32, 32]
+    },
+    {
+      "id": 8,
+      "name": "grass_brick superior right",
+      "box": [ 64, 96, 32, 32]
+    },
+    {
+      "id": 9,
+      "name": "grass_brick inferior right",
+      "box": [ 64, 160, 32, 32]
+    },
+    {
+      "id": 10,
+      "name": "grass_brick corner superior left",
+      "box": [ 128, 128, 32, 32]
+    },
+    {
+      "id": 11,
+      "name": "grass_brick corner inferior left",
+      "box": [ 128, 96, 32, 32]
+    },
+    {
+      "id": 12,
+      "name": "grass_brick corner superior right",
+      "box": [ 96, 128, 32, 32]
+    },
+    {
+      "id": 13,
+      "name": "grass_brick corner inferior right",
+      "box": [ 96, 96, 32, 32]
+    }
+  ]
+}
+
+

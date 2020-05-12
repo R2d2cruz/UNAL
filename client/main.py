@@ -3,8 +3,6 @@ import os
 from constants import imgs
 from laberinto import Laberinto
 
-print(os.getcwd())
-directory = str(os.getcwd())
 pygame.init()
 
 
@@ -34,8 +32,3 @@ class Game:
             #self.player.blit(self.screen)
             pygame.display.update()
             self.clock.tick(30)
-
-
-game = Game()
-game.render()
-pygame.quit()

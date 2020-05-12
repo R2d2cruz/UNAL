@@ -1,0 +1,45 @@
+{
+  "image": "img/RPG Nature Tileset.png",
+  "frames": [
+    {
+      "id": 0,
+      "name": "grass",
+      "box": [ 0, 64, 32, 32 ]
+    },
+    {
+      "id": 1,
+      "name": "bricks",
+      "box": [ 64, 64, 32, 32 ]
+    },
+    {
+      "id": 2,
+      "name": "grass_brick left",
+      "box": [ 0, 128, 32, 32 ]
+    },
+    {
+      "id": 3,
+      "name": "grass_brick right",
+      "box": [ 64, 128, 32, 32 ]
+    },
+    {
+      "id": 4,
+      "name": "grass_brick supirior left",
+      "box": [ 0, 96, 32, 32 ]
+    },
+    {
+      "id": 5,
+      "name": "grass_brick inferior left",
+      "box": [ 0, 160, 32, 32 ]
+    },
+    {
+      "id": 6,
+      "name": "grass_brick up",
+      "box": [ 32, 96, 32, 32 ]
+    },
+    {
+      "id": 7,
+      "name": "grass_brick down",
+      "box": [ 32, 160, 32, 32 ]
+    }
+  ]
+}

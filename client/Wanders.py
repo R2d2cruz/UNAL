@@ -14,7 +14,6 @@ class Wander(NPC):
     colliding = False
 
     def __init__(self, position, points, velocities, reference, *groups):
-
         super().__init__(position, reference, *groups)
         self.points = points
         self.velocities = velocities
