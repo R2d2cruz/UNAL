@@ -51,3 +51,11 @@ soundsNT = {
   "sounds": "../client/sounds/sounds.json",
   "volume": 0.05
 }
+
+fontsNT = {
+  "minecraft": "../client/fonts/Minecraft.ttf"
+}
+
+fontsOS = {
+  "minecraft": "client/fonts/Minecraft.ttf"
+}

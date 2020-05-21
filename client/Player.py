@@ -32,6 +32,7 @@ class Player(Character):
         self.rect.topleft = position
         self.x = 100
         self.y = 100
+        self.timeStep = 100
 
     def move(self, direction):
         if direction == "up":
@@ -56,8 +57,8 @@ class Player(Character):
         self.hasChanged = True
 
     def update(self):
-        if self.action is not None:
-            self.clip(self.action)
+        # if self.action is not None:
+        super().update(self.action)
         if self.lastVelocity != self.velocity:
             self.x += self.velocity[0]
             self.y += self.velocity[1]

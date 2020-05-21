@@ -15,7 +15,6 @@ class AnimatedEntity(Entity):
         self.timeStep = 50
         self.clips = {}
 
-
     def loadAnimation(self, fileName):
         with open(fileName) as json_file:
             data = json.load(json_file)
@@ -31,10 +30,10 @@ class AnimatedEntity(Entity):
         self.clip(self.currentClip)
 
     def get_frame(self, frame_set):
-        self.frame += 0.5
-        if int(self.frame) > (len(frame_set) - 1):
+        self.frame += 1
+        if self.frame > (len(frame_set) - 1):
             self.frame = 0
-        return frame_set[int(self.frame)]
+        return frame_set[self.frame]
 
     def clip(self, clipName):
         clipFrame = self.clips.get(clipName)
@@ -44,9 +43,12 @@ class AnimatedEntity(Entity):
         self.rect.w = frameRect[2]
         self.rect.h = frameRect[3]
 
-    def update(self):
+    def update(self, clip=None):
         t = pygame.time.get_ticks()
         deltaTime = (t - self.lastFrameTime)
         if deltaTime >= self.timeStep:
-          self.lastFrameTime = t
-          self.clip(self.currentClip)
+            self.lastFrameTime = t
+            if clip is None:
+                self.clip(self.currentClip)
+            else:
+                self.clip(clip)

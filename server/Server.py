@@ -49,7 +49,7 @@ class Server:
 
     def createPlayer(self, message):
         print('🎮 Se ha conectado un jugador ')
-        self.players[self.counter] = Player()
+        self.players[self.counter] = Player((message.split("_"))[1])
         self.socket.send_string(str(self.counter))
         self.counter += 1
         self.printPlayers()
@@ -57,7 +57,7 @@ class Server:
     def printPlayers(self):
         print('Players (' + str(len(self.players)) + ') = [ ', end= '')
         for i in self.players:
-            print(i, end= ' ')
+            print(i, self.players.get(i).name, end= ' ')
         print(']')
 
     def updatePlayer(self, message):

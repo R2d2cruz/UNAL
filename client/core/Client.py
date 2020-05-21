@@ -3,7 +3,8 @@ import zmq
 
 class Client:
 
-    def __init__(self, config):
+    def __init__(self, config, name):
+        self.name = name
         self.id = None
         self.context = None
         self.socket = None
@@ -44,7 +45,7 @@ class Client:
 
     # este no debe usar `try` para permitir generar excepcion en connect
     def getId(self):
-        self.socket.send_string("createPlayer")
+        self.socket.send_string("createPlayer_" + self.name)
         return self.socket.recv_string()
 
     def getStatus(self):
