@@ -1,14 +1,13 @@
 import json
-import pygame
-from copy import copy
-
 import os
+from copy import copy
+from core import Game, ResourceHandler
 
 if os.name != "nt":
-    from OnlinePlayers import OnlinePlayer
+    from OnlinePlayer import OnlinePlayer
     from Objects import Wall
 else:
-    from client.OnlinePlayers import OnlinePlayer
+    from client.OnlinePlayer import OnlinePlayer
     from client.Objects import Wall
 
 
@@ -38,11 +37,11 @@ class Map:
     y = 0
     rect = 32
 
-    def __init__(self, game):
+    def __init__(self, game: Game):
         self.game = game
 
     @staticmethod
-    def loadMap(fileName):
+    def loadMap(fileName: str):
         map = []
         with open(fileName) as json_file:
             data = json.load(json_file)
@@ -54,19 +53,16 @@ class Map:
             return map
 
     @staticmethod
-    def loadFrames(fileName):
+    def loadTileset(fileName: str, res: ResourceHandler):
         frames = {}
         with open(fileName) as json_file:
             data = json.load(json_file)
-            if os.name != "nt":
-                image = pygame.image.load(data.get("image"))
-            else:
-                image = pygame.image.load("../" + data.get("image"))
+            image = res.loadImageByPath(res.fixPath(data.get("image")))
             for frame in data.get("tiles"):
                 frames[frame["id"]] = image.subsurface(frame["box"])
         return frames
 
-    def createWalls(self, fileName):
+    def createWalls(self, fileName: str):
         objects = self.loadMap(fileName)
         real_objects = []
         for i in range(len(objects)):
@@ -74,7 +70,7 @@ class Map:
                 if objects[i][j] == 1:
                     x = j * 32
                     y = i * 32
-                    obj = Wall(x, y)
+                    obj = Wall(self.game, x, y)
                     real_objects.append(copy(obj))
         return real_objects
 
@@ -97,7 +93,7 @@ class Map:
             if i in keys:
                 self.players.get(i).setPos(information.get(i))
             else:
-                self.players[i] = OnlinePlayer(information.get(i))
+                self.players[i] = OnlinePlayer(self.game, information.get(i))
             self.changeCoord(self.player.get_x(), self.player.get_y())
 
     def update(self):
@@ -122,9 +118,9 @@ class Map:
         for i in range(len(self.map)):
             for j in range(len(self.map[0])):
                 screen.blit(self.frames.get(self.map[i][j]), (self.x + (self.rect * j), self.y + (self.rect * i)))
-        for k in self.characters:
-            k.render(screen)
         for k in self.objects:
+            k.render(screen)
+        for k in self.characters:
             k.render(screen)
         for k in self.players.values():
             k.render(screen)

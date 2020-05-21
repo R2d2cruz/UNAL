@@ -48,8 +48,8 @@ class Server:
         print('\n\🍺 Se ha cerrado el server. Ahora vamos a por una cerveza!')
 
     def createPlayer(self, message):
-        print('🎮 Se ha conectado un jugador ')
         self.players[self.counter] = Player((message.split("_"))[1])
+        print('🎮 Se ha conectado el jugador ' +  self.players[self.counter].name)
         self.socket.send_string(str(self.counter))
         self.counter += 1
         self.printPlayers()

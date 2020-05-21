@@ -4,11 +4,8 @@ import os
 
 if os.name != "nt":
     # noinspection PyUnresolvedReferences
-    from constants import imgsOS as imgs, animsOS as anims
-    # noinspection PyUnresolvedReferences
     from core.Character import Character
 else:
-    from client.constants import imgsNT as imgs, animsNT as anims
     from client.core.Character import Character
 
 
@@ -25,10 +22,10 @@ class Player(Character):
     action = "stand_down"
     hasChanged = True
 
-    def __init__(self, position, name="Henry"):
-        super().__init__()
-        self.name = name
-        self.loadAnimation(anims.get(self.name))
+    def __init__(self, game, position, name):
+        super().__init__(game)
+        self.set_name(name)
+        self.loadAnimation(game.res.getRandomCharAnimFile(), game.res)
         self.rect.topleft = position
         self.x = 100
         self.y = 100

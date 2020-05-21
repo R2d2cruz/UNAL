@@ -1,5 +1,5 @@
 {
-  "image": "client/img/grndtorchflameani1.png",
+  "image": "img/grndtorchflameani1.png",
   "default_sprite": "on",
   "sprites": {
       "on": [
