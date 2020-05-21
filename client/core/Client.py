@@ -3,7 +3,7 @@ import zmq
 
 class Client:
 
-    def __init__(self, config, name):
+    def __init__(self, config, name: str):
         self.name = name
         self.id = None
         self.context = None
@@ -37,7 +37,7 @@ class Client:
         print("😞 No se pudo conectar. Por favor verifique que la configuración en config.json sea correcta y vuelva a intentar.")
         return False
 
-    def send(self, message):
+    def send(self, message: str):
         try:
             self.socket.send_string(message)
         except Exception as e:

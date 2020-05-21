@@ -2,7 +2,10 @@ import pygame
 import json
 import os
 
-from core.Entity import Entity
+if os.name != "nt":
+    from core.Entity import Entity
+else:
+    from client.core.Entity import Entity
 
 
 class AnimatedEntity(Entity):
@@ -15,14 +18,10 @@ class AnimatedEntity(Entity):
         self.timeStep = 50
         self.clips = {}
 
-    def loadAnimation(self, fileName):
+    def loadAnimation(self, fileName: str, res):
         with open(fileName) as json_file:
             data = json.load(json_file)
-            if os.name != "nt":
-                imgFile = data.get("image")
-            else:
-                imgFile = "../" + data.get("image")
-            self.sheet = pygame.image.load(imgFile)
+            self.sheet = res.loadImageByPath(res.fixPath(data.get("image")))
             sprites = data.get("sprites")
             for key in sprites:
                 self.clips[key] = sprites[key]
@@ -35,7 +34,7 @@ class AnimatedEntity(Entity):
             self.frame = 0
         return frame_set[self.frame]
 
-    def clip(self, clipName):
+    def clip(self, clipName: str):
         clipFrame = self.clips.get(clipName)
         frameRect = self.get_frame(clipFrame)
         self.sheet.set_clip(pygame.Rect(frameRect))

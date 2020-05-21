@@ -1,61 +1,37 @@
-animsOS = {
-  "Henry": "client/sprites/henry.json",
-  "fire": "client/sprites/fire.json",
+anims = {
+  "Henry": "sprites/henry.json",
+  "John": "sprites/john.json",
+  "Charly": "sprites/charly.json",
+  "fire": "sprites/fire.json",
 }
 
-animsNT = {
-  "Henry": "../client/sprites/henry.json",
-  "fire": "../client/sprites/fire.json",
+imgs = {
+  "logo": "img/unallogo.jpg",
+  "ts1": "img/RPG Nature Tileset.png",
+  "Diego": "img/diego.png",
+  "Henry": "img/chars/char1.png",
+  "John": "img/chars/char2.png",
+  "Charly": "img/chars/char3.png",
 }
 
-imgsOS = {
-  "logo": "client/img/unallogo.jpg",
-  "ts1": "client/img/RPG Nature Tileset.png",
-  "Diego": "client/img/diego.png",
-  "Henry": "client/img/henry.png",
+maps = {
+  "laberinto": "maps/laberinto.json",
+  "walls": "maps/walls.json",
+  "university": "maps/university.json",
 }
 
-imgsNT = {
-  "logo": "../client/img/unallogo.jpg",
-  "ts1": "../client/img/RPG Nature Tileset.png",
-  "Diego": "../client/img/diego.png",
-  "Henry": "../client/img/henry.png",
+tilesets = {
+  "ts1": "tilesets/ts1.json",
 }
 
-mapsOS = {
-  "laberinto": "client/maps/laberinto.json",
-  "walls": "client/maps/walls.json",
-  "university": "client/maps/university.json",
-}
-
-mapsNT = {
-  "laberinto": "../client/maps/laberinto.json",
-  "walls": "../client/maps/walls.json",
-  "university": "../client/maps/university.json",
-}
-
-tilesetsOS = {
-  "ts1": "client/tilesets/ts1.json",
-}
-
-tilesetsNT = {
-  "ts1": "../client/tilesets/ts1.json",
-}
-
-soundsOS = {
-  "sounds": "client/sounds/sounds.json",
+sounds = {
+  "sounds": {
+    "music": "media/medieval.mp3",
+  },
   "volume": 0.05
 }
 
-soundsNT = {
-  "sounds": "../client/sounds/sounds.json",
-  "volume": 0.05
+fonts = {
+  "minecraft": "fonts/Minecraft.ttf"
 }
 
-fontsNT = {
-  "minecraft": "../client/fonts/Minecraft.ttf"
-}
-
-fontsOS = {
-  "minecraft": "client/fonts/Minecraft.ttf"
-}

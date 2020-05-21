@@ -8,12 +8,18 @@ class Entity(pygame.sprite.Sprite):
         self.y = 0
         self.image = None
         self.rect = pygame.Rect((0, 0, 0, 0))
+        self.name = None
 
     def update(self):
         pass
 
     def render(self, screen):
         screen.blit(self.image, self.rect)
+
+    def render(self, screen):
+        screen.blit(self.image, self.rect)
+        if self.name is not None:
+            screen.blit(self.textNameTack, self.nameRect)
 
     def dispose(self):
         pass
@@ -29,3 +35,4 @@ class Entity(pygame.sprite.Sprite):
 
     def get_y(self):
         return self.y
+
