@@ -33,6 +33,7 @@ class Game:
         self.screen = None
         self.clock = None
         self.map = None
+        self.name = str(input("ingrese su nombre:\t>>>"))
         self.connectClient(config)
 
     def init(self):
@@ -44,7 +45,7 @@ class Game:
         self.playSound()
 
     def connectClient(self, config):
-        self.client = Client(config)
+        self.client = Client(config, self.name)
         if self.client.connect():
             self.init()
         else:

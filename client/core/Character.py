@@ -4,20 +4,21 @@ import os
 
 from core.AnimatedEntity import AnimatedEntity
 
+
 class Character(AnimatedEntity):
 
     def __init__(self, *groups):
         super().__init__(*groups)
         self.traductor = {
-        "stand_up": "stu",
-        "stand_down": "std",
-        "stand_left": "stl",
-        "stand_right": "str",
-        "up": "wlu",
-        "down": "wld",
-        "left": "wll",
-        "right": "wlr"
-    }
+            "stand_up": "stu",
+            "stand_down": "std",
+            "stand_left": "stl",
+            "stand_right": "str",
+            "up": "wlu",
+            "down": "wld",
+            "left": "wll",
+            "right": "wlr"
+        }
         self.frame = 0
         self.sheet = None
         self.velocity = [0, 0]

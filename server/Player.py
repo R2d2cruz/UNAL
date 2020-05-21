@@ -20,6 +20,9 @@ class Player:
     y = 0
     movement = "std"
 
+    def __init__(self, name):
+        self.name = name
+
     def update(self, information):
         message = json.loads(information)
         self.x = message.get("x")
@@ -30,5 +33,6 @@ class Player:
         return {
             "x": self.x,
             "y": self.y,
-            "a": self.movement
+            "a": self.movement,
+            "n": self.name
         }
