@@ -41,7 +41,8 @@ class Map:
     def __init__(self, game):
         self.game = game
 
-    def loadMap(self, fileName):
+    @staticmethod
+    def loadMap(fileName):
         map = []
         with open(fileName) as json_file:
             data = json.load(json_file)
@@ -52,7 +53,8 @@ class Map:
                 map.append(newRow)
             return map
 
-    def loadFrames(self, fileName):
+    @staticmethod
+    def loadFrames(fileName):
         frames = {}
         with open(fileName) as json_file:
             data = json.load(json_file)
