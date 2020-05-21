@@ -12,15 +12,15 @@ class OnlinePlayer(Character):
     def __init__(self, information, *groups):
         super().__init__(*groups)
         self.traductor = {
-        "stu": "stand_up",
-        "std": "stand_down",
-        "stl": "stand_left",
-        "str": "stand_right",
-        "wlu": "up",
-        "wld": "down",
-        "wll": "left",
-        "wlr": "right"
-    }
+            "stu": "stand_up",
+            "std": "stand_down",
+            "stl": "stand_left",
+            "str": "stand_right",
+            "wlu": "up",
+            "wld": "down",
+            "wll": "left",
+            "wlr": "right"
+        }
         self.x = information.get("x")
         self.y = information.get("y")
         self.nameTack = information.get("n")
@@ -39,7 +39,7 @@ class OnlinePlayer(Character):
 
     def update(self, *args):
         if self.action is not None:
-            self.clip(self.action)
+            super().update(self.action)
 
     def render(self, screen):
         screen.blit(self.image, self.rect)
