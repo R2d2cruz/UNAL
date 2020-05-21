@@ -31,10 +31,10 @@ class AnimatedEntity(Entity):
         self.clip(self.currentClip)
 
     def get_frame(self, frame_set):
-        self.frame += 1
-        if self.frame > (len(frame_set) - 1):
+        self.frame += 0.5
+        if int(self.frame) > (len(frame_set) - 1):
             self.frame = 0
-        return frame_set[self.frame]
+        return frame_set[int(self.frame)]
 
     def clip(self, clipName):
         clipFrame = self.clips.get(clipName)

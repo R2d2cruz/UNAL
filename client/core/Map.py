@@ -96,6 +96,7 @@ class Map:
                 self.players.get(i).setPos(information.get(i))
             else:
                 self.players[i] = OnlinePlayer(information.get(i))
+            self.changeCoord(self.player.get_x(), self.player.get_y())
 
     def update(self):
         self.collitions()
