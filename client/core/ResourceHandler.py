@@ -10,7 +10,7 @@ class ResourceHandler:
     tilesets = None
     maps = None
 
-    def __init__(self, resPath, imgs, sounds, fonts, anims, tilesets, maps):
+    def __init__(self, resPath: str, imgs: {}, sounds: {}, fonts: {}, anims: {}, tilesets: {}, maps: {}):
         self.resPath = resPath
         self.imgs = imgs
         self.sounds = sounds
@@ -26,7 +26,7 @@ class ResourceHandler:
         return self.fixPath(self.imgs.get(name))
 
     def getSoundPath(self, name: str):
-        return self.fixPath(self.sounds.get("sounds").get(name))
+        return self.fixPath(self.sounds.get(name))
 
     def getAnimFile(self, name: str):
         return self.fixPath(self.anims.get(name))

@@ -1,6 +1,7 @@
 import pygame
 from core.Scene import Scene
 from core.Map import Map
+from core.Game import Game
 
 class Playground(Scene):
     def __init__(self, map: Map):
@@ -18,3 +19,6 @@ class Playground(Scene):
     def render(self, screen):
         screen.fill((0, 0, 0))
         self.map.blit(screen)
+
+    def onEnter(self, game: Game):
+        game.playSound('background1')

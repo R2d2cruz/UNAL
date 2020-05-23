@@ -31,10 +31,10 @@ class Game:
 
     def init(self):
         pygame.display.set_icon(self.res.loadImage("logo"))
-        self.mixer = pygame.mixer.music
         self.screen = pygame.display.set_mode((1280, 720))
         self.clock = pygame.time.Clock()
-        self.playSound()
+        self.mixer = pygame.mixer.music
+        self.mixer.set_volume(self.config.volume)
 
     def connectClient(self):
         self.client = Client(self.config, self.player.name)
@@ -42,14 +42,6 @@ class Game:
             self.client.close()
             pygame.quit()
             sys.exit()
-
-    def playSound(self):
-        try:
-            self.mixer.load(self.res.getSoundPath("music"))
-            self.mixer.set_volume(self.config.volume)
-            self.mixer.play()
-        except:
-            print("😞 No se pudo cargar audio")
 
     def handleEvents(self):
         for event in pygame.event.get():
@@ -65,21 +57,32 @@ class Game:
         # self.screen.fill((0, 0, 0))
         self.currentScene.render(self.screen)
         pygame.display.update()
-        # pygame.display.flip()  ??????
+        #pygame.display.flip()  # ??????
         self.clock.tick(30)
 
     def run(self):
         self.isRunning = True
         while self.isRunning:
             self.handleEvents()
-            self.currentScene.update()
+            self.update()
             self.render()
 
     def setScene(self, name: str):
+        if self.currentScene is not None:
+            self.currentScene.onExit(self)
         self.currentScene = self.scenes.get(name)
+        if self.currentScene is not None:
+            self.currentScene.onEnter(self)
 
     def addScene(self, name: str, scene: Scene):
         self.scenes[name] = scene
 
     def setPlayer(self, player):
         self.player = player
+
+    def playSound(self, name):
+        try:
+            self.mixer.load(self.res.getSoundPath(name))
+            self.mixer.play(-1)
+        except Exception as e:
+            print("😞 No se pudo cargar audio " + self.res.getSoundPath(name), e)

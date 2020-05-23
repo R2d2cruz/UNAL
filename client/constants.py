@@ -25,10 +25,7 @@ tilesets = {
 }
 
 sounds = {
-  "sounds": {
-    "music": "sounds/medieval.mp3",
-  },
-  "volume": 0.05
+  "background1": "sounds/medieval.ogg",
 }
 
 fonts = {

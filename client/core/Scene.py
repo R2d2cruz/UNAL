@@ -18,6 +18,12 @@ class Scene:
   def init(self):
     pass
   
+  def onEnter(self, game):
+    pass
+  
+  def onExit(self, game):
+    pass
+
   def handleEvent(self, event):
     pass
 

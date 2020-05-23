@@ -33,21 +33,16 @@ def signal_handler(sig, frame):
 
 signal.signal(signal.SIGINT, signal_handler)
 
-if os.name != 'nt':
-    resPath = 'client/assets/'
-else:
-    resPath = '../client/assets/'
-
+resPath = '../client/assets/' if os.name == 'nt' else 'client/assets/'
 res = ResourceHandler(resPath, imgs, sounds, fonts, anims, tilesets, maps)
-
 game = Game(res, Config('client/config.json'))
-game.init()
 game.addScene("main", MainMenu(game))
-
 laberinto = Laberinto(game)
 game.addScene("play", Playground(laberinto))
 game.setScene("main")
 game.setPlayer(laberinto.player)
+
+game.init()
 game.run()
 pygame.quit()
 
