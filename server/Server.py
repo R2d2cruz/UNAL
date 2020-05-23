@@ -30,7 +30,8 @@ class Server:
         try:
             self.socket.bind("tcp://*:" + str(self.port))
         except zmq.ZMQError as e:
-            print('🙄 Hay otra aplicación que está usando el puerto ' + str(self.port) + ' en esta máquina.')
+            print('🙄 Hay otra aplicación que está usando el puerto ' +
+                  str(self.port) + ' en esta máquina.')
             print('🤣 Tal vez estas corriendo el servidor dos veces!')
             sys.exit()
 
@@ -40,7 +41,7 @@ class Server:
         while self.isRunning:
             try:
                 message = self.socket.recv_string()
-                self.commands.get((message.split("_"))[0])(message) 
+                self.commands.get((message.split("_"))[0])(message)
             except KeyboardInterrupt:
                 self.isRunning = False
             except Exception as e:
@@ -49,15 +50,16 @@ class Server:
 
     def createPlayer(self, message):
         self.players[self.counter] = Player((message.split("_"))[1])
-        print('🎮 Se ha conectado el jugador ' +  self.players[self.counter].name)
+        print('🎮 Se ha conectado el jugador ' +
+              self.players[self.counter].name)
         self.socket.send_string(str(self.counter))
         self.counter += 1
         self.printPlayers()
 
     def printPlayers(self):
-        print('Players (' + str(len(self.players)) + ') = [ ', end= '')
+        print('Players (' + str(len(self.players)) + ') = [ ', end='')
         for i in self.players:
-            print(i, self.players.get(i).name, end= ' ')
+            print(i, self.players.get(i).name, end=' ')
         print(']')
 
     def updatePlayer(self, message):

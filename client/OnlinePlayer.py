@@ -36,4 +36,3 @@ class OnlinePlayer(Character):
     def update(self, *args):
         if self.action is not None:
             super().update(self.action)
-

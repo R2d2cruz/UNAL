@@ -1,6 +1,7 @@
 import pygame
 from random import choice
 
+
 class ResourceHandler:
     resPath = None
     imgs = None
@@ -50,7 +51,7 @@ class ResourceHandler:
             return image.subsurface(rect)
         else:
             return image
-    
+
     def getRandomCharAnimFile(self):
         charFile = choice(('Henry', 'John', 'Charly'))
         return self.getAnimFile(charFile)

@@ -17,7 +17,7 @@ if os.name != "nt":
     from scenes.MainMenu import MainMenu
     from scenes.Playground import Playground
 else:
-    from client.constants import imgs, sounds, fonts, anims, tilesets,maps
+    from client.constants import imgs, sounds, fonts, anims, tilesets, maps
     from client.core.Game import Game
     from client.core.Config import Config
     from client.core.ResourceHandler import ResourceHandler
@@ -31,18 +31,20 @@ def signal_handler(sig, frame):
     print("\n\nCada vez que presionas Ctrl + C para cerrar este juego el sistema mata un gatito🐱! 😭😭😭")
     sys.exit(0)
 
+
 signal.signal(signal.SIGINT, signal_handler)
 
 resPath = '../client/assets/' if os.name == 'nt' else 'client/assets/'
 res = ResourceHandler(resPath, imgs, sounds, fonts, anims, tilesets, maps)
 game = Game(res, Config('client/config.json'))
-game.addScene("main", MainMenu(game))
+game.init()
 laberinto = Laberinto(game)
-game.addScene("play", Playground(laberinto))
-game.setScene("main")
 game.setPlayer(laberinto.player)
 
-game.init()
-game.run()
-pygame.quit()
+game.addScene("main", MainMenu(game))
+game.addScene("play", Playground(game, laberinto))
+game.setScene("main")
+game.playSound('background1')
 
+game.run()
+game.quit()

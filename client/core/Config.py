@@ -8,7 +8,8 @@ class Config:
         self.volume = 0
         self.load(fileName)
         if len(self.servers) == 0:
-            raise Exception('🙄 No se han configurado servidores en el archivo de configuracion: config.json')
+            raise Exception(
+                '🙄 No se han configurado servidores en el archivo de configuracion: config.json')
 
     def load(self, fileName: str):
         print('⚙ Cargando configuracion del archivo ' + fileName)

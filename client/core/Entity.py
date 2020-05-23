@@ -15,9 +15,6 @@ class Entity(pygame.sprite.Sprite):
 
     def render(self, screen):
         screen.blit(self.image, self.rect)
-
-    def render(self, screen):
-        screen.blit(self.image, self.rect)
         if self.name is not None:
             screen.blit(self.textNameTack, self.nameRect)
 
@@ -26,7 +23,7 @@ class Entity(pygame.sprite.Sprite):
 
     def change_reference_point(self, position):
         self.rect.topleft = [self.x + position[0], self.y + position[1]]
-        
+
     def get_rect(self):
         return self.rect
 
@@ -35,4 +32,3 @@ class Entity(pygame.sprite.Sprite):
 
     def get_y(self):
         return self.y
-

@@ -77,9 +77,9 @@ class Map:
     def changeCoord(self, x, y):
         self.x = x
         self.y = y
-        for i in self.characters:
-            i.change_reference_point([self.x, self.y])
         for i in self.objects:
+            i.change_reference_point([self.x, self.y])
+        for i in self.characters:
             i.change_reference_point([self.x, self.y])
         for i in self.players.keys():
             self.players[i].change_reference_point([self.x, self.y])
@@ -117,7 +117,8 @@ class Map:
     def blit(self, screen):
         for i in range(len(self.map)):
             for j in range(len(self.map[0])):
-                screen.blit(self.frames.get(self.map[i][j]), (self.x + (self.rect * j), self.y + (self.rect * i)))
+                screen.blit(self.frames.get(
+                    self.map[i][j]), (self.x + (self.rect * j), self.y + (self.rect * i)))
         for k in self.objects:
             k.render(screen)
         for k in self.characters:

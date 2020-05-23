@@ -26,6 +26,7 @@ class Game:
         self.clock = None
         self.currentScene = None
         self.player = None
+        self.client = Client(self.config)
         pygame.init()
         pygame.mixer.init()
 
@@ -35,13 +36,6 @@ class Game:
         self.clock = pygame.time.Clock()
         self.mixer = pygame.mixer.music
         self.mixer.set_volume(self.config.volume)
-
-    def connectClient(self):
-        self.client = Client(self.config, self.player.name)
-        if not self.client.connect():
-            self.client.close()
-            pygame.quit()
-            sys.exit()
 
     def handleEvents(self):
         for event in pygame.event.get():
@@ -54,10 +48,8 @@ class Game:
         self.currentScene.update()
 
     def render(self):
-        # self.screen.fill((0, 0, 0))
         self.currentScene.render(self.screen)
         pygame.display.update()
-        #pygame.display.flip()  # ??????
         self.clock.tick(30)
 
     def run(self):
@@ -67,12 +59,18 @@ class Game:
             self.update()
             self.render()
 
+    def quit(self):
+        self.isRunning = False
+        self.client.close()
+        pygame.quit()
+        sys.exit()
+
     def setScene(self, name: str):
         if self.currentScene is not None:
-            self.currentScene.onExit(self)
+            self.currentScene.onExit()
         self.currentScene = self.scenes.get(name)
         if self.currentScene is not None:
-            self.currentScene.onEnter(self)
+            self.currentScene.onEnter()
 
     def addScene(self, name: str, scene: Scene):
         self.scenes[name] = scene
@@ -85,4 +83,5 @@ class Game:
             self.mixer.load(self.res.getSoundPath(name))
             self.mixer.play(-1)
         except Exception as e:
-            print("😞 No se pudo cargar audio " + self.res.getSoundPath(name), e)
+            print("😞 No se pudo cargar audio " +
+                  self.res.getSoundPath(name), e)
