@@ -1,6 +1,6 @@
 {
-  "name": "Henry",
-  "image": "img/chars/char2.png",
+  "name": "Charly",
+  "image": "images/chars/char3.png",
   "default_sprite": "stand_down",
   "sprites": {
       "stand_up": [

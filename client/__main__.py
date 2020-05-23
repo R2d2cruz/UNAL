@@ -34,9 +34,9 @@ def signal_handler(sig, frame):
 signal.signal(signal.SIGINT, signal_handler)
 
 if os.name != 'nt':
-    resPath = 'client/'
+    resPath = 'client/assets/'
 else:
-    resPath = '../client/'
+    resPath = '../client/assets/'
 
 res = ResourceHandler(resPath, imgs, sounds, fonts, anims, tilesets, maps)
 

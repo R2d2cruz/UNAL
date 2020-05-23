@@ -6,12 +6,12 @@ anims = {
 }
 
 imgs = {
-  "logo": "img/unallogo.jpg",
-  "ts1": "img/RPG Nature Tileset.png",
-  "Diego": "img/diego.png",
-  "Henry": "img/chars/char1.png",
-  "John": "img/chars/char2.png",
-  "Charly": "img/chars/char3.png",
+  "logo": "images/unallogo.jpg",
+  "ts1": "images/RPG Nature Tileset.png",
+  "Diego": "images/diego.png",
+  "Henry": "images/chars/char1.png",
+  "John": "images/chars/char2.png",
+  "Charly": "images/chars/char3.png",
 }
 
 maps = {
@@ -26,7 +26,7 @@ tilesets = {
 
 sounds = {
   "sounds": {
-    "music": "media/medieval.mp3",
+    "music": "sounds/medieval.mp3",
   },
   "volume": 0.05
 }
