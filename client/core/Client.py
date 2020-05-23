@@ -64,9 +64,13 @@ class Client:
             print('❌ Client.read', e)
             print(e)
 
+    def goodBye(self):
+        self.send("bye_" + self.id)
+
     def close(self):
         self.connected = False
         if self.socket is not None:
+            self.goodBye()
             self.socket.close()
         if self.context is not None:
             self.context.term()

@@ -1,6 +1,3 @@
-import pygame
-
-
 class Animation:
     frames = []
     lapse = 0

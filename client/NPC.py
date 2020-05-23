@@ -1,14 +1,5 @@
 import pygame
-import os
-
-if os.name != "nt":
-    # noinspection PyUnresolvedReferences
-    from constants import imgsOS as imgs
-    # noinspection PyUnresolvedReferences
-    from core.Character import Character
-else:
-    from client.constants import imgsNT as imgs
-    from client.core.Character import Character
+from core.Character import Character
 
 
 class NPC(Character):

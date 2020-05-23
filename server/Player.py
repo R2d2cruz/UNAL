@@ -12,9 +12,6 @@ import json
 
 
 class Player:
-
-    prevx = 0
-    prevy = 0
     prevMovement = "std"
     x = 0
     y = 0

@@ -3,7 +3,7 @@ import os
 from copy import copy
 from core import Game, ResourceHandler
 
-if os.name != "nt":
+if os.name == "nt":
     from OnlinePlayer import OnlinePlayer
     from Objects import Wall
 else:

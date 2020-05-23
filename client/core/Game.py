@@ -1,19 +1,9 @@
 import pygame
 import sys
-import os
-
-if os.name != "nt":
-    from core.Config import Config
-    from core.Client import Client
-    from core.Scene import Scene
-    from core.Map import Map
-    from core.ResourceHandler import ResourceHandler
-else:
-    from client.core.Config import Config
-    from client.core.Client import Client
-    from client.core.Scene import Scene
-    from client.core.Map import Map
-    from client.core.ResourceHandler import ResourceHandler
+from core.Config import Config
+from core.Client import Client
+from core.Scene import Scene
+from core.ResourceHandler import ResourceHandler
 
 
 class Game:

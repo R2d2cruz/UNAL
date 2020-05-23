@@ -1,12 +1,5 @@
-import json
 import pygame
-import os
-
-if os.name != "nt":
-    # noinspection PyUnresolvedReferences
-    from core.Character import Character
-else:
-    from client.core.Character import Character
+from core.Character import Character
 
 
 class Player(Character):

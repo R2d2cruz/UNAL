@@ -1,15 +1,7 @@
-import os
-
-if os.name != "nt":
-    from Player import Player
-    from core.Game import Game
-    from core.Map import Map
-    from core.AnimatedEntity import AnimatedEntity
-else:
-    from client.Player import Player
-    from client.core.Game import Game
-    from client.core.Map import Map
-    from client.core.AnimatedEntity import AnimatedEntity
+from Player import Player
+from core.Game import Game
+from core.Map import Map
+from core.AnimatedEntity import AnimatedEntity
 
 
 class Laberinto(Map):

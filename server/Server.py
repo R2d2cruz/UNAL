@@ -1,13 +1,8 @@
 import zmq
 import json
 import sys
-import os
-
-if os.name == "nt":
-    from server.Player import Player
-else:
-    # noinspection PyUnresolvedReferences
-    from Player import Player
+# noinspection PyUnresolvedReferences
+from Player import Player
 
 
 class Server:
@@ -17,11 +12,12 @@ class Server:
         self.port = 5555
         self.counter = 0
         self.players = {}
-        self.commands = {
-            "createPlayer": self.createPlayer,
-            "update": self.updatePlayer,
-            "act": self.returnPlayers
-        }
+        self.commands = dict(
+            createPlayer=self.createPlayer,
+            update=self.updatePlayer,
+            act=self.returnPlayers,
+            bye=self.kickOutPlayer
+        )
 
     def listen(self):
         print('🔥 Iniciando servidor en el puerto ' + str(self.port))
@@ -75,6 +71,10 @@ class Server:
                 continue
             package[i] = self.players.get(i).to_json()
         self.socket.send_string(json.dumps(package))
+
+    def kickOutPlayer(self, message):
+        self.players.pop(message.split("_")[1])
+        self.socket.send_string("bye bye")
 
 # 0 = command
 # 1 = id player

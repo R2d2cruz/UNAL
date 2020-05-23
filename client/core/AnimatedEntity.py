@@ -1,11 +1,6 @@
 import pygame
 import json
-import os
-
-if os.name != "nt":
-    from core.Entity import Entity
-else:
-    from client.core.Entity import Entity
+from core.Entity import Entity
 
 
 class AnimatedEntity(Entity):
@@ -13,6 +8,7 @@ class AnimatedEntity(Entity):
         super().__init__(*groups)
         self.frame = 0
         self.sheet = None
+        self.image = None
         self.currentClip = None
         self.lastFrameTime = 0
         self.timeStep = 50
