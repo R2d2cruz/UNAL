@@ -46,8 +46,7 @@ class Server:
             try:
                 message = json.loads(self.socket.recv_json())
                 senderId = message.get('id')
-                if senderId is not None:
-                    senderId = int(senderId)
+                if senderId is not None: senderId = int(senderId)
                 data = message.get('data')
                 #print('📨 mensaje: ', message, data)
                 self.commands.get(message.get('command'))(senderId, data)
@@ -77,12 +76,14 @@ class Server:
         print(']')
 
     def updatePlayer(self, senderId, playerData):
-        if isinstance(playerData, dict):
-            self.players.get(senderId).update(playerData)
-            self.send('')
-            print('updated', self.players.get(senderId).toDict())
+        if senderId is not None:
+            if isinstance(playerData, dict):
+                self.players.get(senderId).update(playerData)
+                self.send('')
+            else:
+                print('❌ Falló actualizando jugador por mensaje mal formado')
         else:
-            print('❌ Falló actualizando jugador por mensaje mal formado')
+            print('❌ Falló actualizando id nulo')
 
     def returnPlayers(self, senderId, data):
         package = {}
@@ -93,8 +94,8 @@ class Server:
         self.send(package)
 
     def kickOutPlayer(self, senderId, data):
-        print('☹️ Se ha ido el usuario (' + senderId + ') ' + self.players[senderId].name)
-        self.players.pop(senderId)
+        print('☹️ Se ha ido el usuario (' + str(senderId) + ') ' + self.players[senderId].name)
+        del self.players[senderId]
         self.send('bye bye')
 
 # {

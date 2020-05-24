@@ -31,40 +31,25 @@ class Client:
                     return True
                 except zmq.Again as e:
                     print('👎 Conexión fallida. Cerrando socket...')
-                    self.socket.close()
+                    self.disconnect()
                 except Exception as e:
                     print('❌ Client.connect', e)
-                    self.close()
+                    self.disconnect()
         print("😞 No se pudo conectar. Por favor verifique que la configuración en config.json sea correcta y vuelva a intentar.")
         return False
 
-    def send(self, message: object):
-        try:
-            self.socket.send_json(message)
-            return True
-        except Exception as e:
-            print('❌ Client.send', message, e)
-            self.close()
-        return False
+    def __send(self, message: object):
+        self.socket.send_json(message)
 
-    def read(self):
-        try:
-            return self.socket.recv_string()
-        except Exception as e:
-            self.close()
-            print('❌ Client.read', e)
+    def __read(self):
+        return self.socket.recv_json()
     
     def sendDict(self, data, ignoreState = False):
-        try:
-            if not ignoreState and not self.connected:
-                print('❌ No se ha conectado al servidor. No se puede enviar mensaje')
-                return
-            if self.send(json.dumps(data)):
-                response = self.read()
-                return json.loads(response)
-        except Exception as e:
-            print('❌ Client.sendDict', e)
-        return None
+        if (not ignoreState) and (not self.connected):
+            print('❌ No se ha conectado al servidor. No se puede enviar mensaje')
+            raise Exception('Trying to send without connection')
+        self.__send(json.dumps(data))
+        return self.__read()
 
     # este no debe usar `try` para permitir generar excepcion en connect
     def getId(self, name):
@@ -96,10 +81,11 @@ class Client:
             id = self.id
         ))
 
-    def close(self):
-        self.connected = False
+    def disconnect(self):
         if self.socket is not None:
-            self.goodBye()
+            if self.connected:
+                self.goodBye()
             self.socket.close()
         if self.context is not None:
             self.context.term()
+        self.connected = False

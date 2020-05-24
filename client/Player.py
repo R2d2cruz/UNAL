@@ -20,6 +20,8 @@ class Player(Character):
         self.set_name(name)
         self.loadAnimation(game.res.getRandomCharAnimFile(), game.res)
         self.x, self.y = position
+        self.width = 34
+        self.height = 56
         self.timeStep = 100
 
     def move(self, direction):

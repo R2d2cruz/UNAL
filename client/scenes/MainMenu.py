@@ -46,6 +46,7 @@ class MainMenu(Scene):
         if not self.game.client.connected:
             if not self.game.client.connect(self.game.player.name):
                 # TODO: en vez de finaizar aqui simplemente se muestra un mensaje en pantalla indicandole al usuario que no se pudo conectar
-                self.game.quit() # TODO: un boton en la pantalla permite salir, esta linea va allá
+                # TODO: un boton en la pantalla permite salir, esta linea va allá
+                pass
         if self.game.client.connected:
             self.game.setScene("play")

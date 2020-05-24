@@ -88,6 +88,6 @@ class Playground(Scene):
                 else:
                     self.players[playerKey] = OnlinePlayer(self.game, playersData.get(playerKey))
             # remover los que no se actualizaron
-            for playerKey in playerKeys:
-                if playerKey not in playersData.keys():
-                    del self.players[playerKey]
+            toDelete = set(self.players.keys()).difference(playersData.keys())
+            for playerKey in toDelete:
+                del self.players[playerKey]

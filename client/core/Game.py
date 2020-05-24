@@ -30,11 +30,11 @@ class Game:
     def handleEvents(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                self.isRunning = False
+                self.quit()
                 continue
             self.currentScene.handleEvent(event)
-        #if not self.client.connected:
-        #    self.currentScene.handleMessage('diconnected')
+        if not self.client.connected:
+            self.currentScene.handleMessage('diconnected')
 
     def update(self):
         self.currentScene.update()
@@ -52,8 +52,8 @@ class Game:
             self.render()
 
     def quit(self):
+        self.client.disconnect()
         self.isRunning = False
-        self.client.close()
         pygame.quit()
         sys.exit()
 
