@@ -1,5 +1,5 @@
 import zmq
-
+import json
 
 class Client:
 
@@ -26,46 +26,75 @@ class Client:
                     self.socket.setsockopt(zmq.LINGER, 1000)
                     self.socket.connect(server)
                     self.id = self.getId(name)
-                    print('👍 Conexión exitosa. Id de cliente: ' + self.id)
                     self.connected = True
+                    print('👍 Conexión exitosa. Id de cliente: ' + str(self.id))
                     return True
                 except zmq.Again as e:
                     print('👎 Conexión fallida. Cerrando socket...')
                     self.socket.close()
                 except Exception as e:
-                    print('Error', e)
+                    print('❌ Client.connect', e)
                     self.close()
         print("😞 No se pudo conectar. Por favor verifique que la configuración en config.json sea correcta y vuelva a intentar.")
         return False
 
-    def send(self, message: str):
+    def send(self, message: object):
         try:
-            self.socket.send_string(message)
+            self.socket.send_json(message)
+            return True
         except Exception as e:
             print('❌ Client.send', message, e)
-
-    # este no debe usar `try` para permitir generar excepcion en connect
-    def getId(self, name):
-        self.socket.send_string("createPlayer_" + name)
-        return self.socket.recv_string()
-
-    def getStatus(self):
-        self.send("act_" + self.id)
-        return self.read()
-
-    def sendPlayerStatus(self, player):
-        self.send("update_" + self.id + "_" + player.to_json())
-        return self.read()
+            self.close()
+        return False
 
     def read(self):
         try:
             return self.socket.recv_string()
         except Exception as e:
+            self.close()
             print('❌ Client.read', e)
-            print(e)
+    
+    def sendDict(self, data, ignoreState = False):
+        try:
+            if not ignoreState and not self.connected:
+                print('❌ No se ha conectado al servidor. No se puede enviar mensaje')
+                return
+            if self.send(json.dumps(data)):
+                response = self.read()
+                return json.loads(response)
+        except Exception as e:
+            print('❌ Client.sendDict', e)
+        return None
+
+    # este no debe usar `try` para permitir generar excepcion en connect
+    def getId(self, name):
+        id = self.sendDict(dict(
+            command = 'createPlayer',
+            data = name
+        ), True)
+        if id is None:
+            print('👎 ID nulo')
+        return id
+
+    def getStatus(self):
+        return self.sendDict(dict(
+            command = 'act',
+            id = self.id
+        ))
+
+    def sendPlayerStatus(self, player):
+        return self.sendDict(dict(
+            command = 'update',
+            id = self.id,
+            data = player.toDict()
+        ))
 
     def goodBye(self):
-        self.send("bye_" + self.id)
+        print('😥 cerrando conexión con el servidor!')
+        return self.sendDict(dict(
+            command = 'bye',
+            id = self.id
+        ))
 
     def close(self):
         self.connected = False

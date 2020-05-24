@@ -31,6 +31,9 @@ class Scene:
     def handleEvent(self, event):
         pass
 
+    def handleMessage(self, message):
+        pass
+
     def update(self):
         pass
 

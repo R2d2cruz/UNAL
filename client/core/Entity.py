@@ -4,31 +4,53 @@ import pygame
 class Entity(pygame.sprite.Sprite):
 
     def __init__(self):
-        self.x = 0
-        self.y = 0
+        self.__rect = pygame.Rect((0, 0, 0, 0))
         self.image = None
-        self.rect = pygame.Rect((0, 0, 0, 0))
         self.name = None
+
+    @property
+    def x(self):
+        return self.__rect.left
+
+    @x.setter
+    def x(self, x):
+        self.__rect.left = x
+
+    @property
+    def y(self):
+        return self.__rect.top
+
+    @y.setter
+    def y(self, y):
+        self.__rect.top = y
+
+    @property
+    def width(self):
+        return self.__rect.width
+
+    @width.setter
+    def width(self, width):
+        self.__rect.width = width
+
+    @property
+    def height(self):
+        return self.__rect.height
+
+    @height.setter
+    def height(self, height):
+        self.__rect.height = height
+
+    @property
+    def rect(self):
+        return self.__rect
 
     def update(self):
         pass
 
-    def render(self, screen):
-        screen.blit(self.image, self.rect)
-        if self.name is not None:
-            screen.blit(self.textNameTack, self.nameRect)
+    def render(self, screen, camera):
+        screen.blit(self.image, camera.apply(self.__rect))
+        pygame.draw.rect(screen, (255, 0, 0), camera.apply(self.__rect), 1)
 
     def dispose(self):
         pass
 
-    def change_reference_point(self, position):
-        self.rect.topleft = [self.x + position[0], self.y + position[1]]
-
-    def get_rect(self):
-        return self.rect
-
-    def get_x(self):
-        return self.x
-
-    def get_y(self):
-        return self.y

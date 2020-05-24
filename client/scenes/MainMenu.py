@@ -23,6 +23,9 @@ class MainMenu(Scene):
         for box in self.inputBoxes:
             box.handleEvents(event)
 
+    def handleMessage(self, message):
+        pass
+
     def update(self):
         for box in self.inputBoxes:
             box.update()

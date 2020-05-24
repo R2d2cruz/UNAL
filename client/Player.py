@@ -19,20 +19,18 @@ class Player(Character):
         super().__init__(game)
         self.set_name(name)
         self.loadAnimation(game.res.getRandomCharAnimFile(), game.res)
-        self.rect.topleft = position
-        self.x = 100
-        self.y = 100
+        self.x, self.y = position
         self.timeStep = 100
 
     def move(self, direction):
         if direction == "up":
-            self.velocity = [0, 4]
-        if direction == "down":
             self.velocity = [0, -4]
+        if direction == "down":
+            self.velocity = [0, 4]
         if direction == "right":
-            self.velocity = [-4, 0]
-        if direction == "left":
             self.velocity = [4, 0]
+        if direction == "left":
+            self.velocity = [-4, 0]
 
         if direction == "stand_up":
             self.velocity = [0, 0]
@@ -47,24 +45,25 @@ class Player(Character):
         self.hasChanged = True
 
     def update(self):
-        # if self.action is not None:
         super().update(self.action)
+        # if self.action is not None:
         if self.lastVelocity != self.velocity:
             self.x += self.velocity[0]
             self.y += self.velocity[1]
         self.hasChanged = self.velocity != [0, 0]
 
-    def collitions(self, obj):
+    def collitions(self, rect):
         this = self.get_rect().copy()
         this.x -= self.velocity[0]
         this.y -= self.velocity[1]
-        if this.colliderect(obj) == 1:
+        if this.colliderect(rect) == 1:
             self.velocity = [0, 0]
 
     def get_rect(self):
-        return pygame.Rect((self.rect.x, self.rect.y + 24, 34, 32))
+        return pygame.Rect((self.x, self.y + 24, 34, 32))
+        
 
-    def prox_rect(self):
-        x = self.rect.x + self.velocity[0]
-        y = self.rect.y + self.velocity[1]
-        return pygame.Rect((x, y, 34, 32))
+    # def prox_rect(self):
+    #     x = self.rect.x + self.velocity[0]
+    #     y = self.rect.y + self.velocity[1]
+    #     return pygame.Rect((x, y, 34, 32))

@@ -33,6 +33,8 @@ class Game:
                 self.isRunning = False
                 continue
             self.currentScene.handleEvent(event)
+        #if not self.client.connected:
+        #    self.currentScene.handleMessage('diconnected')
 
     def update(self):
         self.currentScene.update()

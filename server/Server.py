@@ -25,32 +25,50 @@ class Server:
         self.socket = context.socket(zmq.REP)
         try:
             self.socket.bind("tcp://*:" + str(self.port))
-        except zmq.ZMQError as e:
+            self.isRunning = True
+        except zmq.ZMQError:
             print('🙄 Hay otra aplicación que está usando el puerto ' +
                   str(self.port) + ' en esta máquina.')
             print('🤣 Tal vez estas corriendo el servidor dos veces!')
             sys.exit()
 
+    def send(self, message):
+        try:
+            self.socket.send_json(message)
+            return True
+        except Exception as e:
+            print('❌ Server.send', message, e)
+        return False
+
     def run(self):
-        self.isRunning = True
         self.listen()
         while self.isRunning:
             try:
-                message = self.socket.recv_string()
-                self.commands.get((message.split("_"))[0])(message)
+                message = json.loads(self.socket.recv_json())
+                senderId = message.get('id')
+                if senderId is not None:
+                    senderId = int(senderId)
+                data = message.get('data')
+                #print('📨 mensaje: ', message, data)
+                self.commands.get(message.get('command'))(senderId, data)
             except KeyboardInterrupt:
                 self.isRunning = False
             except Exception as e:
-                print("Error", e)
-        print('\n\🍺 Se ha cerrado el server. Ahora vamos a por una cerveza!')
+                print('❌ Server.run', e)
+                self.isRunning = False
+        print('\n🍺 Se ha cerrado el server. Ahora vamos a por una cerveza!')
 
-    def createPlayer(self, message):
-        self.players[self.counter] = Player((message.split("_"))[1])
-        print('🎮 Se ha conectado el jugador ' +
-              self.players[self.counter].name)
-        self.socket.send_string(str(self.counter))
-        self.counter += 1
-        self.printPlayers()
+    def createPlayer(self, senderId, playerName):
+        if isinstance(playerName, str):
+            self.players[self.counter] = Player(playerName)
+            self.players[self.counter].id = self.counter
+            print('🎮 Se ha conectado el jugador ' +
+                self.players[self.counter].name)
+            self.send(self.players[self.counter].id)
+            self.counter += 1
+            self.printPlayers()
+        else:
+            print('❌ Falló registrando nuevo jugador por mensaje mal formado')
 
     def printPlayers(self):
         print('Players (' + str(len(self.players)) + ') = [ ', end='')
@@ -58,28 +76,30 @@ class Server:
             print(i, self.players.get(i).name, end=' ')
         print(']')
 
-    def updatePlayer(self, message):
-        information = message.split("_")
-        self.players.get(int(information[1])).update(information[2])
-        self.socket.send_string("")
+    def updatePlayer(self, senderId, playerData):
+        if isinstance(playerData, dict):
+            self.players.get(senderId).update(playerData)
+            self.send('')
+            print('updated', self.players.get(senderId).toDict())
+        else:
+            print('❌ Falló actualizando jugador por mensaje mal formado')
 
-    def returnPlayers(self, message):
-        information = message.split("_")
+    def returnPlayers(self, senderId, data):
         package = {}
-        for i in self.players.keys():
-            if i == int(information[1]):
+        for playerKey in self.players.keys():
+            if playerKey == senderId:
                 continue
-            package[i] = self.players.get(i).to_json()
-        self.socket.send_string(json.dumps(package))
+            package[playerKey] = self.players.get(playerKey).toDict()
+        self.send(package)
 
-    def kickOutPlayer(self, message):
-        self.players.pop(message.split("_")[1])
-        self.socket.send_string("bye bye")
+    def kickOutPlayer(self, senderId, data):
+        print('☹️ Se ha ido el usuario (' + senderId + ') ' + self.players[senderId].name)
+        self.players.pop(senderId)
+        self.send('bye bye')
 
-# 0 = command
-# 1 = id player
-# 2 = {
-#   "x" = x
-#   "y" = y
-#   "a" = action
-# }
+# {
+#    command: str,
+#    id: int,
+#    data: {
+#      # segun el comando
+#    }

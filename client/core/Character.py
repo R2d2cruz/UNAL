@@ -1,4 +1,5 @@
 import json
+import pygame
 from core.AnimatedEntity import AnimatedEntity
 
 
@@ -16,28 +17,28 @@ class Character(AnimatedEntity):
             "left": "wll",
             "right": "wlr"
         }
-        self.frame = 0
-        self.sheet = None
         self.velocity = [0, 0]
-        self.x = 0
-        self.y = 0
         self.action = None
         self.textNameTack = None
-        self.nameRect = None
+        self.nameRect = pygame.Rect(0, 0, 0, 0)
 
-    def render(self, screen):
-        screen.blit(self.image, self.rect)
-        if self.textNameTack is not None:
-            self.nameRect = (
-                self.rect.topleft[0] + (34 - self.textNameTack.get_width()) / 2,  self.rect.topleft[1] - 14)
-            screen.blit(self.textNameTack, self.nameRect)
+    def update(self, action):
+        super().update(action)
+        self.nameRect.x = self.x + (34 - self.textNameTack.get_width()) / 2
+        self.nameRect.y = self.y - 14
 
-    def to_json(self):
-        return json.dumps({
-            "x": self.rect.topleft[0] - self.x,
-            "y": self.rect.topleft[1] - self.y,
-            "a": self.traductor.get(self.action)
-        })
+    def render(self, screen, camera):
+        super().render(screen, camera)
+        if self.name is not None:
+            if self.textNameTack is not None:
+                screen.blit(self.textNameTack, camera.apply(self.nameRect))
+
+    def toDict(self):
+        return dict(
+            x = self.x,
+            y = self.y,
+            a = self.traductor.get(self.action)
+        )
 
     def get_velocity(self):
         return self.velocity

@@ -35,8 +35,8 @@ class AnimatedEntity(Entity):
         frameRect = self.get_frame(clipFrame)
         self.sheet.set_clip(pygame.Rect(frameRect))
         self.image = self.sheet.subsurface(self.sheet.get_clip())
-        self.rect.w = frameRect[2]
-        self.rect.h = frameRect[3]
+        #self.width = frameRect[2]
+        #self.height = frameRect[3]
 
     def update(self, clip=None):
         t = pygame.time.get_ticks()

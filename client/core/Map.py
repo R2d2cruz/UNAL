@@ -1,14 +1,6 @@
 import json
-import os
-from copy import copy
+import pygame
 from core import Game, ResourceHandler
-
-if os.name == "nt":
-    from OnlinePlayer import OnlinePlayer
-    from Objects import Wall
-else:
-    from client.OnlinePlayer import OnlinePlayer
-    from client.Objects import Wall
 
 
 class Map:
@@ -31,17 +23,18 @@ class Map:
 
     ]
 
-    player = None
-    players = {}
-    x = 0
-    y = 0
-    rect = 32
-
     def __init__(self, game: Game):
         self.game = game
+        self.x = 0
+        self.y = 0
+        self.width = 0
+        self.height = 0
+        self.rows = 0
+        self.cols = 0
+        self.tileWidth = 32
+        self.tileHeight = 32
 
-    @staticmethod
-    def loadMap(fileName: str):
+    def loadMap(self, fileName: str):
         map = []
         with open(fileName) as json_file:
             data = json.load(json_file)
@@ -50,7 +43,12 @@ class Map:
                 for col in row:
                     newRow.append(col)
                 map.append(newRow)
-            return map
+        self.rows = len(map[0])
+        self.cols = len(map)
+        self.width = self.cols * self.tileWidth
+        self.height = self.rows * self.tileHeight
+        # self.surface = pygame.Surface((self.width, self.height), pygame.SRCALPHA)
+        return map
 
     @staticmethod
     def loadTileset(fileName: str, res: ResourceHandler):
@@ -62,72 +60,13 @@ class Map:
                 frames[frame["id"]] = image.subsurface(frame["box"])
         return frames
 
-    def createWalls(self, fileName: str):
-        objects = self.loadMap(fileName)
-        real_objects = []
-        for i in range(len(objects)):
-            for j in range(len(objects[i])):
-                if objects[i][j] == 1:
-                    x = j * 32
-                    y = i * 32
-                    obj = Wall(self.game, x, y)
-                    real_objects.append(copy(obj))
-        return real_objects
-
-    def changeCoord(self, x, y):
-        self.x = x
-        self.y = y
-        for i in self.objects:
-            i.change_reference_point([self.x, self.y])
-        for i in self.characters:
-            i.change_reference_point([self.x, self.y])
-        for i in self.players.keys():
-            self.players[i].change_reference_point([self.x, self.y])
-
-    def updateOtherPlayers(self):
-        message = self.game.client.getStatus()
-        information = json.loads(message)
-        # print(information)
-        keys = self.players.keys()
-        for i in information.keys():
-            if i in keys:
-                self.players.get(i).setPos(information.get(i))
-            else:
-                self.players[i] = OnlinePlayer(self.game, information.get(i))
-            self.changeCoord(self.player.get_x(), self.player.get_y())
-
-    def update(self):
-        self.collitions()
-        if self.player.hasChanged:
-            self.player.hasChanged = False
-            self.game.client.sendPlayerStatus(self.player)
-        self.updateOtherPlayers()
-        for i in self.players.keys():
-            self.players.get(i).update()
-        for char in self.characters:
-            char.update()
-            char.update()
-        for obj in self.objects:
-            obj.update()
-            self.player.collitions(obj)
-        self.player.update()
-        if self.player.hasChanged:
-            self.changeCoord(self.player.get_x(), self.player.get_y())
-
-    def blit(self, screen):
-        for i in range(len(self.map)):
-            for j in range(len(self.map[0])):
-                screen.blit(self.frames.get(
-                    self.map[i][j]), (self.x + (self.rect * j), self.y + (self.rect * i)))
+    def render(self, screen, camera):
+        #TODO: optimizar la creacion del surface
+        for row in range(self.rows):
+            for col in range(self.cols):
+                screen.blit(
+                    self.frames.get(self.map[row][col]),
+                    camera.apply((self.x + (self.tileWidth * col), self.y + (self.tileHeight * row)))
+                )
         for k in self.objects:
-            k.render(screen)
-        for k in self.characters:
-            k.render(screen)
-        for k in self.players.values():
-            k.render(screen)
-        self.player.render(screen)
-
-    def collitions(self):
-        for i in range(len(self.characters)):
-            self.player.collitions(self.characters[i])
-            self.characters[i].collitions(self.player)
+            k.render(screen, camera)

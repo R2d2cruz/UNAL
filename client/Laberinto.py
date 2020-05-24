@@ -1,15 +1,13 @@
-from Player import Player
+from copy import copy
 from core.Game import Game
 from core.Map import Map
 from core.AnimatedEntity import AnimatedEntity
+from Objects import Wall
 
 
 class Laberinto(Map):
     def __init__(self, game: Game):
         super().__init__(game)
-        self.player = Player(game, (640, 360), '')
-        self.x = self.player.get_x()
-        self.y = self.player.get_y()
         self.frames = self.loadTileset(game.res.getTileset("ts1"), game.res)
         self.objects = self.createWalls(game.res.getMap("walls"))
         self.map = self.loadMap(game.res.getMap("laberinto"))
@@ -21,4 +19,19 @@ class Laberinto(Map):
             fire.y = 0
             self.objects.append(fire)
 
-        self.changeCoord(self.player.get_x(), self.player.get_y())
+    def render(self, screen, camera):
+        super().render(screen, camera)
+        for k in self.characters:
+            k.render(screen, camera)
+
+    def createWalls(self, fileName: str):
+        objects = self.loadMap(fileName)
+        real_objects = []
+        for i in range(len(objects)):
+            for j in range(len(objects[i])):
+                if objects[i][j] == 1:
+                    x = j * 32
+                    y = i * 32
+                    obj = Wall(self.game, x, y)
+                    real_objects.append(copy(obj))
+        return real_objects

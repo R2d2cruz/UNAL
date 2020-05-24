@@ -12,24 +12,24 @@ import json
 
 
 class Player:
-    prevMovement = "std"
-    x = 0
-    y = 0
-    movement = "std"
-
     def __init__(self, name):
+        self.prevMovement = "std"
+        self.x = 0
+        self.y = 0
+        self.movement = "std"
+        self.id = id
         self.name = name
 
-    def update(self, information):
-        message = json.loads(information)
-        self.x = message.get("x")
-        self.y = message.get("y")
-        self.movement = message.get("a")
+    def update(self, data):
+        self.x = data.get("x")
+        self.y = data.get("y")
+        self.movement = data.get("a")
 
-    def to_json(self):
-        return {
-            "x": self.x,
-            "y": self.y,
-            "a": self.movement,
-            "n": self.name
-        }
+    def toDict(self):
+        return dict(
+            id = self.id,
+            x = self.x,
+            y = self.y,
+            a = self.movement,
+            n = self.name
+        )
