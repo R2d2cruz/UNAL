@@ -19,7 +19,7 @@ class Playground(Scene):
         game.setPlayer(self.player)
         self.font = game.res.getFont('minecraft', 32)
         self.label = self.font.render('Juego en pausa por problemas conexión. Espere un momento', True, (255, 64, 64))
-        self.camera = Camera(game.screen.get_width(), game.screen.get_height())
+        self.camera = Camera(game.screen.get_width(), game.screen.get_height(), self.map.width, self.map.height)
         self.camera.target = self.player
 
     def handleEvent(self, event):
@@ -32,7 +32,7 @@ class Playground(Scene):
             self.player.move((self.KEYUP.get(event.key)))
 
     def handleMessage(self, message):
-        if message == 'diconnected':
+        if message.type == 'diconnected':
             self.paused = True
 
     def update(self):
@@ -64,12 +64,7 @@ class Playground(Scene):
         self.player.render(screen, self.camera)
         #if self.paused:
         #    screen.blit(self.label, (160, 80))
-        rect = pygame.Rect(
-            self.player.x + (self.player.width / 2) - (self.camera.camera.w / 2),
-            self.player.y + (self.player.height / 2) - (self.camera.camera.h / 2),
-            self.camera.camera.w, 
-            self.camera.camera.h)
-        pygame.draw.rect(screen, (255, 0, 0), self.camera.apply(rect), 1)
+        self.camera.render(screen)
 
     def collitions(self):
         for obj in self.map.objects:
