@@ -5,6 +5,7 @@ from core.AnimatedEntity import AnimatedEntity
 
 class Character(AnimatedEntity):
     def __init__(self, game, *groups):
+        self.name = None
         super().__init__(*groups)
         self.game = game
         self.traductor = {
@@ -35,9 +36,9 @@ class Character(AnimatedEntity):
 
     def toDict(self):
         return dict(
-            x = self.x,
-            y = self.y,
-            a = self.traductor.get(self.action)
+            x=self.x,
+            y=self.y,
+            a=self.traductor.get(self.action)
         )
 
     def get_velocity(self):

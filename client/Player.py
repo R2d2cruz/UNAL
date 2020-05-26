@@ -56,8 +56,8 @@ class Player(Character):
 
     def collitions(self, rect):
         this = self.get_rect().copy()
-        this.x -= self.velocity[0]
-        this.y -= self.velocity[1]
+        this.x += self.velocity[0]
+        this.y += self.velocity[1]
         if this.colliderect(rect) == 1:
             self.velocity = [0, 0]
 

@@ -22,22 +22,9 @@
   <component name="ChangeListManager">
     <list default="true" id="6f659020-7adf-4bc9-9be9-8756714b3afd" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/Animation.py" beforeDir="false" afterPath="$PROJECT_DIR$/client/Animation.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/Laberinto.py" beforeDir="false" afterPath="$PROJECT_DIR$/client/Laberinto.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/NPC.py" beforeDir="false" afterPath="$PROJECT_DIR$/client/NPC.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/OnlinePlayer.py" beforeDir="false" afterPath="$PROJECT_DIR$/client/OnlinePlayer.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/client/Player.py" beforeDir="false" afterPath="$PROJECT_DIR$/client/Player.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/Wanders.py" beforeDir="false" afterPath="$PROJECT_DIR$/client/Wanders.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/__main__.py" beforeDir="false" afterPath="$PROJECT_DIR$/client/__main__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/core/AnimatedEntity.py" beforeDir="false" afterPath="$PROJECT_DIR$/client/core/AnimatedEntity.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/client/core/Character.py" beforeDir="false" afterPath="$PROJECT_DIR$/client/core/Character.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/core/Client.py" beforeDir="false" afterPath="$PROJECT_DIR$/client/core/Client.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/core/Game.py" beforeDir="false" afterPath="$PROJECT_DIR$/client/core/Game.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/core/InputBox.py" beforeDir="false" afterPath="$PROJECT_DIR$/client/core/InputBox.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/client/core/Map.py" beforeDir="false" afterPath="$PROJECT_DIR$/client/core/Map.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/Player.py" beforeDir="false" afterPath="$PROJECT_DIR$/server/Player.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/Server.py" beforeDir="false" afterPath="$PROJECT_DIR$/server/Server.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/__main__.py" beforeDir="false" afterPath="$PROJECT_DIR$/server/__main__.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -194,7 +181,14 @@
       <workItem from="1590063495839" duration="52000" />
       <workItem from="1590063552508" duration="10433000" />
       <workItem from="1590246774914" duration="3768000" />
-      <workItem from="1590251146774" duration="1969000" />
+      <workItem from="1590251146774" duration="2628000" />
+      <workItem from="1590367441547" duration="815000" />
+      <workItem from="1590421766912" duration="599000" />
+      <workItem from="1590499147922" duration="93000" />
+      <workItem from="1590499414281" duration="111000" />
+      <workItem from="1590499637869" duration="6000" />
+      <workItem from="1590500494016" duration="130000" />
+      <workItem from="1590500694619" duration="680000" />
     </task>
     <servers />
   </component>

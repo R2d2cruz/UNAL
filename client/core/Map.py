@@ -61,7 +61,7 @@ class Map:
         return frames
 
     def render(self, screen, camera):
-        #TODO: optimizar la creacion del surface
+        # TODO: optimizar la creacion del surface
         for row in range(self.rows):
             for col in range(self.cols):
                 screen.blit(
