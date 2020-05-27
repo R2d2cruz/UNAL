@@ -23,6 +23,7 @@ class Player(Character):
         self.width = 34
         self.height = 56
         self.timeStep = 100
+        self.colliding = []
 
     def move(self, direction):
         if direction == "up":
@@ -54,11 +55,21 @@ class Player(Character):
             self.y += self.velocity[1]
         self.hasChanged = self.velocity != [0, 0]
 
-    def collitions(self, rect):
+    def collitions(self, rect: pygame.Rect):
         this = self.get_rect().copy()
         this.x += self.velocity[0]
         this.y += self.velocity[1]
         if this.colliderect(rect) == 1:
+            self.velocity = [0, 0]
+
+    # colisiones por listas de rectangulos
+    def listCollitions(self, listRect: list):
+        this = self.get_rect().copy()
+        this.x += self.velocity[0]
+        this.y += self.velocity[1]
+        self.colliding = this.collidelistall(listRect)
+        print(self.colliding)
+        if self.colliding != []:
             self.velocity = [0, 0]
 
     def get_rect(self):

@@ -67,8 +67,9 @@ class Playground(Scene):
         self.camera.render(screen)
 
     def collitions(self):
-        for obj in self.map.objects:
-            self.player.collitions(obj.rect)
+        self.player.listCollitions(self.map.objects)
+        # for obj in self.map.objects:
+        #     self.player.collitions(obj.rect)
         for i in range(len(self.map.characters)):
             self.player.collitions(self.map.characters[i])
             self.map.characters[i].collitions(self.player)
