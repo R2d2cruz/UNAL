@@ -12,6 +12,7 @@ imgs = {
     "Henry": "images/chars/char1.png",
     "John": "images/chars/char2.png",
     "Charly": "images/chars/char3.png",
+    "roof": "images/roof.png",
 }
 
 maps = {

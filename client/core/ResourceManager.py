@@ -2,7 +2,7 @@ import pygame
 from random import choice
 
 
-class ResourceHandler:
+class ResourceManager:
     resPath = None
     imgs = None
     sounds = None
@@ -36,6 +36,7 @@ class ResourceHandler:
         fontDef = self.fixPath(self.fonts.get(name))
         return pygame.font.Font(fontDef, size)
 
+
     def getTileset(self, name: str):
         return self.fixPath(self.tilesets.get(name))
 
@@ -55,3 +56,7 @@ class ResourceHandler:
     def getRandomCharAnimFile(self):
         charFile = choice(('Henry', 'John', 'Charly'))
         return self.getAnimFile(charFile)
+
+def getText(text, font, col):
+    surface = font.render(text, True, col)
+    return (surface, pygame.Rect(0, 0, surface.get_width(), surface.get_height()))

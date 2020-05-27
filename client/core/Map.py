@@ -1,6 +1,6 @@
 import json
 import pygame
-from core import Game, ResourceHandler
+from core import Game, ResourceManager
 
 
 class Map:
@@ -51,7 +51,7 @@ class Map:
         return map
 
     @staticmethod
-    def loadTileset(fileName: str, res: ResourceHandler):
+    def loadTileset(fileName: str, res: ResourceManager):
         frames = {}
         with open(fileName) as json_file:
             data = json.load(json_file)
@@ -66,7 +66,8 @@ class Map:
             for col in range(self.cols):
                 screen.blit(
                     self.frames.get(self.map[row][col]),
-                    camera.apply((self.x + (self.tileWidth * col), self.y + (self.tileHeight * row)))
+                    camera.apply((self.x + (self.tileWidth * col),
+                                  self.y + (self.tileHeight * row)))
                 )
         for k in self.objects:
             k.render(screen, camera)

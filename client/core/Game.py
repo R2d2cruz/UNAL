@@ -3,11 +3,11 @@ import sys
 from core.Config import Config
 from core.Client import Client
 from core.Scene import Scene
-from core.ResourceHandler import ResourceHandler
+from core.ResourceManager import ResourceManager
 
 
 class Game:
-    def __init__(self, res: ResourceHandler, config: Config):
+    def __init__(self, res: ResourceManager, config: Config):
         self.scenes = {}
         self.res = res
         self.config: Config = config
@@ -42,7 +42,7 @@ class Game:
     def render(self):
         self.currentScene.render(self.screen)
         pygame.display.update()
-        self.clock.tick(30)
+        self.clock.tick(200)
 
     def run(self):
         self.isRunning = True
