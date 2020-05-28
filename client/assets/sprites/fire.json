@@ -1,6 +1,6 @@
 {
   "name": "Fuego",
-  "image": "images/grndtorchflameani1.png",
+  "image": "images/torch1.png",
   "default_sprite": "on",
   "sprites": {
       "on": [

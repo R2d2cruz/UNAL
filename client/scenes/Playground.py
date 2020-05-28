@@ -93,6 +93,7 @@ class Playground(Scene):
             self.map.characters[i].collitions(self.player)
 
     def updateOtherPlayers(self):
+        # que deberia ocurrir si durante el juego se desconecta?
         playersData = self.game.client.getStatus()
         if playersData is not None:
             playerKeys = self.players.keys()

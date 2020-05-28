@@ -1,6 +1,9 @@
 import pygame
 from random import choice
 
+
+__soundLibrary = {}
+
 resPath = None
 imgs = None
 sounds = None
@@ -76,3 +79,32 @@ def getRandomCharAnimFile():
 def getText(text, font, col):
     surface = font.render(text, True, col)
     return (surface, pygame.Rect(0, 0, surface.get_width(), surface.get_height()))
+
+def playSound(name):
+    global __soundLibrary
+    try:
+        sound = __soundLibrary.get(name)
+        if sound == None:
+            #canonicalized_path = path.replace('/', os.sep).replace('\\', os.sep)
+            sound = pygame.mixer.Sound(getSoundPath(name))
+            __soundLibrary[name] = sound
+        sound.set_volume(0.5)
+        sound.play()
+    except Exception as e:
+        print("😞 No se pudo cargar audio " +res.getSoundPath(name), e)
+
+def playSong(name, loops=-1):
+    try:
+        pygame.mixer.music.load(getSoundPath(name))
+        pygame.mixer.music.play(loops)
+    except Exception as e:
+        print("😞 No se pudo cargar audio " + getSoundPath(name), e)
+
+# def playRandomSong():
+#     global __currentlySong, __songs
+#     nextSong = random.choice(__songs)
+#     while nextSong == __currentlySong:
+#         nextSong = random.choice(__songs)
+#     __currentlySong = nextSong
+#     pygame.mixer.music.load(nextSong)
+#     pygame.mixer.music.play()

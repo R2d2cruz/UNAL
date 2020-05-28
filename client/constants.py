@@ -8,7 +8,7 @@ anims = {
 
 imgs = {
     "logo": "images/unallogo.jpg",
-    "ts1": "images/RPG Nature Tileset.png",
+    "ts1": "images/tilesets/nature.png",
     "Diego": "images/diego.png",
     "Henry": "images/chars/char1.png",
     "John": "images/chars/char2.png",
@@ -28,6 +28,8 @@ tilesets = {
 
 sounds = {
     "background1": "sounds/medieval.ogg",
+    "title": "sounds/title.wav",
+    "error": "sounds/error.wav",
 }
 
 fonts = {
