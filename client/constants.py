@@ -30,6 +30,8 @@ sounds = {
     "background1": "sounds/medieval.ogg",
     "title": "sounds/title.wav",
     "error": "sounds/error.wav",
+    "select": "sounds/select.wav",
+    "hit-key": "sounds/hit-key.wav",
 }
 
 fonts = {

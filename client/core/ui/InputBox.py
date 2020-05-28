@@ -31,6 +31,7 @@ class InputBox(Control):
             self.maxLengthReached = self.__surface.get_width() + (self.__padding * 2) > self.rect.w
         else:
             self.rect.w = max(self.maxWidth, self.__surface.get_width() + (self.__padding * 2))
+        self.onChange(self)
 
     def update(self, deltaTime: float):
         # TODO: self.caret.update()
@@ -56,3 +57,6 @@ class InputBox(Control):
             self.text = self.text[:-1]
         elif not self.maxLengthReached:
             self.text += event.unicode
+    
+    def onChange(self, sender):
+        pass

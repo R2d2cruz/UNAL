@@ -32,6 +32,7 @@ class MainMenu(Scene):
         
         rect.center = (game.config.windowWidth * 3 / 4, game.config.windowHeight * 2 / 3)
         self.inputBox1 = InputBox(rect.x, rect.y, rect.w, rect.h, self.font)
+        self.inputBox1.onChange = self.onChangeName
 
         self.anim = AnimatedEntity()
         self.anim.loadAnimation(res.getAnimFile(self.namesAnimList[self.index]))
@@ -101,13 +102,11 @@ class MainMenu(Scene):
             res.playSound('title')
             self.game.setScene('play')
 
-    def onEnterName(self, sender):
-        pass
-
     def onGoQuit(self, sender):
         self.game.quit()
 
     def goToLeftList(self, sender):
+        res.playSound('select')
         self.index -= 1
         if self.index < 0:
             self.index = len(self.namesAnimList) - 1
@@ -115,8 +114,12 @@ class MainMenu(Scene):
         self.anim.currentClip = 'down'
 
     def goToRightList(self, sender):
+        res.playSound('select')
         self.index += 1
         if self.index > len(self.namesAnimList) - 1:
             self.index = 0
         self.anim.loadAnimation(res.getAnimFile(self.namesAnimList[self.index]))
         self.anim.currentClip = 'down'
+
+    def onChangeName(self, sender):
+        res.playSound('hit-key')
