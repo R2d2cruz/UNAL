@@ -13,7 +13,7 @@ class Client:
         for server in config.servers:
             self.servers.append("tcp://" + server)
 
-    def connect(self, name: str):
+    def connect(self, player):
         self.context = zmq.Context()
         for server in self.servers:
             for i in range(1, self.maxAttempts + 1):
@@ -25,7 +25,7 @@ class Client:
                     self.socket.setsockopt(zmq.RCVTIMEO, 1000)
                     self.socket.setsockopt(zmq.LINGER, 1000)
                     self.socket.connect(server)
-                    self.id = self.getId(name)
+                    self.id = self.getId(player)
                     self.connected = True
                     print('👍 Conexión exitosa. Id de cliente: ' + str(self.id))
                     return True
@@ -52,10 +52,10 @@ class Client:
         return self.__read()
 
     # este no debe usar `try` para permitir generar excepcion en connect
-    def getId(self, name):
+    def getId(self, player):
         id = self.sendDict(dict(
             command='createPlayer',
-            data=name
+            data=dict(name=player.name, anim=player.animName)
         ), True)
         if id is None:
             print('👎 ID nulo')

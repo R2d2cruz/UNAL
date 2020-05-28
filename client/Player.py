@@ -16,10 +16,11 @@ class Player(Character):
     objectCollition = None
     hasChanged = True
 
-    def __init__(self, game, position, name):
+    def __init__(self, game, position, name, animName):
         super().__init__(game)
         self.set_name(name)
-        self.loadAnimation(res.getRandomCharAnimFile())
+        self.animName = animName
+        self.loadAnimation(res.getAnimFile(self.animName))
         self.x, self.y = position
         self.width = 34
         self.height = 56

@@ -1,4 +1,3 @@
-import pygame
 import core.ResourceManager as res
 from core.Character import Character
 
@@ -17,7 +16,7 @@ class OnlinePlayer(Character):
             "wlr": "right"
         }
         self.set_name(data.get("n"))
-        self.loadAnimation(res.getRandomCharAnimFile())
+        self.loadAnimation(res.getAnimFile(data.get("A")))
         self.movement = self.traductor.get(data.get("a"))
         self.x = data.get("x")
         self.y = data.get("y")

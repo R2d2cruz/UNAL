@@ -13,13 +13,14 @@ import json
 
 
 class Player:
-    def __init__(self, name):
+    def __init__(self, name: str, anim: str):
         self.prevMovement = "std"
         self.x = 0
         self.y = 0
         self.movement = "std"
         self.id = id
         self.name = name
+        self.animName = anim
 
     def update(self, data):
         self.x = data.get("x")
@@ -32,5 +33,6 @@ class Player:
             x=self.x,
             y=self.y,
             a=self.movement,
-            n=self.name
+            n=self.name,
+            A=self.animName
         )

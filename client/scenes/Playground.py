@@ -1,4 +1,5 @@
 import pygame
+from random import choice
 import core.ResourceManager as res
 from core.Scene import Scene
 from core.Map import Map
@@ -17,7 +18,7 @@ class Playground(Scene):
         super().__init__(game)
         self.map = map
         self.paused = False
-        self.player = Player(game, (100, 100), None)
+        self.player = Player(game, (100, 100), None, choice(["Bob", "Henry"]))
         self.font = res.getFont('minecraft', 32)
         self.label = self.font.render('Juego en pausa por problemas conexión. Espere un momento', True, (255, 64, 64))
         self.camera = Camera(game.screen.get_width(), game.screen.get_height(), self.map.width, self.map.height)

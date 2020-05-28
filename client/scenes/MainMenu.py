@@ -30,8 +30,8 @@ class MainMenu(Scene):
         self.inputBox1 = InputBox(rect.x, rect.y, rect.w, rect.h, self.font)
 
         self.anim = AnimatedEntity()
-        self.anim.x, self.anim.y= (game.config.windowWidth * 3 / 4, game.config.windowHeight / 3)
-        self.anim.loadAnimation(res.getRandomCharAnimFile())
+        self.anim.x, self.anim.y = (game.config.windowWidth * 3 / 4, game.config.windowHeight / 3)
+        self.anim.loadAnimation(res.getAnimFile("Bob"))
         self.anim.currentClip = 'down'
 
         self.done = False
@@ -77,7 +77,7 @@ class MainMenu(Scene):
         self.game.player.set_name(self.inputBox1.text)
         self.game.saveSettings()
         if not self.game.client.connected:
-            if not self.game.client.connect(self.game.player.name):
+            if not self.game.client.connect(self.game.player):
                 # TODO: en vez de finaizar aqui simplemente se muestra un mensaje en pantalla indicandole al usuario que no se pudo conectar
                 # TODO: un boton en la pantalla permite salir, esta linea va allá
                 pass
