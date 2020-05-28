@@ -16,16 +16,18 @@ class Player(Character):
     objectCollition = None
     hasChanged = True
 
-    def __init__(self, game, position, name):
+    def __init__(self, game, position, name, animName):
         super().__init__(game)
         self.set_name(name)
-        self.loadAnimation(res.getRandomCharAnimFile())
+        self.animName = animName
+        self.loadAnimation(res.getAnimFile(self.animName))
         self.x, self.y = position
         self.width = 34
         self.height = 56
         self.timeStep = 100
         self.colliding = []
         self.currentClip = "stand_down"
+        self.action = self.currentClip
 
     def move(self, vector: [], isMoving: bool):
         if isMoving:
@@ -92,7 +94,13 @@ class Player(Character):
 
     def get_rect(self):
         return pygame.Rect((self.x, self.y + 24, 34, 32))
-        
+
+    def toDict(self):
+        return dict(
+            x=self.x,
+            y=self.y,
+            a=self.traductor.get(self.currentClip)
+        )
 
     # def prox_rect(self):
     #     x = self.rect.x + self.velocity[0]

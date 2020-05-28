@@ -8,10 +8,14 @@ from core.ui.Button import Button
 from core.ui.Label import Label
 from core.AnimatedEntity import AnimatedEntity
 
+
 class MainMenu(Scene):
     def __init__(self, game: Game):
         super().__init__(game)
         self.font = res.getFont('minecraft', 36)
+
+        self.namesAnimList = ['Bob', 'Henry', 'John', 'Charly']
+        self.index = 0
 
         rect = pygame.Rect(0, 0, 450, 80)
 
@@ -30,9 +34,19 @@ class MainMenu(Scene):
         self.inputBox1 = InputBox(rect.x, rect.y, rect.w, rect.h, self.font)
 
         self.anim = AnimatedEntity()
-        self.anim.x, self.anim.y= (game.config.windowWidth * 3 / 4, game.config.windowHeight / 3)
-        self.anim.loadAnimation(res.getRandomCharAnimFile())
+        self.anim.loadAnimation(res.getAnimFile(self.namesAnimList[self.index]))
+        self.anim.x, self.anim.y = ((game.config.windowWidth * 3 / 4) - (self.anim.width / 2),
+                                    (game.config.windowHeight / 3) - (self.anim.height / 2))
         self.anim.currentClip = 'down'
+
+        rect = pygame.Rect(0, 0, 64, 64)
+        rect.center = (game.config.windowWidth * 5 / 8, game.config.windowHeight / 3)
+        self.leftListButton = Button(rect.x, rect.y, rect.w, rect.h, self.font, '<')
+        self.leftListButton.onClick = self.goToLeftList
+
+        rect.centerx = game.config.windowWidth * 7 / 8
+        self.rightListButton = Button(rect.x, rect.y, rect.w, rect.h, self.font, '>')
+        self.rightListButton.onClick = self.goToRightList
 
         self.done = False
         self.controls = [
@@ -40,7 +54,9 @@ class MainMenu(Scene):
             self.buttonQuit,
             self.label1,
             self.inputBox1,
-            self.anim
+            self.anim,
+            self.leftListButton,
+            self.rightListButton
         ]
 
     def handleEvent(self, event):
@@ -73,9 +89,10 @@ class MainMenu(Scene):
     def onGoPlay(self, sender):
         # TODO: evaluar si se escribió un nombre valido y arrojar un error en pantalla si no
         self.game.player.set_name(self.inputBox1.text)
+        self.game.player.loadAnimation(res.getAnimFile(self.namesAnimList[self.index]))
         self.game.saveSettings()
         if not self.game.client.connected:
-            if not self.game.client.connect(self.game.player.name):
+            if not self.game.client.connect(self.game.player):
                 # TODO: en vez de finaizar aqui simplemente se muestra un mensaje en pantalla indicandole al usuario que no se pudo conectar
                 # TODO: un boton en la pantalla permite salir, esta linea va allá
                 res.playSound('error')
@@ -89,3 +106,17 @@ class MainMenu(Scene):
 
     def onGoQuit(self, sender):
         self.game.quit()
+
+    def goToLeftList(self, sender):
+        self.index -= 1
+        if self.index < 0:
+            self.index = len(self.namesAnimList) - 1
+        self.anim.loadAnimation(res.getAnimFile(self.namesAnimList[self.index]))
+        self.anim.currentClip = 'down'
+
+    def goToRightList(self, sender):
+        self.index += 1
+        if self.index > len(self.namesAnimList) - 1:
+            self.index = 0
+        self.anim.loadAnimation(res.getAnimFile(self.namesAnimList[self.index]))
+        self.anim.currentClip = 'down'

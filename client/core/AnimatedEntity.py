@@ -14,6 +14,8 @@ class AnimatedEntity(Entity):
         self.lastFrameTime = 0
         self.timeStep = 100
         self.clips = {}
+        self.width = 0
+        self.height = 0
 
     def handleEvent(self, event):
         pass
@@ -39,8 +41,8 @@ class AnimatedEntity(Entity):
         frameRect = self.get_frame(clipFrame)
         self.sheet.set_clip(pygame.Rect(frameRect))
         self.image = self.sheet.subsurface(self.sheet.get_clip())
-        #self.width = frameRect[2]
-        #self.height = frameRect[3]
+        self.width = frameRect[2]
+        self.height = frameRect[3]
 
     def update(self, deltaTime: float):
         # ojo, esto se totea cuando al character no se le setea animacion

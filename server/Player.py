@@ -1,5 +1,6 @@
 import json
 
+
 # movements:
 # std = stand down
 # stu = stand up
@@ -12,13 +13,14 @@ import json
 
 
 class Player:
-    def __init__(self, name):
+    def __init__(self, name: str, anim: str):
         self.prevMovement = "std"
         self.x = 0
         self.y = 0
         self.movement = "std"
         self.id = id
         self.name = name
+        self.animName = anim
 
     def update(self, data):
         self.x = data.get("x")
@@ -27,9 +29,10 @@ class Player:
 
     def toDict(self):
         return dict(
-            id = self.id,
-            x = self.x,
-            y = self.y,
-            a = self.movement,
-            n = self.name
+            id=self.id,
+            x=self.x,
+            y=self.y,
+            a=self.movement,
+            n=self.name,
+            A=self.animName
         )

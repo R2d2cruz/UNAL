@@ -57,9 +57,9 @@ class Server:
                 self.isRunning = False
         print('\n🍺 Se ha cerrado el server. Ahora vamos a por una cerveza!')
 
-    def createPlayer(self, senderId, playerName):
-        if isinstance(playerName, str):
-            self.players[self.counter] = Player(playerName)
+    def createPlayer(self, senderId, playerData):
+        if isinstance(playerData, dict):
+            self.players[self.counter] = Player(playerData.get("name"), playerData.get("anim"))
             self.players[self.counter].id = self.counter
             print('🎮 Se ha conectado el jugador ' +
                 self.players[self.counter].name)
