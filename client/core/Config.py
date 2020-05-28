@@ -6,6 +6,8 @@ class Config:
         self.servers = []
         self.maxAttemptsPerServer = 0
         self.volume = 0
+        self.windowWidth = 1280
+        self.windowHeight = 720
         self.load(fileName)
         if len(self.servers) == 0:
             raise Exception(

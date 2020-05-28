@@ -5,6 +5,8 @@ from core.Camera import Camera
 from core.Game import Game
 from Player import Player
 from OnlinePlayer import OnlinePlayer
+from core.ResourceManager import getText, getFont
+
 
 class Playground(Scene):
 
@@ -15,9 +17,9 @@ class Playground(Scene):
         super().__init__(game)
         self.map = map
         self.paused = False
-        self.player = Player(game, (100, 100), '')
+        self.player = Player(game, (100, 100), None)
         game.setPlayer(self.player)
-        self.font = game.res.getFont('minecraft', 32)
+        self.font = getFont('minecraft', 32)
         self.label = self.font.render('Juego en pausa por problemas conexión. Espere un momento', True, (255, 64, 64))
         self.camera = Camera(game.screen.get_width(), game.screen.get_height(), self.map.width, self.map.height)
         self.camera.target = self.player

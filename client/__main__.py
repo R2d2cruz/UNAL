@@ -1,13 +1,13 @@
 import signal
 import sys
 # noinspection PyUnresolvedReferences
+import core.ResourceManager
+# noinspection PyUnresolvedReferences
 from constants import imgs, sounds, fonts, anims, tilesets, maps
 # noinspection PyUnresolvedReferences
 from core.Game import Game
 # noinspection PyUnresolvedReferences
 from core.Config import Config
-# noinspection PyUnresolvedReferences
-from core.ResourceManager import ResourceManager
 # noinspection PyUnresolvedReferences
 from Laberinto import Laberinto
 # noinspection PyUnresolvedReferences
@@ -24,9 +24,8 @@ def signal_handler(sig, frame):
 
 signal.signal(signal.SIGINT, signal_handler)
 
-resPath = 'client/assets/'
-res = ResourceManager(resPath, imgs, sounds, fonts, anims, tilesets, maps)
-game = Game(res, Config('client/config.json'))
+core.ResourceManager.init('client/assets/', imgs, sounds, fonts, anims, tilesets, maps)
+game = Game(Config('client/config.json'))
 game.init()
 laberinto = Laberinto(game)
 game.addScene("main", MainMenu(game))

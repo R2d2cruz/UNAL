@@ -1,4 +1,6 @@
 import pygame
+import core.ResourceManager as res
+
 from core.Entity import Entity
 
 
@@ -9,7 +11,7 @@ class Rock(Entity):
         self.y = y
         self.width = 32
         self.height = 32
-        self.image = game.res.loadImage("ts1", (64, 32, 32, 32))
+        self.image = res.loadImage("ts1", (64, 32, 32, 32))
 
 
 class Three(Entity):
@@ -19,7 +21,7 @@ class Three(Entity):
         self.y = y
         self.width = 32
         self.height = 32
-        self.image = game.res.loadImage("ts1", (0, 0, 32, 64))
+        self.image = res.loadImage("ts1", (0, 0, 32, 64))
 
 
 class Wall(Entity):
@@ -29,4 +31,4 @@ class Wall(Entity):
         self.y = y
         self.width = 32
         self.height = 32
-        self.image = game.res.loadImage("ts1", (96, 64, 32, 32))
+        self.image = res.loadImage("ts1", (96, 64, 32, 32))

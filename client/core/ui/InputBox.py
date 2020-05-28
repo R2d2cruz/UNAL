@@ -2,9 +2,9 @@ import pygame
 from core.ui.Control import Control
 from core.ResourceManager import getText
 
-class InputBox(Control):
 
-    def __init__(self, x, y, width, heigth, font, text='', foreColor = Control.WHITE):
+class InputBox(Control):
+    def __init__(self, x, y, width, heigth, font, text='', foreColor=Control.WHITE):
         super().__init__(x, y, width, heigth)
         self.__surface = None
         self.__textRect = None
@@ -30,7 +30,7 @@ class InputBox(Control):
         if self.fixedWidth:
             self.maxLengthReached = self.__surface.get_width() + (self.__padding * 2) > self.rect.w
         else:
-            self.rect.w = max(self.maxWidth, self.__surface.get_width() + ( self.__padding * 2) )
+            self.rect.w = max(self.maxWidth, self.__surface.get_width() + (self.__padding * 2))
 
     def update(self):
         # TODO: self.caret.update()
@@ -51,9 +51,8 @@ class InputBox(Control):
         if event.key == pygame.K_RETURN:
             if self.onEnter is not None:
                 pass
-                #self.onEnter(self)
+                # self.onEnter(self)
         elif event.key == pygame.K_BACKSPACE:
             self.text = self.text[:-1]
-        elif not self.maxLengthReached: 
+        elif not self.maxLengthReached:
             self.text += event.unicode
-            

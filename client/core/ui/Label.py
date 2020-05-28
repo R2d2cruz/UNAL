@@ -4,8 +4,7 @@ from core.ResourceManager import getText
 
 
 class Label(Control):
-
-    def __init__(self, x, y, width, heigth, font, text='', foreColor = Control.WHITE):
+    def __init__(self, x, y, width, heigth, font, text='', foreColor=Control.WHITE):
         super().__init__(x, y, width, heigth)
         self.__surface = None
         self.__textRect = None

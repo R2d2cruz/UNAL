@@ -1,3 +1,5 @@
+import core.ResourceManager as res
+
 from copy import copy
 from core.Game import Game
 from core.Map import Map
@@ -8,13 +10,13 @@ from Objects import Wall
 class Laberinto(Map):
     def __init__(self, game: Game):
         super().__init__(game)
-        self.frames = self.loadTileset(game.res.getTileset("ts1"), game.res)
-        self.objects = self.createWalls(game.res.getMap("walls"))
-        self.map = self.loadMap(game.res.getMap("laberinto"))
+        self.frames = self.loadTileset(res.getTileset("ts1"))
+        self.objects = self.createWalls(res.getMap("walls"))
+        self.map = self.loadMap(res.getMap("laberinto"))
 
         for i in range(1, 10):
             fire = AnimatedEntity()
-            fire.loadAnimation(game.res.getAnimFile("fire"), game.res)
+            fire.loadAnimation(res.getAnimFile("fire"))
             fire.x = 50 * i
             fire.y = 0
             self.objects.append(fire)

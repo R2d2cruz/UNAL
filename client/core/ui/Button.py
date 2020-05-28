@@ -4,8 +4,7 @@ from core.ResourceManager import getText
 
 
 class Button(Control):
-
-    def __init__(self, x, y, width, heigth, font, text='', foreColor = Control.WHITE):
+    def __init__(self, x, y, width, heigth, font, text='', foreColor=Control.WHITE):
         super().__init__(x, y, width, heigth)
         self.__surface = None
         self.__textRect = None
@@ -29,7 +28,7 @@ class Button(Control):
         screen.fill((123, 123, 123), self.rect)
 
         if self.__isPressed:
-            screen.blit(self.__surface, self.__textRect.move(1 , 2))
+            screen.blit(self.__surface, self.__textRect.move(1, 2))
         else:
             screen.blit(self.__surface, self.__textRect)
 

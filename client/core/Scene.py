@@ -22,10 +22,10 @@ class Scene:
     def init(self):
         pass
 
-    def onEnter(self):
+    def onEnterScene(self):
         pass
 
-    def onExit(self):
+    def onExitScene(self):
         pass
 
     def handleEvent(self, event):

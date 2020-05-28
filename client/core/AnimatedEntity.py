@@ -1,5 +1,6 @@
 import pygame
 import json
+import core.ResourceManager as res
 from core.Entity import Entity
 
 
@@ -11,10 +12,13 @@ class AnimatedEntity(Entity):
         self.image = None
         self.currentClip = None
         self.lastFrameTime = 0
-        self.timeStep = 50
+        self.timeStep = 100
         self.clips = {}
 
-    def loadAnimation(self, fileName: str, res):
+    def handleEvent(self, event):
+        pass
+
+    def loadAnimation(self, fileName: str):
         with open(fileName) as json_file:
             data = json.load(json_file)
             self.sheet = res.loadImageByPath(res.fixPath(data.get("image")))
@@ -38,12 +42,9 @@ class AnimatedEntity(Entity):
         #self.width = frameRect[2]
         #self.height = frameRect[3]
 
-    def update(self, clip=None):
+    def update(self):
         t = pygame.time.get_ticks()
         deltaTime = (t - self.lastFrameTime)
         if deltaTime >= self.timeStep:
             self.lastFrameTime = t
-            if clip is None:
-                self.clip(self.currentClip)
-            else:
-                self.clip(clip)
+            self.clip(self.currentClip)

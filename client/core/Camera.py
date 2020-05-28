@@ -30,10 +30,10 @@ class Camera:
         self.target = target
 
     def apply(self, rect):
-      if type(rect) == pygame.Rect:
-        return rect.move(self.view.topleft)
-      elif type(rect) == tuple:
-        return (rect[0] + self.view.x, rect[1] + self.view.y)
+        if type(rect) == pygame.Rect:
+            return rect.move(self.view.topleft)
+        elif type(rect) == tuple:
+            return (rect[0] + self.view.x, rect[1] + self.view.y)
 
     def update(self):
         if self.target is not None:
@@ -52,14 +52,14 @@ class Camera:
     def render(self, screen):
         # pintar el view de la camara
         rect = pygame.Rect(
-            -self.offsetX - (self.view.width / 2), # + self.view.x,
-            -self.offsetY - (self.view.height / 2), # + self.view.y,
-            self.view.width, 
+            -self.offsetX - (self.view.width / 2),  # + self.view.x,
+            -self.offsetY - (self.view.height / 2),  # + self.view.y,
+            self.view.width,
             self.view.height)
         pygame.draw.rect(screen, (255, 0, 0), self.apply(rect), 1)
         rect = pygame.Rect(
             0,
             0,
-            self.worldWidth, 
+            self.worldWidth,
             self.worldHeight)
         pygame.draw.rect(screen, (0, 255, 0), self.apply(rect), 1)

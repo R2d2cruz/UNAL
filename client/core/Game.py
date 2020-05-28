@@ -1,15 +1,15 @@
 import pygame
 import sys
+import json
+import core.ResourceManager as res
 from core.Config import Config
 from core.Client import Client
 from core.Scene import Scene
-from core.ResourceManager import ResourceManager
 
 
 class Game:
-    def __init__(self, res: ResourceManager, config: Config):
+    def __init__(self, config: Config):
         self.scenes = {}
-        self.res = res
         self.config: Config = config
         self.isRunning = False
         self.screen = None
@@ -21,8 +21,8 @@ class Game:
         pygame.mixer.init()
 
     def init(self):
-        pygame.display.set_icon(self.res.loadImage("logo"))
-        self.screen = pygame.display.set_mode((1280, 720))
+        pygame.display.set_icon(res.loadImage("logo"))
+        self.screen = pygame.display.set_mode((self.config.windowWidth, self.config.windowHeight))
         self.clock = pygame.time.Clock()
         self.mixer = pygame.mixer.music
         self.mixer.set_volume(self.config.volume)
@@ -59,10 +59,10 @@ class Game:
 
     def setScene(self, name: str):
         if self.currentScene is not None:
-            self.currentScene.onExit()
+            self.currentScene.onExitScene()
         self.currentScene = self.scenes.get(name)
         if self.currentScene is not None:
-            self.currentScene.onEnter()
+            self.currentScene.onEnterScene()
 
     def addScene(self, name: str, scene: Scene):
         self.scenes[name] = scene
@@ -72,8 +72,22 @@ class Game:
 
     def playSound(self, name):
         try:
-            self.mixer.load(self.res.getSoundPath(name))
+            self.mixer.load(res.getSoundPath(name))
             self.mixer.play(-1)
         except Exception as e:
             print("😞 No se pudo cargar audio " +
-                  self.res.getSoundPath(name), e)
+                  res.getSoundPath(name), e)
+
+    def loadSettings(self):
+        try:
+            with open('saves/player.save', 'r') as infile:
+                data = json.load(infile)
+                self.player.name = data.get('name')
+                print(self.player.name)
+        except Exception:
+            print('fuxk')
+            pass
+
+    def saveSettings(self):
+        with open('saves/player.save', 'w') as outfile:
+            json.dump(dict(name=self.player.name), outfile)

@@ -1,4 +1,6 @@
 import pygame
+import core.ResourceManager as res
+
 from core.Character import Character
 
 
@@ -12,18 +14,18 @@ class Player(Character):
     isCollide = False
     lastVelocity = [0, 0]
     objectCollition = None
-    action = "stand_down"
     hasChanged = True
 
     def __init__(self, game, position, name):
         super().__init__(game)
         self.set_name(name)
-        self.loadAnimation(game.res.getRandomCharAnimFile(), game.res)
+        self.loadAnimation(res.getRandomCharAnimFile())
         self.x, self.y = position
         self.width = 34
         self.height = 56
         self.timeStep = 100
         self.colliding = []
+        self.currentClip = "stand_down"
 
     def move(self, direction):
         if direction == "up":
@@ -44,12 +46,11 @@ class Player(Character):
         if direction == "stand_left":
             self.velocity = [0, 0]
 
-        self.action = direction
+        self.currentClip = direction
         self.hasChanged = True
 
     def update(self):
-        super().update(self.action)
-        # if self.action is not None:
+        super().update()
         if self.lastVelocity != self.velocity:
             self.x += self.velocity[0]
             self.y += self.velocity[1]
@@ -68,7 +69,7 @@ class Player(Character):
         this.x += self.velocity[0]
         this.y += self.velocity[1]
         self.colliding = this.collidelistall(listRect)
-        print(self.colliding)
+        # print(self.colliding)
         if self.colliding != []:
             self.velocity = [0, 0]
 

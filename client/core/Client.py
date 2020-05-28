@@ -1,8 +1,8 @@
 import zmq
 import json
 
-class Client:
 
+class Client:
     def __init__(self, config):
         self.id = None
         self.context = None
@@ -43,8 +43,8 @@ class Client:
 
     def __read(self):
         return self.socket.recv_json()
-    
-    def sendDict(self, data, ignoreState = False):
+
+    def sendDict(self, data, ignoreState=False):
         if (not ignoreState) and (not self.connected):
             print('❌ No se ha conectado al servidor. No se puede enviar mensaje')
             raise Exception('Trying to send without connection')
@@ -54,8 +54,8 @@ class Client:
     # este no debe usar `try` para permitir generar excepcion en connect
     def getId(self, name):
         id = self.sendDict(dict(
-            command = 'createPlayer',
-            data = name
+            command='createPlayer',
+            data=name
         ), True)
         if id is None:
             print('👎 ID nulo')
@@ -63,22 +63,22 @@ class Client:
 
     def getStatus(self):
         return self.sendDict(dict(
-            command = 'act',
-            id = self.id
+            command='act',
+            id=self.id
         ))
 
     def sendPlayerStatus(self, player):
         return self.sendDict(dict(
-            command = 'update',
-            id = self.id,
-            data = player.toDict()
+            command='update',
+            id=self.id,
+            data=player.toDict()
         ))
 
     def goodBye(self):
         print('😥 cerrando conexión con el servidor!')
         return self.sendDict(dict(
-            command = 'bye',
-            id = self.id
+            command='bye',
+            id=self.id
         ))
 
     def disconnect(self):
