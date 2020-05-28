@@ -40,6 +40,7 @@ class Player(Character):
             else:
                 self.currentClip = "stand_down" if self.velocity[1] > 0 else "stand_up"
             self.velocity = [0, 0]
+        self.hasChanged = True
 
     # def move(self, direction):
     #     if direction == "up":

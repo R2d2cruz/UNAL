@@ -21,10 +21,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="6f659020-7adf-4bc9-9be9-8756714b3afd" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/client/assets/sprites/T-799.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/constants.py" beforeDir="false" afterPath="$PROJECT_DIR$/client/constants.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/core/ResourceManager.py" beforeDir="false" afterPath="$PROJECT_DIR$/client/core/ResourceManager.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/Player.py" beforeDir="false" afterPath="$PROJECT_DIR$/client/Player.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/scenes/Playground.py" beforeDir="false" afterPath="$PROJECT_DIR$/client/scenes/Playground.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -194,7 +192,7 @@
       <workItem from="1590613955082" duration="1833000" />
       <workItem from="1590675132184" duration="6133000" />
       <workItem from="1590693596639" duration="192000" />
-      <workItem from="1590695569042" duration="717000" />
+      <workItem from="1590695569042" duration="1030000" />
     </task>
     <servers />
   </component>
