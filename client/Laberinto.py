@@ -4,6 +4,7 @@ from copy import copy
 from core.Game import Game
 from core.Map import Map
 from core.AnimatedEntity import AnimatedEntity
+from core.Character import Character
 from Objects import Wall
 
 
@@ -21,10 +22,16 @@ class Laberinto(Map):
             fire.y = 0
             self.objects.append(fire)
 
+        for i in range(1, 5):
+            character = Character()
+            character.loadAnimation(res.getRandomCharAnimFile())
+            self.characters.append(character)
+
     def render(self, screen, camera):
         super().render(screen, camera)
-        for k in self.characters:
-            k.render(screen, camera)
+        #for k in self.characters:
+        #    k.render(screen, camera)
+
 
     def createWalls(self, fileName: str):
         objects = self.loadMap(fileName)

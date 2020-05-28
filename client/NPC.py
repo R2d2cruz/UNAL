@@ -24,7 +24,7 @@ class NPC(Character):
         self.change_reference_point(reference)
         self.frame = 0
 
-    def update(self):
+    def update(self, deltaTime: float):
         self.x += self.velocity[0]
         self.y += self.velocity[1]
 

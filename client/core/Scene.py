@@ -34,7 +34,7 @@ class Scene:
     def handleMessage(self, message):
         pass
 
-    def update(self):
+    def update(self, deltaTime: float):
         pass
 
     def render(self, screen):

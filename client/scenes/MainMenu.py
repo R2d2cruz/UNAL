@@ -55,11 +55,11 @@ class MainMenu(Scene):
     def handleMessage(self, message):
         pass
 
-    def update(self):
+    def update(self, deltaTime: float):
         for box in self.controls:
-            box.update()
+            box.update(deltaTime)
 
-    def render(self, screen):
+    def render(self, screen: pygame.Surface):
         screen.fill((30, 30, 30))
         for control in self.controls:
             control.render(screen)

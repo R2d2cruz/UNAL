@@ -2,7 +2,7 @@ import pygame
 
 
 class Entity(pygame.sprite.Sprite):
-    def __init__(self):
+    def __init__(self, *groups):
         super().__init__()
         self.image = None
         self.name = None
@@ -40,7 +40,7 @@ class Entity(pygame.sprite.Sprite):
     def height(self, height):
         self.rect.height = height
 
-    def update(self):
+    def update(self, deltaTime: float):
         pass
 
     def render(self, screen, camera=None):

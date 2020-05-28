@@ -16,7 +16,7 @@ class Control:
     def isActive(self):
         return self.__active
 
-    def update(self):
+    def update(self, deltaTime: float):
         pass
 
     def render(self, screen):

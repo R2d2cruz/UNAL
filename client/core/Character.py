@@ -5,11 +5,10 @@ from core.MovingEntity import MovingEntity
 
 
 class Character(MovingEntity):
-    def __init__(self, game, *groups):
+    def __init__(self, *groups):
         super().__init__(*groups)
         self.__nameSurface = None
         self.name = None
-        self.game = game
         self.traductor = {
             "stand_up": "stu",
             "stand_down": "std",
@@ -24,8 +23,8 @@ class Character(MovingEntity):
         self.__color = (0, 0, 0)
         self.__nameRect = pygame.Rect(0, 0, 0, 0)
 
-    def update(self):
-        super().update()
+    def update(self, deltaTime: float):
+        super().update(deltaTime)
         self.__nameRect.x, self.__nameRect.y = (self.x + (34 - self.__nameRect.width) / 2, self.y - 14)
 
     def render(self, screen, camera):
@@ -50,3 +49,6 @@ class Character(MovingEntity):
             self.__nameSurface = None
             self.__nameRect = None
             self.name = None
+
+    def collitions(self, rect: pygame.Rect):
+        pass

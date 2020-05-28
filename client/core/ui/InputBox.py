@@ -32,7 +32,7 @@ class InputBox(Control):
         else:
             self.rect.w = max(self.maxWidth, self.__surface.get_width() + (self.__padding * 2))
 
-    def update(self):
+    def update(self, deltaTime: float):
         # TODO: self.caret.update()
         pass
 

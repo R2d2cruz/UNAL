@@ -42,7 +42,7 @@ class Wander(NPC):
             3: (251, 1, 32, 56)
         }
 
-    def update(self):
+    def update(self, deltaTime: float):
         if [self.x, self.y] == self.points[self.index]:
             self.index += 1
             if self.index == len(self.points):

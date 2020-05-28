@@ -49,8 +49,8 @@ class Player(Character):
         self.currentClip = direction
         self.hasChanged = True
 
-    def update(self):
-        super().update()
+    def update(self, deltaTime: float):
+        super().update(deltaTime)
         if self.lastVelocity != self.velocity:
             self.x += self.velocity[0]
             self.y += self.velocity[1]

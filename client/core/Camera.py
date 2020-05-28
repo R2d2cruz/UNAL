@@ -35,7 +35,7 @@ class Camera:
         elif type(rect) == tuple:
             return (rect[0] + self.view.x, rect[1] + self.view.y)
 
-    def update(self):
+    def update(self, deltaTime: float):
         if self.target is not None:
             # calcular  la posicion topLeft de la camara
             self.offsetX = -int(self.target.x + (self.target.width / 2))

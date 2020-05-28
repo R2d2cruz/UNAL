@@ -1,4 +1,5 @@
 import pygame
+import core.ResourceManager as res
 from core.Character import Character
 
 
@@ -16,7 +17,7 @@ class OnlinePlayer(Character):
             "wlr": "right"
         }
         self.set_name(data.get("n"))
-        self.loadAnimation(game.res.getRandomCharAnimFile(), game.res)
+        self.loadAnimation(res.getRandomCharAnimFile())
         self.movement = self.traductor.get(data.get("a"))
         self.x = data.get("x")
         self.y = data.get("y")
@@ -29,6 +30,6 @@ class OnlinePlayer(Character):
         self.y = data.get("y")
         self.action = self.traductor.get(data.get("a"))
 
-    def update(self, *args):
+    def update(self, deltaTime: float):
         if self.action is not None:
-            super().update(self.action)
+            super().update(deltaTime)

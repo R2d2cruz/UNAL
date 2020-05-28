@@ -11,8 +11,8 @@ class Animation:
         self.N = len(frames)
         self.loop = loop
 
-    def update(self, delta):
-        self.time += delta
+    def update(self, deltaTime: float):
+        self.time += deltaTime
 
     def reset(self):
         self.time = 0

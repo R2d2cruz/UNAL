@@ -42,9 +42,10 @@ class AnimatedEntity(Entity):
         #self.width = frameRect[2]
         #self.height = frameRect[3]
 
-    def update(self):
-        t = pygame.time.get_ticks()
-        deltaTime = (t - self.lastFrameTime)
-        if deltaTime >= self.timeStep:
-            self.lastFrameTime = t
+    def update(self, deltaTime: float):
+        # ojo, esto se totea cuando al character no se le setea animacion
+        self.lastFrameTime += deltaTime
+        if self.lastFrameTime >= self.timeStep:
+            self.lastFrameTime -= self.timeStep
             self.clip(self.currentClip)
+            

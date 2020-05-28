@@ -36,8 +36,8 @@ class Game:
         if not self.client.connected:
             self.currentScene.handleMessage('diconnected')
 
-    def update(self):
-        self.currentScene.update()
+    def update(self, deltaTime: float):
+        self.currentScene.update(deltaTime)
 
     def render(self):
         self.currentScene.render(self.screen)
@@ -46,9 +46,12 @@ class Game:
 
     def run(self):
         self.isRunning = True
+        lastFrameTime = 0
         while self.isRunning:
             self.handleEvents()
-            self.update()
+            t = pygame.time.get_ticks()
+            self.update((t - lastFrameTime))
+            lastFrameTime = t
             self.render()
 
     def quit(self):

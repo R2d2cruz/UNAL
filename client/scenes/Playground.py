@@ -1,11 +1,11 @@
 import pygame
+import core.ResourceManager as res
 from core.Scene import Scene
 from core.Map import Map
 from core.Camera import Camera
 from core.Game import Game
 from Player import Player
 from OnlinePlayer import OnlinePlayer
-from core.ResourceManager import getText, getFont
 
 
 class Playground(Scene):
@@ -18,11 +18,11 @@ class Playground(Scene):
         self.map = map
         self.paused = False
         self.player = Player(game, (100, 100), None)
-        game.setPlayer(self.player)
-        self.font = getFont('minecraft', 32)
+        self.font = res.getFont('minecraft', 32)
         self.label = self.font.render('Juego en pausa por problemas conexión. Espere un momento', True, (255, 64, 64))
         self.camera = Camera(game.screen.get_width(), game.screen.get_height(), self.map.width, self.map.height)
         self.camera.target = self.player
+        game.setPlayer(self.player)
 
     def handleEvent(self, event):
         if event.type == pygame.KEYDOWN:
@@ -37,7 +37,7 @@ class Playground(Scene):
         if message.type == 'diconnected':
             self.paused = True
 
-    def update(self):
+    def update(self, deltaTime: float):
         if not self.paused:
             self.collitions()
             if self.player.hasChanged:
@@ -45,18 +45,18 @@ class Playground(Scene):
                 self.game.client.sendPlayerStatus(self.player)
             self.updateOtherPlayers()
             for i in self.players.keys():
-                self.players.get(i).update()
+                self.players.get(i).update(deltaTime)
             for char in self.map.characters:
-                char.update()
+                char.update(deltaTime)
             for obj in self.map.objects:
-                obj.update()
-            self.player.update()
+                obj.update(deltaTime)
+            self.player.update(deltaTime)
         else:
             # mostrar un mensaje para idicar que el juego esta pausado y la razon
             pass
-        self.camera.update()
+        self.camera.update(deltaTime)
 
-    def render(self, screen):
+    def render(self, screen: pygame.Surface):
         screen.fill((0, 0, 0))
 
         self.map.render(screen, self.camera)
