@@ -3,6 +3,7 @@ anims = {
     "John": "sprites/john.json",
     "Charly": "sprites/charly.json",
     "fire": "sprites/fire.json",
+    "Bob": "sprites/T-799.json",
 }
 
 imgs = {

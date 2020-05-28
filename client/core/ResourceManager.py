@@ -69,7 +69,7 @@ def loadImageByPath(fileName: str, rect=None):
 
 
 def getRandomCharAnimFile():
-    charFile = choice(('Henry', 'John', 'Charly'))
+    charFile = choice(('Henry', 'John', 'Charly', 'Bob'))
     return getAnimFile(charFile)
 
 
