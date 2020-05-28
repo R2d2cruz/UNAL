@@ -67,9 +67,7 @@ class MainMenu(Scene):
 
     def onEnterScene(self):
         if (self.game.player is not None) and (self.game.player.name is None):
-            print('loading')
             self.game.loadSettings()
-        print('setting the name', self.game.player.name)
         self.inputBox1.text = self.game.player.name
 
     def onGoPlay(self, sender):
@@ -80,9 +78,11 @@ class MainMenu(Scene):
             if not self.game.client.connect(self.game.player.name):
                 # TODO: en vez de finaizar aqui simplemente se muestra un mensaje en pantalla indicandole al usuario que no se pudo conectar
                 # TODO: un boton en la pantalla permite salir, esta linea va allá
+                res.playSound('error')
                 pass
         if self.game.client.connected:
-            self.game.setScene("play")
+            res.playSound('title')
+            self.game.setScene('play')
 
     def onEnterName(self, sender):
         pass

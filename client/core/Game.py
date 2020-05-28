@@ -24,8 +24,7 @@ class Game:
         pygame.display.set_icon(res.loadImage("logo"))
         self.screen = pygame.display.set_mode((self.config.windowWidth, self.config.windowHeight))
         self.clock = pygame.time.Clock()
-        self.mixer = pygame.mixer.music
-        self.mixer.set_volume(self.config.volume)
+        pygame.mixer.music.set_volume(self.config.volume)
 
     def handleEvents(self):
         for event in pygame.event.get():
@@ -73,22 +72,12 @@ class Game:
     def setPlayer(self, player):
         self.player = player
 
-    def playSound(self, name):
-        try:
-            self.mixer.load(res.getSoundPath(name))
-            self.mixer.play(-1)
-        except Exception as e:
-            print("😞 No se pudo cargar audio " +
-                  res.getSoundPath(name), e)
-
     def loadSettings(self):
         try:
             with open('saves/player.save', 'r') as infile:
                 data = json.load(infile)
                 self.player.name = data.get('name')
-                print(self.player.name)
         except Exception:
-            print('fuxk')
             pass
 
     def saveSettings(self):

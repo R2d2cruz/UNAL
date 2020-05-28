@@ -1,7 +1,7 @@
 import signal
 import sys
 # noinspection PyUnresolvedReferences
-import core.ResourceManager
+import core.ResourceManager as res 
 # noinspection PyUnresolvedReferences
 from constants import imgs, sounds, fonts, anims, tilesets, maps
 # noinspection PyUnresolvedReferences
@@ -24,14 +24,14 @@ def signal_handler(sig, frame):
 
 signal.signal(signal.SIGINT, signal_handler)
 
-core.ResourceManager.init('client/assets/', imgs, sounds, fonts, anims, tilesets, maps)
+res.init('client/assets/', imgs, sounds, fonts, anims, tilesets, maps)
 game = Game(Config('client/config.json'))
 game.init()
 laberinto = Laberinto(game)
 game.addScene("main", MainMenu(game))
 game.addScene("play", Playground(game, laberinto))
 game.setScene("main")
-# game.playSound('background1')
+res.playSong('background1')
 
 game.run()
 game.quit()
