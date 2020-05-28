@@ -23,15 +23,31 @@ class Playground(Scene):
         self.camera = Camera(game.screen.get_width(), game.screen.get_height(), self.map.width, self.map.height)
         self.camera.target = self.player
         game.setPlayer(self.player)
+        self.keysPressed = {}
 
     def handleEvent(self, event):
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
                 self.game.setScene("main")
             else:
-                self.player.move(self.KEYDOWN.get(event.key))
+                self.keysPressed[event.key] = True
+                # self.player.move(self.KEYDOWN.get(event.key))
         elif event.type == pygame.KEYUP:
-            self.player.move((self.KEYUP.get(event.key)))
+            self.keysPressed[event.key] = False
+            # self.player.move((self.KEYUP.get(event.key)))
+        self.evalMove()
+
+    def evalMove(self):
+        vectorMov = [0, 0]
+        if self.keysPressed.get(pygame.K_RIGHT):
+            vectorMov[0] += 1
+        if self.keysPressed.get(pygame.K_LEFT):
+            vectorMov[0] -= 1
+        if self.keysPressed.get(pygame.K_DOWN):
+            vectorMov[1] += 1
+        if self.keysPressed.get(pygame.K_UP):
+            vectorMov[1] -= 1
+        self.player.move(vectorMov, vectorMov != [0, 0])
 
     def handleMessage(self, message):
         if message.type == 'diconnected':
