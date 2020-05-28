@@ -1,5 +1,6 @@
 import json
 
+
 # movements:
 # std = stand down
 # stu = stand up
@@ -27,9 +28,9 @@ class Player:
 
     def toDict(self):
         return dict(
-            id = self.id,
-            x = self.x,
-            y = self.y,
-            a = self.movement,
-            n = self.name
+            id=self.id,
+            x=self.x,
+            y=self.y,
+            a=self.movement,
+            n=self.name
         )

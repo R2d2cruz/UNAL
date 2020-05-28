@@ -25,11 +25,7 @@ class OnlinePlayer(Character):
         self.height = 32
         self.rect.topleft = (self.x, self.y)
 
-    def setPos(self, data, *args):
+    def setPos(self, data):
         self.x = data.get("x")
         self.y = data.get("y")
-        self.action = self.traductor.get(data.get("a"))
-
-    def update(self, deltaTime: float):
-        if self.action is not None:
-            super().update(deltaTime)
+        self.currentClip = self.traductor.get(data.get("a"))
