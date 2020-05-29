@@ -1,7 +1,6 @@
 import pygame
 from random import choice
 
-
 __soundLibrary = {}
 
 resPath = None
@@ -11,6 +10,7 @@ fonts = None
 anims = None
 tilesets = None
 maps = None
+enableMusic = None
 
 
 def init(resPathVal: str, imgsVal: {}, soundsVal: {}, fontsVal: {}, animsVal: {}, tilesetsVal: {}, mapsVal: {}):
@@ -21,6 +21,8 @@ def init(resPathVal: str, imgsVal: {}, soundsVal: {}, fontsVal: {}, animsVal: {}
     global anims
     global tilesets
     global maps
+    global enableMusic
+    enableMusic = True
     resPath = resPathVal
     imgs = imgsVal
     sounds = soundsVal
@@ -80,18 +82,20 @@ def getText(text, font, col):
     surface = font.render(text, True, col)
     return (surface, pygame.Rect(0, 0, surface.get_width(), surface.get_height()))
 
+
 def playSound(name):
     global __soundLibrary
     try:
         sound = __soundLibrary.get(name)
         if sound == None:
-            #canonicalized_path = path.replace('/', os.sep).replace('\\', os.sep)
+            # canonicalized_path = path.replace('/', os.sep).replace('\\', os.sep)
             sound = pygame.mixer.Sound(getSoundPath(name))
             __soundLibrary[name] = sound
         sound.set_volume(0.5)
         sound.play()
     except Exception as e:
-        print("😞 No se pudo cargar audio " +res.getSoundPath(name), e)
+        print("😞 No se pudo cargar audio " + getSoundPath(name), e)
+
 
 def playSong(name, loops=-1):
     try:
@@ -99,6 +103,19 @@ def playSong(name, loops=-1):
         pygame.mixer.music.play(loops)
     except Exception as e:
         print("😞 No se pudo cargar audio " + getSoundPath(name), e)
+
+
+def flipEnableMusic():
+    global enableMusic
+    enableMusic = not enableMusic
+    if enableMusic:
+        pygame.mixer.unpause()
+        pygame.mixer.music.unpause()
+    else:
+        pygame.mixer.music.pause()
+        pygame.mixer.pause()
+    print(enableMusic)
+    return enableMusic
 
 # def playRandomSong():
 #     global __currentlySong, __songs
