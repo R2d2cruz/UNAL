@@ -4,14 +4,16 @@ from core.Vector2D import EPSILON, Vector2D, truncate, normalize
 
 
 class MovingEntity(AnimatedEntity):
-    def __init__(self, *groups):
+    def __init__(self, position, *groups):
         super().__init__(*groups)
-        self.__steering = SteeringBehavior()
+        self.__steering = SteeringBehavior(self)
         self.maxSpeed = 1
         self.velocity = Vector2D(0.0, 0.0)
-        self.oldPos = Vector2D(0.0, 0.0)
         self.heading = Vector2D(0.0, 1.0)
         self.speed = 0
+        self.hasChanged = True
+        self.x, self.y = position
+        self.oldPos = Vector2D(self.x, self.y)
 
     def update(self, deltaTime: float):
         super().update(deltaTime)
@@ -23,7 +25,8 @@ class MovingEntity(AnimatedEntity):
         self.velocity.x += steeringForce.x * seconds
         self.velocity.y += steeringForce.y * seconds
         self.velocity = truncate(self.velocity, self.maxSpeed)
-        self.oldPos = [self.x, self.y]
+        self.oldPos.x = self.x
+        self.oldPos.y = self.y
         self.x += self.velocity.x * seconds
         self.y += self.velocity.y * seconds
         if self.velocity.isGtEpsilon():
@@ -33,5 +36,5 @@ class MovingEntity(AnimatedEntity):
 
     def stop(self):
         self.velocity.setZero()
-        self.x = self.oldPos[0]
-        self.y = self.oldPos[1]
+        self.x = self.oldPos.x
+        self.y = self.oldPos.y

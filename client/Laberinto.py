@@ -23,14 +23,14 @@ class Laberinto(Map):
             self.objects.append(fire)
 
         for i in range(1, 5):
-            character = Character()
-            character.loadAnimation(res.getRandomCharAnimFile())
+            name = res.getRandomCharAnimName()
+            character = Character(name, name, (320 * i, 320 * i))
             self.characters.append(character)
 
     def render(self, screen, camera):
         super().render(screen, camera)
-        #for k in self.characters:
-        #    k.render(screen, camera)
+        for k in self.characters:
+            k.render(screen, camera)
 
 
     def createWalls(self, fileName: str):

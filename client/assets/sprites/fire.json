@@ -2,6 +2,9 @@
   "name": "Fuego",
   "image": "images/torch1.png",
   "default_sprite": "on",
+  "width": 34,
+  "height": 56, 
+  "timestep": 100,
   "sprites": {
       "on": [
         [ 0, 0, 22, 26],
