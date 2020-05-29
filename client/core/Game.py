@@ -5,7 +5,7 @@ import core.ResourceManager as res
 from core.Config import Config
 from core.Client import Client
 from core.Scene import Scene
-
+from core.Message import Message
 
 class Game:
     def __init__(self, config: Config):
@@ -33,7 +33,7 @@ class Game:
                 continue
             self.currentScene.handleEvent(event)
         if not self.client.connected:
-            self.currentScene.handleMessage('diconnected')
+            self.currentScene.handleMessage(Message(Message.DISCONNECTED))
 
     def update(self, deltaTime: float):
         self.currentScene.update(deltaTime)
