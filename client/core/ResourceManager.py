@@ -12,6 +12,7 @@ tilesets = None
 maps = None
 enableMusic = None
 enableSound = None
+namesAnimList = ['Bob', 'Henry', 'John', 'Charly']
 
 
 def init(resPathVal: str, imgsVal: {}, soundsVal: {}, fontsVal: {}, animsVal: {}, tilesetsVal: {}, mapsVal: {}):
@@ -75,10 +76,13 @@ def loadImageByPath(fileName: str, rect=None):
     else:
         return image
 
+def getRandomCharAnimName():
+    global namesAnimList
+    return choice(namesAnimList)
 
 def getRandomCharAnimFile():
-    charFile = choice(('Henry', 'John', 'Charly', 'Bob'))
-    return getAnimFile(charFile)
+    global namesAnimList
+    return getAnimFile(getRandomCharAnimName())
 
 
 def getText(text, font, col):

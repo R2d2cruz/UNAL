@@ -1,7 +1,24 @@
-from core.Vector2D import Vector2D
+import math
+import random
+from core.Vector2D import *
+
+
+# el radio limite para wander
+WANDER_RADIUS = 1.2
+# distancia de proyeccion del circulo de wnader frente a la entidad
+WANDER_DIST = 2.0
+# maximo desplazamiento en el circulo por segundo
+WANDER_JITTER_PER_SECOND = 80.0
+
+def randomClamped():
+    return random.random() - random.random()
 
 class SteeringBehavior:
-    def __init__(self):
+    def __init__(self, agent):
+        theta = random.random() * math.pi * 2
+        self.agent = agent
+        self.wanderTarget = Vector2D(WANDER_RADIUS * math.cos(theta), WANDER_RADIUS * math.sin(theta))
+        self.wanderJitter = WANDER_JITTER_PER_SECOND
         pass
 
     # retorna un vector para mover la entidad hacia la posicion dada
@@ -35,9 +52,24 @@ class SteeringBehavior:
         pass
 
     # el wander que tanto necesitas hijo
-    @staticmethod
-    def wander() -> Vector2D:
-        pass
+    def wander(self, deltatime) -> Vector2D:
+        jitter = self.wanderJitter * deltatime
+        self.wanderTarget += Vector2D(randomClamped() * jitter, randomClamped() * jitter)
+        self.wanderTarget = normalize(self.wanderTarget)
+        self.wanderTarget.x *= WANDER_RADIUS
+        self.wanderTarget.y *= WANDER_RADIUS
+
+        target = Vector2D(self.wanderTarget.x + WANDER_DIST, self.wanderTarget.y + 0)
+
+        # //project the target into world space
+        # Vector2D Target = PointToWorldSpace(target,
+        #                                     m_pVehicle->Heading(),
+        #                                     m_pVehicle->Side(), 
+        #                                     m_pVehicle->Pos());
+
+        # ir hacia el target
+        return Vector2D(target - self.agent.x, target.y - self.agent.y); 
+
 
     # evadir varios obstaculos
     @staticmethod

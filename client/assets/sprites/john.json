@@ -2,6 +2,9 @@
   "name": "John",
   "image": "images/chars/char2.png",
   "default_sprite": "stand_down",
+  "width": 34,
+  "height": 56, 
+  "timestep": 100,
   "sprites": {
       "stand_up": [
         [1, 1, 34, 56]

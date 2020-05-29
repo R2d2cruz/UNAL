@@ -27,18 +27,21 @@ class AnimatedEntity(Entity):
             sprites = data.get("sprites")
             for key in sprites:
                 self.clips[key] = sprites[key]
+        self.width = data.get("width")
+        self.height = data.get("height")
+        self.timeStep = data.get("timestep")
         self.currentClip = data.get("default_sprite")
-        self.clip(self.currentClip)
+        self.getNextFrame()
 
-    def get_frame(self, frame_set):
+    def getFrame(self, frameSet):
         self.frame += 1
-        if self.frame > (len(frame_set) - 1):
+        if self.frame > (len(frameSet) - 1):
             self.frame = 0
-        return frame_set[self.frame]
+        return frameSet[self.frame]
 
-    def clip(self, clipName: str):
-        clipFrame = self.clips.get(clipName)
-        frameRect = self.get_frame(clipFrame)
+    def getNextFrame(self):
+        clipFrame = self.clips.get(self.currentClip)
+        frameRect = self.getFrame(clipFrame)
         self.sheet.set_clip(pygame.Rect(frameRect))
         self.image = self.sheet.subsurface(self.sheet.get_clip())
         self.width = frameRect[2]
@@ -49,5 +52,30 @@ class AnimatedEntity(Entity):
         self.lastFrameTime += deltaTime
         if self.lastFrameTime >= self.timeStep:
             self.lastFrameTime -= self.timeStep
-            self.clip(self.currentClip)
-            
+            self.getNextFrame()
+
+
+# class Animation:
+#     frames = []
+#     lapse = 0
+#     N = 0
+#     loop = False
+#     time = 0
+
+#     def __init__(self, frames, lapse=1, loop=False):
+#         self.frames = frames
+#         self.lapse = lapse
+#         self.N = len(frames)
+#         self.loop = loop
+
+#     def update(self, deltaTime: float):
+#         self.time += deltaTime
+
+#     def reset(self):
+#         self.time = 0
+
+#     def getFrame(self, loop):
+#         n = int(self.time / self.lapse)
+#         if loop and n > self.N:
+#             n = n % self.N
+#         return self.frames[n - 1]

@@ -1,6 +1,5 @@
 import pygame
 import core.ResourceManager as res
-
 from core.Scene import Scene
 from core.Game import Game
 from core.ui.InputBox import InputBox
@@ -13,49 +12,59 @@ class MainMenu(Scene):
     def __init__(self, game: Game):
         super().__init__(game)
         self.font = res.getFont('minecraft', 36)
-
-        self.namesAnimList = ['Bob', 'Henry', 'John', 'Charly']
         self.index = 0
-
         rect = pygame.Rect(0, 0, 450, 80)
-
-        rect.center = (game.config.windowWidth / 4, game.config.windowHeight / 3)
-        self.buttonPlay = Button(rect.x, rect.y, rect.w, rect.h, self.font, 'Quiero jugar!')
+        rect.center = (game.config.windowWidth / 4,
+                       game.config.windowHeight / 3)
+        self.buttonPlay = Button(
+            rect.x, rect.y, rect.w, rect.h, self.font, 'Quiero jugar!')
         self.buttonPlay.onClick = self.onGoPlay
 
-        rect.center = (game.config.windowWidth / 4, game.config.windowHeight * 2 / 3)
-        self.buttonQuit = Button(rect.x, rect.y, rect.w, rect.h, self.font, 'Tengo miedo!, me salgo')
+        rect.center = (game.config.windowWidth / 4,
+                       game.config.windowHeight * 2 / 3)
+        self.buttonQuit = Button(
+            rect.x, rect.y, rect.w, rect.h, self.font, 'Tengo miedo!, me salgo')
         self.buttonQuit.onClick = self.onGoQuit
 
-        rect.center = (game.config.windowWidth * 3 / 4, - 55 + game.config.windowHeight * 2 / 3)
-        self.label1 = Label(rect.x, rect.y, rect.w, rect.h, self.font, 'Nombre del heroe:', (0, 128, 255))
-        
-        rect.center = (game.config.windowWidth * 3 / 4, game.config.windowHeight * 2 / 3)
+        rect.center = (game.config.windowWidth * 3 / 4, -
+                       55 + game.config.windowHeight * 2 / 3)
+        self.label1 = Label(rect.x, rect.y, rect.w, rect.h,
+                            self.font, 'Nombre del heroe:', (0, 128, 255))
+
+        rect.center = (game.config.windowWidth * 3 / 4,
+                       game.config.windowHeight * 2 / 3)
         self.inputBox1 = InputBox(rect.x, rect.y, rect.w, rect.h, self.font)
         self.inputBox1.onChange = self.onChangeName
 
         self.anim = AnimatedEntity()
-        self.anim.loadAnimation(res.getAnimFile(self.namesAnimList[self.index]))
+        self.anim.loadAnimation(res.getAnimFile(
+            res.namesAnimList[self.index]))
         self.anim.x, self.anim.y = ((game.config.windowWidth * 3 / 4) - (self.anim.width / 2),
                                     (game.config.windowHeight / 3) - (self.anim.height / 2))
         self.anim.currentClip = 'down'
 
         rect = pygame.Rect(0, 0, 256, 64)
-        rect.center = (game.config.windowWidth * 7 / 8, game.config.windowHeight / 8)
-        self.musicButton = Button(rect.x, rect.y, rect.w, rect.h, self.font, 'Music: ON')
+        rect.center = (game.config.windowWidth * 7 /
+                       8, game.config.windowHeight / 8)
+        self.musicButton = Button(
+            rect.x, rect.y, rect.w, rect.h, self.font, 'Music: ON')
         self.musicButton.onClick = self.onMusicButton
 
         rect.centerx = game.config.windowWidth * 5 / 8
-        self.soundButton = Button(rect.x, rect.y, rect.w, rect.h, self.font, 'Sounds: ON')
+        self.soundButton = Button(
+            rect.x, rect.y, rect.w, rect.h, self.font, 'Sounds: ON')
         self.soundButton.onClick = self.onSoundButton
 
         rect = pygame.Rect(0, 0, 64, 64)
-        rect.center = (game.config.windowWidth * 5 / 8, game.config.windowHeight / 3)
-        self.leftListButton = Button(rect.x, rect.y, rect.w, rect.h, self.font, '<')
+        rect.center = (game.config.windowWidth * 5 /
+                       8, game.config.windowHeight / 3)
+        self.leftListButton = Button(
+            rect.x, rect.y, rect.w, rect.h, self.font, '<')
         self.leftListButton.onClick = self.goToLeftList
 
         rect.centerx = game.config.windowWidth * 7 / 8
-        self.rightListButton = Button(rect.x, rect.y, rect.w, rect.h, self.font, '>')
+        self.rightListButton = Button(
+            rect.x, rect.y, rect.w, rect.h, self.font, '>')
         self.rightListButton.onClick = self.goToRightList
 
         self.done = False
@@ -100,8 +109,9 @@ class MainMenu(Scene):
 
     def onGoPlay(self, sender):
         # TODO: evaluar si se escribió un nombre valido y arrojar un error en pantalla si no
-        self.game.player.set_name(self.inputBox1.text)
-        self.game.player.loadAnimation(res.getAnimFile(self.namesAnimList[self.index]))
+        self.game.player.setName(self.inputBox1.text)
+        self.game.player.loadAnimation(
+            res.getAnimFile(res.namesAnimList[self.index]))
         self.game.saveSettings()
         if not self.game.client.connected:
             if not self.game.client.connect(self.game.player):
@@ -120,16 +130,18 @@ class MainMenu(Scene):
         res.playSound('select')
         self.index -= 1
         if self.index < 0:
-            self.index = len(self.namesAnimList) - 1
-        self.anim.loadAnimation(res.getAnimFile(self.namesAnimList[self.index]))
+            self.index = len(res.namesAnimList) - 1
+        self.anim.loadAnimation(res.getAnimFile(
+            res.namesAnimList[self.index]))
         self.anim.currentClip = 'down'
 
     def goToRightList(self, sender):
         res.playSound('select')
         self.index += 1
-        if self.index > len(self.namesAnimList) - 1:
+        if self.index > len(res.namesAnimList) - 1:
             self.index = 0
-        self.anim.loadAnimation(res.getAnimFile(self.namesAnimList[self.index]))
+        self.anim.loadAnimation(res.getAnimFile(
+            res.namesAnimList[self.index]))
         self.anim.currentClip = 'down'
 
     @staticmethod

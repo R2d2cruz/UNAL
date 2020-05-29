@@ -19,7 +19,7 @@ class Playground(Scene):
         super().__init__(game)
         self.map = map
         self.paused = False
-        self.player = Player(game, (100, 100), None, choice(["Bob", "Henry"]))
+        self.player = Player(None, choice(["Bob", "Henry"]), (100, 100))
         self.font = res.getFont('minecraft', 32)
         self.label = self.font.render('Juego en pausa por problemas conexión. Espere un momento', True, (255, 64, 64))
         self.camera = Camera(game.screen.get_width(), game.screen.get_height(), self.map.width, self.map.height)
@@ -57,10 +57,6 @@ class Playground(Scene):
 
     def update(self, deltaTime: float):
         if not self.paused:
-            self.collitions()
-            if self.player.hasChanged:
-                self.player.hasChanged = False
-                self.game.client.sendPlayerStatus(self.player)
             # self.updateOtherPlayers()
             # for i in self.players.keys():
             #     self.players.get(i).update(deltaTime)
@@ -69,6 +65,10 @@ class Playground(Scene):
             for obj in self.map.objects:
                 obj.update(deltaTime)
             self.player.update(deltaTime)
+            self.collitions()
+            if self.player.hasChanged:
+                self.player.hasChanged = False
+                self.game.client.sendPlayerStatus(self.player)
         else:
             # mostrar un mensaje para idicar que el juego esta pausado y la razon
             pass

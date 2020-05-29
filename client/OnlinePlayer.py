@@ -15,7 +15,7 @@ class OnlinePlayer(Character):
             "wll": "left",
             "wlr": "right"
         }
-        self.set_name(data.get("n"))
+        self.setName(data.get("n"))
         self.loadAnimation(res.getAnimFile(data.get("A")))
         self.movement = self.traductor.get(data.get("a"))
         self.x = data.get("x")
