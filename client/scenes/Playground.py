@@ -5,6 +5,7 @@ from core.Scene import Scene
 from core.Map import Map
 from core.Camera import Camera
 from core.Game import Game
+from core.Vector2D import Vector2D
 from Player import Player
 from OnlinePlayer import OnlinePlayer
 
@@ -39,16 +40,16 @@ class Playground(Scene):
         self.evalMove()
 
     def evalMove(self):
-        vectorMov = [0, 0]
+        vectorMov = Vector2D()
         if self.keysPressed.get(pygame.K_RIGHT):
-            vectorMov[0] += 1
+            vectorMov.x += 1
         if self.keysPressed.get(pygame.K_LEFT):
-            vectorMov[0] -= 1
+            vectorMov.x -= 1
         if self.keysPressed.get(pygame.K_DOWN):
-            vectorMov[1] += 1
+            vectorMov.y += 1
         if self.keysPressed.get(pygame.K_UP):
-            vectorMov[1] -= 1
-        self.player.move(vectorMov, vectorMov != [0, 0])
+            vectorMov.y -= 1
+        self.player.move(vectorMov)
 
     def handleMessage(self, message):
         if message.type == 'diconnected':
@@ -60,11 +61,11 @@ class Playground(Scene):
             if self.player.hasChanged:
                 self.player.hasChanged = False
                 self.game.client.sendPlayerStatus(self.player)
-            self.updateOtherPlayers()
-            for i in self.players.keys():
-                self.players.get(i).update(deltaTime)
-            for char in self.map.characters:
-                char.update(deltaTime)
+            # self.updateOtherPlayers()
+            # for i in self.players.keys():
+            #     self.players.get(i).update(deltaTime)
+            # for char in self.map.characters:
+            #     char.update(deltaTime)
             for obj in self.map.objects:
                 obj.update(deltaTime)
             self.player.update(deltaTime)
