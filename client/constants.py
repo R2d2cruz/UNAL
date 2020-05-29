@@ -28,10 +28,10 @@ tilesets = {
 
 sounds = {
     "background1": "sounds/medieval.ogg",
-    "title": "sounds/title.wav",
-    "error": "sounds/error.wav",
-    "select": "sounds/select.wav",
-    "hit-key": "sounds/hit-key.wav",
+    "title": "sounds/title.ogg",
+    "error": "sounds/error.ogg",
+    "select": "sounds/select.ogg",
+    "hit-key": "sounds/hit-key.ogg",
 }
 
 fonts = {

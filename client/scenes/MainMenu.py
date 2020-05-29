@@ -45,6 +45,10 @@ class MainMenu(Scene):
         self.musicButton = Button(rect.x, rect.y, rect.w, rect.h, self.font, 'Music: ON')
         self.musicButton.onClick = self.onMusicButton
 
+        rect.centerx = game.config.windowWidth * 5 / 8
+        self.soundButton = Button(rect.x, rect.y, rect.w, rect.h, self.font, 'Sounds: ON')
+        self.soundButton.onClick = self.onSoundButton
+
         rect = pygame.Rect(0, 0, 64, 64)
         rect.center = (game.config.windowWidth * 5 / 8, game.config.windowHeight / 3)
         self.leftListButton = Button(rect.x, rect.y, rect.w, rect.h, self.font, '<')
@@ -63,7 +67,8 @@ class MainMenu(Scene):
             self.anim,
             self.leftListButton,
             self.rightListButton,
-            self.musicButton
+            self.musicButton,
+            self.soundButton
         ]
 
     def handleEvent(self, event):
@@ -127,11 +132,16 @@ class MainMenu(Scene):
         self.anim.loadAnimation(res.getAnimFile(self.namesAnimList[self.index]))
         self.anim.currentClip = 'down'
 
-    def onChangeName(self, sender):
+    @staticmethod
+    def onChangeName(sender):
         res.playSound('hit-key')
 
-    def onMusicButton(self, sender: Button):
-        print("hello")
+    @staticmethod
+    def onMusicButton(sender: Button):
         enable = "ON" if res.flipEnableMusic() else "OFF"
-        print(enable)
         sender.text = "Music: " + enable
+
+    @staticmethod
+    def onSoundButton(sender: Button):
+        enable = "ON" if res.flipEnableSound() else "OFF"
+        sender.text = "Sounds: " + enable
