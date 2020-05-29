@@ -19,7 +19,8 @@ class Playground(Scene):
         super().__init__(game)
         self.map = map
         self.paused = False
-        self.player = Player(None, choice(["Bob", "Henry"]), (100, 100))
+        name = res.getRandomCharAnimName()
+        self.player = Player(name, name, (100, 100))
         self.font = res.getFont('minecraft', 32)
         self.label = self.font.render('Juego en pausa por problemas conexión. Espere un momento', True, (255, 64, 64))
         self.camera = Camera(game.screen.get_width(), game.screen.get_height(), self.map.width, self.map.height)
@@ -60,8 +61,8 @@ class Playground(Scene):
             # self.updateOtherPlayers()
             # for i in self.players.keys():
             #     self.players.get(i).update(deltaTime)
-            # for char in self.map.characters:
-            #     char.update(deltaTime)
+            for char in self.map.characters:
+                char.update(deltaTime)
             for obj in self.map.objects:
                 obj.update(deltaTime)
             self.player.update(deltaTime)

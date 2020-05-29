@@ -46,10 +46,10 @@ class Entity(pygame.sprite.Sprite):
     def render(self, screen, camera=None):
         if camera is None:
             screen.blit(self.image, self.rect)
-            pygame.draw.rect(screen, (255, 0, 0), self.rect, 1)
+            # pygame.draw.rect(screen, (255, 0, 0), self.rect, 1)
         else:
             screen.blit(self.image, camera.apply(self.rect))
-            pygame.draw.rect(screen, (255, 0, 0), camera.apply(self.rect), 1)
+            # pygame.draw.rect(screen, (255, 0, 0), camera.apply(self.rect), 1)
 
     def dispose(self):
         pass

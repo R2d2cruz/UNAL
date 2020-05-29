@@ -10,21 +10,21 @@ class Vector2D:
         self.y = y
 
     def __repr__(self):
-        return '<' + str(self.x) + ', ' + str(self.y)  + '>'
+        return '<' + str(self.x) + ', ' + str(self.y) + '>'
 
     def length(self) -> float:
         return sqrt(self.x * self.x + self.y * self.y)
 
     def lengthSq(self) -> float:
         return self.x * self.x + self.y * self.y
-      
+
     def setZero(self):
         self.x = 0.0
         self.y = 0.0
-      
+
     def isZero(self):
         return self.x == 0.0 and self.y == 0.0
-      
+
     def isGtEpsilon(self):
         return self.lengthSq() > EPSILON
 
@@ -40,6 +40,7 @@ def truncate(vector: Vector2D, maxLength: float) -> Vector2D:
     vector.x *= 3
     vector.y *= 3
     return vector
+
 
 def normalize(vector: Vector2D) -> Vector2D:
     l = vector.length()

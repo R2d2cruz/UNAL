@@ -32,7 +32,6 @@ class Laberinto(Map):
         for k in self.characters:
             k.render(screen, camera)
 
-
     def createWalls(self, fileName: str):
         objects = self.loadMap(fileName)
         real_objects = []
