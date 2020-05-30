@@ -5,7 +5,7 @@ from core.Entity import Entity
 
 
 class Rock(Entity):
-    def __init__(self, game, x, y, *groups):
+    def __init__(self, x, y, *groups):
         super().__init__(*groups)
         self.x = x
         self.y = y
@@ -15,7 +15,7 @@ class Rock(Entity):
 
 
 class Three(Entity):
-    def __init__(self, game, x, y, *groups):
+    def __init__(self, x, y, *groups):
         super().__init__(*groups)
         self.x = x
         self.y = y
@@ -25,7 +25,7 @@ class Three(Entity):
 
 
 class Wall(Entity):
-    def __init__(self, game, x, y, *groups):
+    def __init__(self, x, y, *groups):
         super().__init__(*groups)
         self.x = x
         self.y = y

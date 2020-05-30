@@ -1,7 +1,7 @@
 import json
 import pygame
 import core.ResourceManager as res
-from core import Game, ResourceManager
+from core import ResourceManager
 
 
 class Map:
@@ -20,12 +20,7 @@ class Map:
 
     ]
 
-    characters = [
-
-    ]
-
-    def __init__(self, game: Game):
-        self.game = game
+    def __init__(self):
         self.x = 0
         self.y = 0
         self.width = 0

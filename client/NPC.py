@@ -7,6 +7,5 @@ class NPC(Character):
     defense = 20
     HP = 500
     xp = 0
-    flag = "NPC"
 
 

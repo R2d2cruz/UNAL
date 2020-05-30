@@ -1,6 +1,6 @@
 from math import sqrt, atan2, pi
 
-EPSILON = 0.001
+EPSILON = 0.00001
 PI_QUARTER = (2 * pi / 8)
 
 
@@ -37,8 +37,8 @@ class Vector2D:
 def truncate(vector: Vector2D, maxLength: float) -> Vector2D:
     if vector.length() > maxLength:
         vector = normalize(vector)
-    vector.x *= 3
-    vector.y *= 3
+    vector.x *= maxLength
+    vector.y *= maxLength
     return vector
 
 

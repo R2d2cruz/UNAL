@@ -10,7 +10,6 @@ class Player(Character):
 
     def __init__(self, name, animationName, position):
         super().__init__(name, animationName, position)
-        self.colliding = []
         self.health = 20
         self.xp = 0
 
@@ -23,10 +22,10 @@ class Player(Character):
 
     # colisiones por listas de rectangulos
     def listCollitions(self, listRect: list):
-        self.colliding = self.get_rect().collidelistall(listRect)
-        if self.colliding != []:
+        colliding = self.get_rect().collidelistall(listRect)
+        if colliding != []:
             self.stop()
-            for i in self.colliding:
+            for i in colliding:
                 if listRect[i].flag == "item":
                     if listRect[i].effect(self):
                         listRect.pop(i)
