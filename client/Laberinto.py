@@ -6,6 +6,8 @@ from core.Map import Map
 from core.AnimatedEntity import AnimatedEntity
 from core.Character import Character
 from Objects import Wall
+from Item import HealthPotion
+from core.Vector2D import Vector2D
 
 
 class Laberinto(Map):
@@ -14,6 +16,8 @@ class Laberinto(Map):
         self.frames = self.loadTileset(res.getTileset("ts1"))
         self.objects = self.createWalls(res.getMap("walls"))
         self.map = self.loadMap(res.getMap("laberinto"))
+
+        self.objects.append(HealthPotion("freshPotion", (3, 2, 10, 12), Vector2D(160, 288), 20))
 
         for i in range(1, 10):
             fire = AnimatedEntity()
@@ -31,7 +35,6 @@ class Laberinto(Map):
         super().render(screen, camera)
         for k in self.characters:
             k.render(screen, camera)
-
 
     def createWalls(self, fileName: str):
         objects = self.loadMap(fileName)

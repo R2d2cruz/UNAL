@@ -9,6 +9,4 @@ class NPC(Character):
     xp = 0
     flag = "NPC"
 
-    def get_rect(self):
-        return pygame.Rect((self.rect.x, self.rect.y + 32, 34, 32))
 
