@@ -35,6 +35,11 @@ class Character(MovingEntity):
         self.currentClip = (
             'stand_' if self.velocity.isZero() else '') + direction
 
+    def stop(self):
+        super().stop()
+        self.__nameRect.x, self.__nameRect.y = (
+            self.x + (34 - self.__nameRect.width) / 2, self.y - 14)
+
     def render(self, screen, camera):
         super().render(screen, camera)
         if self.name is not None:

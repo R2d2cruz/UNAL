@@ -7,19 +7,56 @@ from core.Vector2D import *
 WANDER_RADIUS = 1.2
 # distancia de proyeccion del circulo de wnader frente a la entidad
 WANDER_DIST = 2.0
-# maximo desplazamiento en el circulo por segundo
-WANDER_JITTER_PER_SECOND = 80.0
+# cambio de angulo
+ANGLE_CHANGE = 1
+
 
 def randomClamped():
     return random.random() - random.random()
 
+
 class SteeringBehavior:
     def __init__(self, agent):
-        theta = random.random() * math.pi * 2
+        self.wanderAngle = random.random() * math.pi * 2
         self.agent = agent
-        self.wanderTarget = Vector2D(WANDER_RADIUS * math.cos(theta), WANDER_RADIUS * math.sin(theta))
-        self.wanderJitter = WANDER_JITTER_PER_SECOND
-        pass
+
+        self.wanderEnabled = False
+        self.weightWander = 1.0
+
+        self.seekEnabled = False
+        self.seekTarget = None
+        self.weightSeek = 1.0
+
+        self.fleeEnabled = False
+        self.fleeTarget = None
+        self.weightFlee = 1.0
+
+        self.arriveEnabled = False
+        self.arriveTarget = None
+        self.arriveDeceleration = None
+        self.weightArrive = 1.0
+
+        self.pursuitEnabled = False
+        self.pursuitTarget = None
+        self.weightPursuit = 1.0
+
+        self.offsetPursuitEnabled = False
+        self.offsetPursuitTarget = None
+        self.offsetPursuitDistance = None
+        self.weightOffsetPursuit = 1.0
+
+        self.interposeEnabled = False
+        self.interposeTargetA = None
+        self.interposeTargetB = None
+        self.weightInterpose = 1.0
+
+        self.hideEnabled = False
+        self.hideTarget = None
+        self.hideObtacles = None
+        self.weightHide = 1.0
+
+        self.followPathEnabled = False
+        self.weightFollowPath = 1.0
 
     # retorna un vector para mover la entidad hacia la posicion dada
     @staticmethod
@@ -52,23 +89,22 @@ class SteeringBehavior:
         pass
 
     # el wander que tanto necesitas hijo
-    def wander(self, deltatime) -> Vector2D:
-        jitter = self.wanderJitter * deltatime
-        self.wanderTarget += Vector2D(randomClamped() * jitter, randomClamped() * jitter)
-        self.wanderTarget = normalize(self.wanderTarget)
-        self.wanderTarget.x *= WANDER_RADIUS
-        self.wanderTarget.y *= WANDER_RADIUS
-
-        target = Vector2D(self.wanderTarget.x + WANDER_DIST, self.wanderTarget.y + 0)
-
-        # //project the target into world space
-        # Vector2D Target = PointToWorldSpace(target,
-        #                                     m_pVehicle->Heading(),
-        #                                     m_pVehicle->Side(), 
-        #                                     m_pVehicle->Pos());
-
-        # ir hacia el target
-        return Vector2D(target - self.agent.x, target.y - self.agent.y); 
+    def wander(self) -> Vector2D:
+        # calcular centro del circulo
+        circleCenter = Vector2D(self.agent.velocity.x, self.agent.velocity.y)
+        circleCenter = normalize(circleCenter)
+        circleCenter.x *= WANDER_DIST
+        circleCenter.y *= WANDER_DIST
+        # calcular fuerza de desplacamiento
+        displacement = Vector2D(0, -WANDER_RADIUS)
+        # cambiar la direccioncambiando el angulo
+        l = displacement.length()
+        displacement.x = math.cos(self.wanderAngle) * l
+        displacement.y = math.sin(self.wanderAngle) * l
+        # cambiar el wanderAngle un poquito para la siguiente iteracion
+        self.wanderAngle += random.random() * ANGLE_CHANGE - ANGLE_CHANGE * .5
+        # calcular la fuerza
+        return Vector2D(circleCenter.x + displacement.x, circleCenter.y + displacement.y)
 
 
     # evadir varios obstaculos
@@ -98,4 +134,42 @@ class SteeringBehavior:
 
     # la suma de todas las fuerzas que operan sobre la entidad
     def calculate(self) -> Vector2D:
-        return Vector2D()
+        steering = Vector2D()
+        if self.wanderEnabled:
+            wanderForce = self.wander()
+            steering.x += wanderForce.x * self.weightWander
+            steering.y += wanderForce.y * self.weightWander
+        # if self.seekEnabled:
+        #     steering += self.seek(self.seekTarget) * self.weightSeek
+
+        # if self.fleeEnabled:
+        #     steering += self.flee(self.fleeTarget) * self.weightFlee
+
+        # if self.arriveEnabled:
+        #     steering += self.arrive(self.arriveTarget,
+        #                             self.arriveDeceleration) * self.weightArrive
+
+        # if self.pursuitEnabled:
+        #     # assert(self.pursuitTarget && "pursuit target not assigned");
+        #     steering += self.pursuit(self.pursuitTarget) * self.weightPursuit
+
+        # if self.offsetPursuitEnabled:
+        #     # assert (self.offsetPursuitTarget && "pursuit target not assigned");
+        #     # assert (not self.offsetPursuitDistance.isZero() && "No offset assigned");
+        #     steering += self.offsetPursuit(self.offsetPursuitTarget,
+        #                                    self.offsetPursuitDistance) * self.weightOffsetPursuit
+
+        # if self.interposeEnabled:
+        #     # assert (self.interposeTargetA && self.interposeTargetB && "Interpose agents not assigned");
+        #     steering += self.interpose(self.interposeTargetA,
+        #                                self.interposeTargetB) * self.weightInterpose
+
+        # if self.hideEnabled:
+        #     # assert(self.hideTarget && "Hide target not assigned");
+        #     steering += self.hide(self.hideTarget,
+        #                           self.hideObtacles) * self.weightHide
+
+        # if self.followPathEnabled:
+        #     steering += self.followPath() * self.weightFollowPath
+
+        return truncate(steering, self.agent.maxForce)

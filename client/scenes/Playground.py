@@ -42,13 +42,13 @@ class Playground(Scene):
     def evalMove(self):
         vectorMov = Vector2D()
         if self.keysPressed.get(pygame.K_RIGHT):
-            vectorMov.x += 1
+            vectorMov.x += 10
         if self.keysPressed.get(pygame.K_LEFT):
-            vectorMov.x -= 1
+            vectorMov.x -= 10
         if self.keysPressed.get(pygame.K_DOWN):
-            vectorMov.y += 1
+            vectorMov.y += 10
         if self.keysPressed.get(pygame.K_UP):
-            vectorMov.y -= 1
+            vectorMov.y -= 10
         self.player.move(vectorMov)
 
     def handleMessage(self, message):
@@ -60,8 +60,8 @@ class Playground(Scene):
             # self.updateOtherPlayers()
             # for i in self.players.keys():
             #     self.players.get(i).update(deltaTime)
-            # for char in self.map.characters:
-            #     char.update(deltaTime)
+            for char in self.map.characters:
+                char.update(deltaTime)
             for obj in self.map.objects:
                 obj.update(deltaTime)
             self.player.update(deltaTime)

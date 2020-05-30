@@ -25,6 +25,7 @@ class Laberinto(Map):
         for i in range(1, 5):
             name = res.getRandomCharAnimName()
             character = Character(name, name, (320 * i, 320 * i))
+            character.steering.wanderEnabled = True
             self.characters.append(character)
 
     def render(self, screen, camera):
