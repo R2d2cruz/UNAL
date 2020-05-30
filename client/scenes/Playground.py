@@ -24,8 +24,9 @@ class Playground(Scene):
         super().__init__(game)
         self.map = map
         self.paused = False
+        name = res.getRandomCharAnimName()
+        self.player = Player(name, name, (100, 100))
 
-        self.player = Player(None, choice(["Bob", "Henry"]), (100, 100))
         for i in range(1, 5):
             name = res.getRandomCharAnimName()
             x = 6 * int(random() * 10 + 1) - 3
@@ -35,7 +36,6 @@ class Playground(Scene):
             character.steering.seekEnabled = True
             character.steering.seekTarget = self.player
             self.characters.append(character)
-
 
         self.font = res.getFont('minecraft', 32)
         self.label = self.font.render('Juego en pausa por problemas conexión. Espere un momento', True, (255, 64, 64))

@@ -76,9 +76,11 @@ def loadImageByPath(fileName: str, rect=None):
     else:
         return image
 
+
 def getRandomCharAnimName():
     global namesAnimList
     return choice(namesAnimList)
+
 
 def getRandomCharAnimFile():
     global namesAnimList

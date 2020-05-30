@@ -7,13 +7,11 @@ from core.Vector2D import EPSILON, Vector2D
 
 
 class Player(Character):
-    attack = 30
-    defense = 20
-    HP = 500
-    xp = 0
 
     def __init__(self, name, animationName, position):
         super().__init__(name, animationName, position)
+        self.health = 20
+        self.xp = 0
 
     def move(self, vector: Vector2D):
         self.velocity = vector
@@ -27,6 +25,10 @@ class Player(Character):
         colliding = self.get_rect().collidelistall(listRect)
         if colliding != []:
             self.stop()
+            for i in colliding:
+                if listRect[i].flag == "item":
+                    if listRect[i].effect(self):
+                        listRect.pop(i)
 
     def get_rect(self):
         return pygame.Rect((self.x, self.y + 24, 34, 32))

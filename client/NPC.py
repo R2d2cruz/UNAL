@@ -8,6 +8,4 @@ class NPC(Character):
     HP = 500
     xp = 0
 
-    def get_rect(self):
-        return pygame.Rect((self.rect.x, self.rect.y + 32, 34, 32))
 
