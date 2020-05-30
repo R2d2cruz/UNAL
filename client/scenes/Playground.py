@@ -1,5 +1,5 @@
 import pygame
-from random import choice
+from random import choice, random
 import core.ResourceManager as res
 from core.Scene import Scene
 from core.Map import Map
@@ -7,6 +7,7 @@ from core.Camera import Camera
 from core.Game import Game
 from core.Vector2D import Vector2D
 from Player import Player
+from core.Character import Character
 from OnlinePlayer import OnlinePlayer
 
 
@@ -15,11 +16,27 @@ class Playground(Scene):
     player = None
     players = {}
 
+    characters = [
+
+    ]
+
     def __init__(self, game: Game, map: Map):
         super().__init__(game)
         self.map = map
         self.paused = False
+
         self.player = Player(None, choice(["Bob", "Henry"]), (100, 100))
+        for i in range(1, 5):
+            name = res.getRandomCharAnimName()
+            x = 6 * int(random() * 10 + 1) - 3
+            y = 6 * int(random() * 10 + 1) - 3
+            character = Character(name, name, (32 * x, 32 * y))
+            #character.steering.wanderEnabled = True
+            character.steering.seekEnabled = True
+            character.steering.seekTarget = self.player
+            self.characters.append(character)
+
+
         self.font = res.getFont('minecraft', 32)
         self.label = self.font.render('Juego en pausa por problemas conexión. Espere un momento', True, (255, 64, 64))
         self.camera = Camera(game.screen.get_width(), game.screen.get_height(), self.map.width, self.map.height)
@@ -33,10 +50,8 @@ class Playground(Scene):
                 self.game.setScene("main")
             else:
                 self.keysPressed[event.key] = True
-                # self.player.move(self.KEYDOWN.get(event.key))
         elif event.type == pygame.KEYUP:
             self.keysPressed[event.key] = False
-            # self.player.move((self.KEYUP.get(event.key)))
         self.evalMove()
 
     def evalMove(self):
@@ -57,10 +72,10 @@ class Playground(Scene):
 
     def update(self, deltaTime: float):
         if not self.paused:
-            # self.updateOtherPlayers()
-            # for i in self.players.keys():
-            #     self.players.get(i).update(deltaTime)
-            for char in self.map.characters:
+            self.updateOtherPlayers()
+            for i in self.players.keys():
+                self.players.get(i).update(deltaTime)
+            for char in self.characters:
                 char.update(deltaTime)
             for obj in self.map.objects:
                 obj.update(deltaTime)
@@ -78,6 +93,8 @@ class Playground(Scene):
         screen.fill((0, 0, 0))
 
         self.map.render(screen, self.camera)
+        for k in self.characters:
+            k.render(screen, self.camera)
         for k in self.players.values():
             k.render(screen, self.camera)
         
@@ -88,11 +105,11 @@ class Playground(Scene):
 
     def collitions(self):
         self.player.listCollitions(self.map.objects)
-        # for obj in self.map.objects:
-        #     self.player.collitions(obj.rect)
-        for i in range(len(self.map.characters)):
-            self.player.collitions(self.map.characters[i])
-            self.map.characters[i].collitions(self.player)
+        for obj in self.map.objects:
+            self.player.collitions(obj.rect)
+        for i in range(len(self.characters)):
+            self.player.collitions(self.characters[i])
+            self.characters[i].collitions(self.player)
 
     def updateOtherPlayers(self):
         # que deberia ocurrir si durante el juego se desconecta?
@@ -103,7 +120,7 @@ class Playground(Scene):
                 if playerKey in playerKeys:
                     self.players[playerKey].setPos(playersData.get(playerKey))
                 else:
-                    self.players[playerKey] = OnlinePlayer(self.game, playersData.get(playerKey))
+                    self.players[playerKey] = OnlinePlayer(playersData.get(playerKey))
             # remover los que no se actualizaron
             toDelete = set(self.players.keys()).difference(playersData.keys())
             for playerKey in toDelete:

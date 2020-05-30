@@ -14,7 +14,6 @@ class Player(Character):
 
     def __init__(self, name, animationName, position):
         super().__init__(name, animationName, position)
-        self.colliding = []
 
     def move(self, vector: Vector2D):
         self.velocity = vector
@@ -25,8 +24,8 @@ class Player(Character):
 
     # colisiones por listas de rectangulos
     def listCollitions(self, listRect: list):
-        self.colliding = self.get_rect().collidelistall(listRect)
-        if self.colliding != []:
+        colliding = self.get_rect().collidelistall(listRect)
+        if colliding != []:
             self.stop()
 
     def get_rect(self):

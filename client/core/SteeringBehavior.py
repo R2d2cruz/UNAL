@@ -1,6 +1,6 @@
 import math
 import random
-from core.Vector2D import *
+from core.Vector2D import Vector2D, normalize, truncate
 
 
 # el radio limite para wander
@@ -59,9 +59,14 @@ class SteeringBehavior:
         self.weightFollowPath = 1.0
 
     # retorna un vector para mover la entidad hacia la posicion dada
-    @staticmethod
-    def seek(targetPos: Vector2D) -> Vector2D:
-        pass
+    def seek(self) -> Vector2D:
+        vector = normalize(
+            Vector2D(
+                (self.seekTarget.x - self.agent.x) * self.agent.maxSpeed,
+                (self.seekTarget.y - self.agent.y) * self.agent.maxSpeed
+            )
+        )
+        return Vector2D(vector.x - self.agent.velocity.x, vector.y - self.agent.velocity.y)
 
     # retorna un vector para mover la entidad lejos de la posicion dada
     @staticmethod
@@ -139,8 +144,11 @@ class SteeringBehavior:
             wanderForce = self.wander()
             steering.x += wanderForce.x * self.weightWander
             steering.y += wanderForce.y * self.weightWander
-        # if self.seekEnabled:
-        #     steering += self.seek(self.seekTarget) * self.weightSeek
+        if self.seekEnabled:
+            seekForce = self.seek()
+            steering.x += seekForce.x * self.weightSeek
+            steering.y += seekForce.y * self.weightSeek
+
 
         # if self.fleeEnabled:
         #     steering += self.flee(self.fleeTarget) * self.weightFlee

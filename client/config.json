@@ -5,6 +5,6 @@
   ],
   "maxAttemptsPerServer": 1,
   "volume": 0.5,
-  "windowWidth": 1280,
-  "windowHeight": 720
+  "windowWidth": 800,
+  "windowHeight": 600
 }

@@ -9,7 +9,7 @@ class MovingEntity(AnimatedEntity):
         self.steering = SteeringBehavior(self)
         self.mass = 50.0
         self.maxSpeed = .1
-        self.maxForce = .1
+        self.maxForce = .05
         self.velocity = Vector2D(0.0, 0.0)
         self.heading = Vector2D(0.0, 1.0)
         self.speed = 0

@@ -7,7 +7,6 @@ class NPC(Character):
     defense = 20
     HP = 500
     xp = 0
-    flag = "NPC"
 
     def get_rect(self):
         return pygame.Rect((self.rect.x, self.rect.y + 32, 34, 32))
