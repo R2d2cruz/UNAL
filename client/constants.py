@@ -14,6 +14,8 @@ imgs = {
     "John": "images/chars/char2.png",
     "Charly": "images/chars/char3.png",
     "roof": "images/roof.png",
+    "freshPotion": "images/pocion de vida.png",
+    "strawberryPotion": "images/lo mismo pero con sabor fresa.png"
 }
 
 maps = {

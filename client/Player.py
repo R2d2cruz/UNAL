@@ -11,7 +11,7 @@ class Player(Character):
     def __init__(self, name, animationName, position):
         super().__init__(name, animationName, position)
         self.colliding = []
-        self.health = 40
+        self.health = 20
         self.xp = 0
 
     def move(self, vector: Vector2D):
@@ -26,6 +26,10 @@ class Player(Character):
         self.colliding = self.get_rect().collidelistall(listRect)
         if self.colliding != []:
             self.stop()
+            for i in self.colliding:
+                if listRect[i].flag == "item":
+                    if listRect[i].effect(self):
+                        listRect.pop(i)
 
     def get_rect(self):
         return pygame.Rect((self.x, self.y + 24, 34, 32))

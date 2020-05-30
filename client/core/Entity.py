@@ -7,6 +7,7 @@ class Entity(pygame.sprite.Sprite):
         self.image = None
         self.name = None
         self.rect = pygame.Rect(0, 0, 0, 0)
+        self.flag = ""
 
     @property
     def x(self):

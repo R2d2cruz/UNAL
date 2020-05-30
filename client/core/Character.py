@@ -45,11 +45,13 @@ class Character(MovingEntity):
             if self.__nameSurface is not None:
                 screen.blit(self.__nameSurface, camera.apply(self.__nameRect))
         if camera is not None:
-            pygame.draw.rect(screen, (255, 0, 0, 0.4), camera.apply(self.getHealthRect()))
+            pygame.draw.rect(screen, (255 * (1 - self.health / maxHealt), 255 * self.health / maxHealt, 0, 0.4),
+                             camera.apply(self.getHealthRect()))
             pygame.draw.rect(screen, (0, 0, 0, 0.4), camera.apply(self.getHealthEmptyRect()), 1)
         else:
-            pygame.draw.rect(screen, (255, 0, 0, 0.4), self.getHealthRect())
-            pygame.draw.rect(screen, (0, 0, 0, 0.4), self.getHealthEmptyRect(), 1)
+            pygame.draw.rect(screen, (255 * (1 - self.health / maxHealt), 255 * self.health / maxHealt, 0, 0.2),
+                             self.getHealthRect())
+            pygame.draw.rect(screen, (0, 0, 0, 0.2), self.getHealthEmptyRect(), 1)
 
     def toDict(self):
         return dict(
@@ -84,7 +86,11 @@ class Character(MovingEntity):
 
     @health.setter
     def health(self, health):
-        self.__health = health
+        if health <= maxHealt:
+            self.__health = health
 
     def damage(self, damage=5):
         self.health -= damage
+
+    def heal(self, medicine):
+        self.health += medicine
