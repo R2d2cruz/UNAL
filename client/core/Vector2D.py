@@ -12,6 +12,33 @@ class Vector2D:
     def __repr__(self):
         return '<' + str(self.x) + ', ' + str(self.y) + '>'
 
+    def __add__(self, vector):
+        return Vector2D(self.x + vector.x, self.y + vector.y)
+
+    def __sub__(self, vector):
+        return Vector2D(self.x - vector.x, self.y - vector.y)
+
+    def __mul__(self, scalar: float):
+        return Vector2D(self.x * scalar, self.y * scalar)
+
+    def __truediv__(self, scalar: float):
+        return Vector2D(self.x / scalar, self.y / scalar)
+
+    def __isub__(self, vector):
+        return self - vector
+
+    def __iadd__(self, vector):
+        return self + vector
+
+    def __imul__(self, scalar):
+        return self * scalar
+
+    def __itruediv__(self, scalar):
+        return self / scalar
+
+    def __neg__(self):
+        return Vector2D(-self.x, -self.y)
+
     def length(self) -> float:
         return sqrt(self.x * self.x + self.y * self.y)
 
@@ -34,17 +61,22 @@ class Vector2D:
         return (quad + 8) % 8
 
 
+def getVector2D(obj) -> Vector2D:
+    return Vector2D(obj.x, obj.y)
+
+
 def truncate(vector: Vector2D, maxLength: float) -> Vector2D:
     if vector.length() > maxLength:
-        vector = normalize(vector)
-    vector.x *= maxLength
-    vector.y *= maxLength
-    return vector
+        return normalize(vector) * maxLength
+    return Vector2D(vector.x, vector.y)
 
 
 def normalize(vector: Vector2D) -> Vector2D:
     l = vector.length()
     if l > EPSILON:
-        vector.x /= l
-        vector.y /= l
-    return vector
+        return (vector / l)
+    return Vector2D(vector.x, vector.y)
+
+
+def distanceSq(vectorA, vectorB) -> float:
+    return (vectorB - vectorA).lengthSq()

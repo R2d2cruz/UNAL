@@ -7,23 +7,25 @@ class MovingEntity(AnimatedEntity):
     def __init__(self, position, *groups):
         super().__init__(*groups)
         self.steering = SteeringBehavior(self)
-        self.mass = 50.0
-        self.maxSpeed = .1
+        self.mass = 100
+        self.maxSpeed = .4
         self.maxForce = .05
+        self.steeringForce = Vector2D(0.0, 0.0)
+        self.acceleration = Vector2D(0.0, 0.0)
         self.velocity = Vector2D(0.0, 0.0)
         self.heading = Vector2D(0.0, 1.0)
         self.speed = 0
         self.hasChanged = True
         self.x, self.y = position
         self.oldPos = Vector2D(self.x, self.y)
+        #self.isInCollision = False
 
     def update(self, deltaTime: float):
         super().update(deltaTime)
-        steeringForce = self.steering.calculate() 
-        acceleration = Vector2D(steeringForce.x / self.mass, steeringForce.y / self.mass)
+        self.steeringForce = self.steering.calculate() 
+        self.acceleration = (self.steeringForce / self.mass)
 
-        self.velocity.x += acceleration.x * deltaTime
-        self.velocity.y += acceleration.y * deltaTime
+        self.velocity += (self.acceleration * deltaTime)
         self.velocity = truncate(self.velocity, self.maxSpeed)
 
         self.oldPos.x = self.x

@@ -32,7 +32,7 @@ class Camera:
     def apply(self, rect):
         if type(rect) == pygame.Rect:
             return rect.move(self.view.topleft)
-        elif type(rect) == tuple:
+        elif type(rect) == tuple or type(rect) == list:
             return (rect[0] + self.view.x, rect[1] + self.view.y)
 
     def update(self, deltaTime: float):

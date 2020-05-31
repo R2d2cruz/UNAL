@@ -30,7 +30,7 @@ game.init()
 game.addScene("main", MainMenu(game))
 game.addScene("play", Playground(game, Laberinto()))
 game.setScene("main")
-res.playSong('background1')
+#res.playSong('background1')
 
 game.run()
 game.quit()

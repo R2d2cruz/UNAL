@@ -30,6 +30,3 @@ class Player(Character):
                     if listRect[i].effect(self):
                         listRect.pop(i)
 
-    def get_rect(self):
-        return pygame.Rect((self.x, self.y + 24, 34, 32))
-

@@ -46,6 +46,9 @@ class Map:
         # self.surface = pygame.Surface((self.width, self.height), pygame.SRCALPHA)
         return map
 
+    def getRect(self):
+        return pygame.Rect(self.x, self.y, self.width, self.height)
+
     @staticmethod
     def loadTileset(fileName: str):
         frames = {}

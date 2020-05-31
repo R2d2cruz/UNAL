@@ -58,6 +58,11 @@ class Character(MovingEntity):
                              self.getHealthRect())
             pygame.draw.rect(screen, (0, 0, 0, 0.2), self.getHealthEmptyRect(), 1)
 
+        # pygame.draw.line(screen, (255, 0, 0), camera.apply([self.x, self.y]), camera.apply([self.x + self.steeringForce.x * 100, self.y + self.steeringForce.y * 100]), 1)
+        # pygame.draw.line(screen, (0, 255, 0), camera.apply([self.x, self.y + 10]), camera.apply([self.x + self.acceleration.x * 100, self.y + self.acceleration.y * 100 + 10]), 1)
+        # pygame.draw.line(screen, (0, 0, 255), camera.apply([self.x, self.y + 20]), camera.apply([self.x + self.velocity.x * 100, self.y + self.velocity.y * 100 + 20]), 1)
+        # pygame.draw.circle(screen, (0, 0, 0), camera.apply([self.x, self.y]), 100, 1)
+
     def toDict(self):
         return dict(
             x=self.x,
@@ -82,8 +87,8 @@ class Character(MovingEntity):
     def getHealthEmptyRect(self):
         return pygame.Rect(self.x + (self.width / 2) - 20, self.y + self.height + 4, 40, 8)
 
-    def collitions(self, rect: pygame.Rect):
-        pass
+    def getCollisionRect(self):
+        return pygame.Rect((self.x, self.y + 24, 34, 32))
 
     @property
     def health(self):

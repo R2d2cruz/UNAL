@@ -41,6 +41,9 @@ class Entity(pygame.sprite.Sprite):
     def height(self, height):
         self.rect.height = height
 
+    def getCollisionRect(self):
+        return self.rect
+
     def update(self, deltaTime: float):
         pass
 
@@ -50,7 +53,8 @@ class Entity(pygame.sprite.Sprite):
             # pygame.draw.rect(screen, (255, 0, 0), self.rect, 1)
         else:
             screen.blit(self.image, camera.apply(self.rect))
-            # pygame.draw.rect(screen, (255, 0, 0), camera.apply(self.rect), 1)
+            pygame.draw.rect(screen, (0, 0, 255), camera.apply(self.rect), 1)
+            pygame.draw.rect(screen, (255, 0, 0), camera.apply(self.getCollisionRect()), 1)
 
     def dispose(self):
         pass

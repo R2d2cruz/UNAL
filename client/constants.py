@@ -21,6 +21,7 @@ imgs = {
 maps = {
     "laberinto": "maps/laberinto.json",
     "walls": "maps/walls.json",
+    "empty": "maps/empty.json",
     "university": "maps/university.json",
 }
 

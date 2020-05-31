@@ -10,6 +10,20 @@ from Player import Player
 from core.Character import Character
 from OnlinePlayer import OnlinePlayer
 
+from core.CollisionManager import collisionManager
+
+def getValidRadomPos(worlRect, entity):
+    rect = entity.getCollisionRect()
+    while True:
+        rect.x = int(random() * worlRect.w)
+        rect.y = int(random() * worlRect.h)
+        if not collisionManager.checkCollistion(rect):
+            return rect
+
+def locateInValidRadomPos(worlRect, entity):
+    pos = getValidRadomPos(worlRect, entity)
+    entity.x = pos.x
+    entity.y = pos.y
 
 class Playground(Scene):
 
@@ -25,17 +39,44 @@ class Playground(Scene):
         self.map = map
         self.paused = False
         name = res.getRandomCharAnimName()
-        self.player = Player(name, name, (100, 100))
+        worlRect = map.getRect()
+
+        self.player = Player(name, name, (0, 0))
+        locateInValidRadomPos(worlRect, self.player)
+
+        collisionManager.registerMovingEntity(self.player)
 
         for i in range(1, 5):
-            name = res.getRandomCharAnimName()
-            x = 6 * int(random() * 10 + 1) - 3
-            y = 6 * int(random() * 10 + 1) - 3
-            character = Character(name, name, (32 * x, 32 * y))
-            #character.steering.wanderEnabled = True
+            character = Character('Wander', res.getRandomCharAnimName(), (0, 0))
+            locateInValidRadomPos(worlRect, character)
+            character.steering.wanderEnabled = True
+            self.characters.append(character)
+            collisionManager.registerMovingEntity(character)
+
+        for i in range(1, 5):
+            character = Character('Seek', res.getRandomCharAnimName(), (0, 0))
+            locateInValidRadomPos(worlRect, character)
             character.steering.seekEnabled = True
             character.steering.seekTarget = self.player
             self.characters.append(character)
+            collisionManager.registerMovingEntity(character)
+
+        for i in range(1, 5):
+            name = res.getRandomCharAnimName()
+            character = Character('Flee', res.getRandomCharAnimName(), (0, 0))
+            locateInValidRadomPos(worlRect, character)
+            character.steering.fleeEnabled = True
+            character.steering.fleeTarget = self.player
+            self.characters.append(character)
+            collisionManager.registerMovingEntity(character)
+
+        for i in range(1, 5):
+            character = Character('Arrive', res.getRandomCharAnimName(), (0, 0))
+            locateInValidRadomPos(worlRect, character)
+            character.steering.arriveEnabled = True
+            character.steering.arriveTarget = self.player
+            self.characters.append(character)
+            collisionManager.registerMovingEntity(character)
 
         self.font = res.getFont('minecraft', 32)
         self.label = self.font.render('Juego en pausa por problemas conexión. Espere un momento', True, (255, 64, 64))
@@ -57,13 +98,13 @@ class Playground(Scene):
     def evalMove(self):
         vectorMov = Vector2D()
         if self.keysPressed.get(pygame.K_RIGHT):
-            vectorMov.x += 10
+            vectorMov.x += 1
         if self.keysPressed.get(pygame.K_LEFT):
-            vectorMov.x -= 10
+            vectorMov.x -= 1
         if self.keysPressed.get(pygame.K_DOWN):
-            vectorMov.y += 10
+            vectorMov.y += 1
         if self.keysPressed.get(pygame.K_UP):
-            vectorMov.y -= 10
+            vectorMov.y -= 1
         self.player.move(vectorMov)
 
     def handleMessage(self, message):
@@ -80,14 +121,13 @@ class Playground(Scene):
             for obj in self.map.objects:
                 obj.update(deltaTime)
             self.player.update(deltaTime)
-            self.collitions()
+
+            collisionManager.update()
+
             if self.player.hasChanged:
                 self.player.hasChanged = False
                 self.game.client.sendPlayerStatus(self.player)
-        else:
-            # mostrar un mensaje para idicar que el juego esta pausado y la razon
-            pass
-        self.camera.update(deltaTime)
+            self.camera.update(deltaTime)
 
     def render(self, screen: pygame.Surface):
         screen.fill((0, 0, 0))
@@ -99,17 +139,11 @@ class Playground(Scene):
             k.render(screen, self.camera)
         
         self.player.render(screen, self.camera)
-        #if self.paused:
-        #    screen.blit(self.label, (160, 80))
         self.camera.render(screen)
 
-    def collitions(self):
-        self.player.listCollitions(self.map.objects)
-        for obj in self.map.objects:
-            self.player.collitions(obj.rect)
-        for i in range(len(self.characters)):
-            self.player.collitions(self.characters[i])
-            self.characters[i].collitions(self.player)
+        # mostrar un mensaje para idicar que el juego esta pausado y la razon
+        #if self.paused:
+        #    screen.blit(self.label, (160, 80))
 
     def updateOtherPlayers(self):
         # que deberia ocurrir si durante el juego se desconecta?
