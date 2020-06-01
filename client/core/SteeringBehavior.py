@@ -1,6 +1,6 @@
 import math
 import random
-from core.Vector2D import Vector2D, normalize, truncate, distanceSq, EPSILON, getVector2D
+from core.Vector2D import Vector2D, normalize, truncate, distanceSq, EPSILON, getVector2D, distance
 
 
 # el radio limite para wander
@@ -56,18 +56,17 @@ class SteeringBehavior:
         self.weightHide = 1.0
 
         self.followPathEnabled = False
+        self.followPathTarget = None
         self.weightFollowPath = 1.0
 
     # retorna un vector para mover la entidad hacia la posicion dada
-    def seek(self) -> Vector2D:
-        target = getVector2D(self.seekTarget)
+    def seek(self, target) -> Vector2D:
         agent = getVector2D(self.agent)
         vector = normalize(target - agent) * self.agent.maxSpeed
         return vector - self.agent.velocity
 
     # parecido a seek pero se detiene en el punto
-    def arrive(self) -> Vector2D:
-        target = getVector2D(self.arriveTarget)
+    def arrive(self, target) -> Vector2D:
         agent = getVector2D(self.agent)
         vector = target - agent
         distance = vector.length()
@@ -79,9 +78,8 @@ class SteeringBehavior:
         return (vector * ramp) - self.agent.velocity
 
     # retorna un vector para mover la entidad lejos de la posicion dada y con una distancia de panico especifica
-    def flee(self) -> Vector2D:
+    def flee(self, target) -> Vector2D:
         agent = getVector2D(self.agent)
-        target = getVector2D(self.fleeTarget)
         panicDistanceSq = 100.0 * 100.0
         if distanceSq(agent, target) > panicDistanceSq:
             return Vector2D(0, 0)
@@ -106,16 +104,12 @@ class SteeringBehavior:
     # el wander que tanto necesitas hijo
     def wander(self) -> Vector2D:
         # calcular centro del circulo
-        circleCenter = Vector2D(self.agent.velocity.x, self.agent.velocity.y)
-        circleCenter = normalize(circleCenter)
-        circleCenter.x *= WANDER_DIST
-        circleCenter.y *= WANDER_DIST
+        circleCenter = normalize(Vector2D(self.agent.velocity.x, self.agent.velocity.y)) * WANDER_DIST
         # calcular fuerza de desplacamiento
         displacement = Vector2D(0, -WANDER_RADIUS)
         # cambiar la direccioncambiando el angulo
         l = displacement.length()
-        displacement.x = math.cos(self.wanderAngle) * l
-        displacement.y = math.sin(self.wanderAngle) * l
+        displacement = Vector2D(math.cos(self.wanderAngle), math.sin(self.wanderAngle)) * l
         # cambiar el wanderAngle un poquito para la siguiente iteracion
         self.wanderAngle += random.random() * ANGLE_CHANGE - ANGLE_CHANGE * .5
         # calcular la fuerza
@@ -133,9 +127,26 @@ class SteeringBehavior:
         pass
 
     # seguir una ruta
-    @staticmethod
-    def followPath() -> Vector2D:
-        pass
+    def followPath(self) -> Vector2D:
+        target = self.followPathTarget.getCurrentWayPoint()
+        dist = distance(target, getVector2D(self.agent))
+
+        if dist < 100:
+            self.followPathTarget.setNextPoint()
+            target = self.followPathTarget.getCurrentWayPoint()
+
+        #print(dist, self.followPathTarget.getCurrentWayPoint(), getVector2D(self.agent))
+        if self.followPathTarget.isFinished():
+            force = self.arrive(self.followPathTarget.getCurrentWayPoint())
+            if dist < 5:
+                self.followPathEnabled = False
+                self.followPathTarget = None
+                self.agent.velocity.setZero()
+            return force
+        else:
+            force = self.seek(self.followPathTarget.getCurrentWayPoint())
+            return force
+        return Vector2D(0, 0)
 
     # interponerse entre dos entidades
     @staticmethod
@@ -151,21 +162,13 @@ class SteeringBehavior:
     def calculate(self) -> Vector2D:
         steering = Vector2D()
         if self.wanderEnabled:
-            wanderForce = self.wander()
-            steering.x += wanderForce.x * self.weightWander
-            steering.y += wanderForce.y * self.weightWander
+            steering += self.wander() * self.weightWander
         if self.seekEnabled:
-            seekForce = self.seek()
-            steering.x += seekForce.x * self.weightSeek
-            steering.y += seekForce.y * self.weightSeek
+            steering += self.seek(getVector2D(self.seekTarget)) * self.weightSeek
         if self.fleeEnabled:
-            fleeForce = self.flee()
-            steering.x += fleeForce.x * self.weightFlee
-            steering.y += fleeForce.y * self.weightFlee
+            steering += self.flee(getVector2D(self.fleeTarget)) * self.weightFlee
         if self.arriveEnabled:
-            arriveForce = self.arrive()
-            steering.x += arriveForce.x * self.weightArrive
-            steering.y += arriveForce.y * self.weightArrive
+            steering += self.arrive(getVector2D(self.arriveTarget)) * self.weightArrive
 
         # if self.pursuitEnabled:
         #     # assert(self.pursuitTarget && "pursuit target not assigned");
@@ -187,7 +190,7 @@ class SteeringBehavior:
         #     steering += self.hide(self.hideTarget,
         #                           self.hideObtacles) * self.weightHide
 
-        # if self.followPathEnabled:
-        #     steering += self.followPath() * self.weightFollowPath
+        if self.followPathEnabled:
+            steering += self.followPath() * self.weightFollowPath
 
         return truncate(steering, self.agent.maxForce)

@@ -1,5 +1,5 @@
 import core.ResourceManager as res
-
+import json
 from copy import copy
 from core.Map import Map
 from core.AnimatedEntity import AnimatedEntity
@@ -7,13 +7,19 @@ from Objects import Wall
 from Item import HealthPotion
 from core.Vector2D import Vector2D
 from core.CollisionManager import collisionManager
+from core.Graph import Graph
 
 class Laberinto(Map):
     def __init__(self):
         super().__init__()
         self.frames = self.loadTileset(res.getTileset("ts1"))
-        self.objects = self.createWalls(res.getMap("empty"))
-        self.map = self.loadMap(res.getMap("empty"))
+        mapName = 'empty'
+        self.objects = self.createWalls(res.getMap(mapName))
+        self.map = self.loadMap(res.getMap(mapName)) 
+        self.graph = Graph()
+        self.graph.nodes = self.getGraph()
+        with open('saves/' + mapName + '.graph.json', 'w') as outfile:
+            json.dump(self.graph.nodes, outfile)
         self.objects.append(HealthPotion("freshPotion", (3, 2, 10, 12), Vector2D(160, 288), 20))
 
         for i in range(1, 10):

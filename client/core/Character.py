@@ -49,19 +49,22 @@ class Character(MovingEntity):
         if self.name is not None:
             if self.__nameSurface is not None:
                 screen.blit(self.__nameSurface, camera.apply(self.__nameRect))
-        if camera is not None:
-            pygame.draw.rect(screen, (255 * (1 - self.health / maxHealt), 255 * self.health / maxHealt, 0, 0.4),
-                             camera.apply(self.getHealthRect()))
-            pygame.draw.rect(screen, (0, 0, 0, 0.4), camera.apply(self.getHealthEmptyRect()), 1)
-        else:
-            pygame.draw.rect(screen, (255 * (1 - self.health / maxHealt), 255 * self.health / maxHealt, 0, 0.2),
-                             self.getHealthRect())
-            pygame.draw.rect(screen, (0, 0, 0, 0.2), self.getHealthEmptyRect(), 1)
+        #if camera is not None:
+            #pygame.draw.rect(screen, (255 * (1 - self.health / maxHealt), 255 * self.health / maxHealt, 0, 0.4),
+            #                 camera.apply(self.getHealthRect()))
+            #pygame.draw.rect(screen, (0, 0, 0, 0.4), camera.apply(self.getHealthEmptyRect()), 1)
+        #else:
+            #pygame.draw.rect(screen, (255 * (1 - self.health / maxHealt), 255 * self.health / maxHealt, 0, 0.2),
+            #                 self.getHealthRect())
+            #pygame.draw.rect(screen, (0, 0, 0, 0.2), self.getHealthEmptyRect(), 1)
 
-        # pygame.draw.line(screen, (255, 0, 0), camera.apply([self.x, self.y]), camera.apply([self.x + self.steeringForce.x * 100, self.y + self.steeringForce.y * 100]), 1)
-        # pygame.draw.line(screen, (0, 255, 0), camera.apply([self.x, self.y + 10]), camera.apply([self.x + self.acceleration.x * 100, self.y + self.acceleration.y * 100 + 10]), 1)
-        # pygame.draw.line(screen, (0, 0, 255), camera.apply([self.x, self.y + 20]), camera.apply([self.x + self.velocity.x * 100, self.y + self.velocity.y * 100 + 20]), 1)
-        # pygame.draw.circle(screen, (0, 0, 0), camera.apply([self.x, self.y]), 100, 1)
+        # pygame.draw.line(screen, (255, 0, 0), camera.apply([self.x, self.y]), camera.apply([self.x + self.steeringForce.x * 1000, self.y + self.steeringForce.y * 1000]), 2)
+        # pygame.draw.line(screen, (0, 255, 0), camera.apply([self.x, self.y + 10]), camera.apply([self.x + self.acceleration.x * 1000, self.y + self.acceleration.y * 1000 + 10]), 2)
+        # pygame.draw.line(screen, (0, 0, 255), camera.apply([self.x, self.y + 20]), camera.apply([self.x + self.velocity.x * 100, self.y + self.velocity.y * 100 + 20]), 2)
+        # pygame.draw.circle(screen, (0, 0, 0), camera.apply([self.x, self.y]), 100, 2)
+
+        if self.steering.followPathTarget is not None:
+            self.steering.followPathTarget.render(screen, camera)
 
     def toDict(self):
         return dict(

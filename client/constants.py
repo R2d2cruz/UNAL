@@ -22,6 +22,7 @@ maps = {
     "laberinto": "maps/laberinto.json",
     "walls": "maps/walls.json",
     "empty": "maps/empty.json",
+    "small": "maps/small.json",
     "university": "maps/university.json",
 }
 
