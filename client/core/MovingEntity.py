@@ -1,3 +1,4 @@
+import pygame
 from core.AnimatedEntity import AnimatedEntity
 from core.SteeringBehavior import SteeringBehavior
 from core.Vector2D import EPSILON, Vector2D, truncate, normalize
@@ -39,7 +40,19 @@ class MovingEntity(AnimatedEntity):
             self.hasChanged = True
             #self.side = perp(self.heading);
 
-    def stop(self):
-        self.velocity.setZero()
-        self.x = self.oldPos.x
-        self.y = self.oldPos.y
+    def stop(self, x: bool, y: bool):
+        print(x)
+        if x:
+            self.velocity.x = 0
+            self.x = self.oldPos.x
+
+        if y:
+            self.velocity.y = 0
+            self.y = self.oldPos.y
+
+    def getOldCollisionRect(self):
+        return pygame.Rect((self.oldPos.x, self.oldPos.y + 24, 34, 32))
+
+        # self.velocity.setZero()
+        # self.x = self.oldPos.x
+        # self.y = self.oldPos.y

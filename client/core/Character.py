@@ -39,8 +39,8 @@ class Character(MovingEntity):
         self.currentClip = (
             'stand_' if self.velocity.isZero() else '') + direction
 
-    def stop(self):
-        super().stop()
+    def stop(self, x, y):
+        super().stop(x, y)
         self.__nameRect.x, self.__nameRect.y = (
             self.x + (34 - self.__nameRect.width) / 2, self.y - 14)
 

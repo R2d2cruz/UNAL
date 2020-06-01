@@ -166,6 +166,7 @@ class Playground(Scene):
         #pintar el nodo mas cercano del player
         node = self.map.pointToCell(self.player.x, self.player.y)
         point = self.map.cellToPoint(node)
+        print(self.camera.apply(point))
         pygame.draw.circle(screen, (0, 255, 0), self.camera.apply(point), 5, 3)
 
     def updateOtherPlayers(self):

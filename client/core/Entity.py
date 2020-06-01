@@ -44,6 +44,9 @@ class Entity(pygame.sprite.Sprite):
     def getCollisionRect(self):
         return self.rect
 
+    def getOldCollisionRect(self):
+        return self.rect
+
     def update(self, deltaTime: float):
         pass
 
