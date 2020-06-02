@@ -9,6 +9,7 @@ from core.Vector2D import Vector2D
 from core.CollisionManager import collisionManager
 from core.Graph import Graph
 
+
 class Laberinto(Map):
     def __init__(self):
         super().__init__()
@@ -20,7 +21,9 @@ class Laberinto(Map):
         self.graph.nodes = self.getGraph()
         with open('saves/' + mapName + '.graph.json', 'w') as outfile:
             json.dump(self.graph.nodes, outfile)
-        self.objects.append(HealthPotion("freshPotion", (3, 2, 10, 12), Vector2D(160, 288), 20))
+        potion = HealthPotion("freshPotion", (3, 2, 10, 12), Vector2D(160, 288), 20)
+        self.objects.append(potion)
+        collisionManager.registerEntity(potion)
 
         for i in range(1, 10):
             fire = AnimatedEntity()
