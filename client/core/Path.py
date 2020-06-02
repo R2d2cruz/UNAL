@@ -29,6 +29,9 @@ class Path:
             if prevPoint is not None:
                 pygame.draw.line(screen, color, camera.apply(point), camera.apply(prevPoint), 2)
             prevPoint = point
+        point = self.points[self.__currentPointIndex]
+        if point is not None:
+            pygame.draw.circle(screen, (255, 0, 0), camera.apply(point), 5, 3)
 
     # def renderNode(self, screen, camera, cords, color):
     #     cords[0] = int(cords[0]) * self.tileWidth + self.tileWidth / 2 
