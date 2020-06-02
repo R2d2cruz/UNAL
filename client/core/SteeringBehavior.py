@@ -131,7 +131,7 @@ class SteeringBehavior:
         target = self.followPathTarget.getCurrentWayPoint()
         dist = distance(target, getVector2D(self.agent))
 
-        if dist < 100:
+        if dist < 50:
             self.followPathTarget.setNextPoint()
             target = self.followPathTarget.getCurrentWayPoint()
 
