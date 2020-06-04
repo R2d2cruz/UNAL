@@ -7,7 +7,6 @@ from core.Camera import Camera
 from core.Game import Game
 from core.Vector2D import Vector2D
 from Player import Player
-from core.Character import Character
 from OnlinePlayer import OnlinePlayer
 from core.ui.Button import Button
 from core.Path import Path
@@ -30,7 +29,6 @@ def locateInValidRadomPos(worlRect, entity):
 
 
 class Playground(Scene):
-
     player = None
     players = {}
 
@@ -163,7 +161,7 @@ class Playground(Scene):
         # if self.paused:
         #    screen.blit(self.label, (160, 80))
 
-        #pintar el nodo mas cercano del player
+        # pintar el nodo mas cercano del player
         node = self.map.pointToCell(self.player.x, self.player.y)
         point = self.map.cellToPoint(node)
         print(self.camera.apply(point))
@@ -171,26 +169,26 @@ class Playground(Scene):
 
     def updateOtherPlayers(self):
         # que deberia ocurrir si durante el juego se desconecta?
-        playersData=self.game.client.getStatus()
+        playersData = self.game.client.getStatus()
         if playersData is not None:
-            playerKeys=self.players.keys()
+            playerKeys = self.players.keys()
             for playerKey in playersData.keys():
                 if playerKey in playerKeys:
                     self.players[playerKey].setPos(playersData.get(playerKey))
                 else:
-                    self.players[playerKey]=OnlinePlayer(
+                    self.players[playerKey] = OnlinePlayer(
                         playersData.get(playerKey))
             # remover los que no se actualizaron
-            toDelete=set(self.players.keys()).difference(playersData.keys())
+            toDelete = set(self.players.keys()).difference(playersData.keys())
             for playerKey in toDelete:
                 del self.players[playerKey]
 
     def onGoPath(self, sender):
-        node=self.map.pointToCell(self.player.x, self.player.y)
-        graphPath=self.map.graph.randomPath(node)
-        realPath=Path()
+        node = self.map.pointToCell(self.player.x, self.player.y)
+        graphPath = self.map.graph.randomPath(node)
+        realPath = Path()
         if len(graphPath) > 0:
             for node in graphPath:
                 realPath.points.append(self.map.cellToPoint(node))
-            self.player.steering.followPathEnabled=True
-            self.player.steering.followPathTarget=realPath
+            self.player.steering.followPathEnabled = True
+            self.player.steering.followPathTarget = realPath

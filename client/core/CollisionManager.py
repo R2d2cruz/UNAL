@@ -70,9 +70,6 @@ class CollisionManager:
 
                         entityA.stop(side[0], side[1])
 
-            for entity in removeEntities:
-                self.entities.remove(entity)
-
     def checkCollistion(self, rect) -> bool:
         for entity in self.entities:
             if rect.colliderect(entity.getCollisionRect()):

@@ -1,11 +1,10 @@
-import json
 import pygame
 import core.ResourceManager as res
 from core.MovingEntity import MovingEntity
 
 
 compassClips = ['right', 'down', 'down', 'down', 'left', 'up', 'up', 'up']
-traductor = {
+translate = {
     "stand_up": "stu",
     "stand_down": "std",
     "stand_left": "stl",
@@ -15,7 +14,7 @@ traductor = {
     "left": "wll",
     "right": "wlr"
 }
-maxHealt = 100
+maxHealth = 100
 
 
 class Character(MovingEntity):
@@ -24,6 +23,7 @@ class Character(MovingEntity):
         self.__color = (0, 0, 0)
         self.__nameSurface = None
         self.__nameRect = None
+        self.name = None
         self.setName(name)
         self.animName = animationName
         self.loadAnimation(res.getAnimFile(self.animName))
@@ -49,14 +49,10 @@ class Character(MovingEntity):
         if self.name is not None:
             if self.__nameSurface is not None:
                 screen.blit(self.__nameSurface, camera.apply(self.__nameRect))
-        #if camera is not None:
-            #pygame.draw.rect(screen, (255 * (1 - self.health / maxHealt), 255 * self.health / maxHealt, 0, 0.4),
-            #                 camera.apply(self.getHealthRect()))
-            #pygame.draw.rect(screen, (0, 0, 0, 0.4), camera.apply(self.getHealthEmptyRect()), 1)
-        #else:
-            #pygame.draw.rect(screen, (255 * (1 - self.health / maxHealt), 255 * self.health / maxHealt, 0, 0.2),
-            #                 self.getHealthRect())
-            #pygame.draw.rect(screen, (0, 0, 0, 0.2), self.getHealthEmptyRect(), 1)
+        if self.health != maxHealth:
+            pygame.draw.rect(screen, (255 * (1 - self.health / maxHealth), 255 * self.health / maxHealth, 0, 0.4),
+                             camera.apply(self.getHealthRect()))
+            pygame.draw.rect(screen, (0, 0, 0, 0.4), camera.apply(self.getHealthEmptyRect()), 1)
 
         # pygame.draw.line(screen, (255, 0, 0), camera.apply([self.x, self.y]), camera.apply([self.x + self.steeringForce.x * 1000, self.y + self.steeringForce.y * 1000]), 2)
         # pygame.draw.line(screen, (0, 255, 0), camera.apply([self.x, self.y + 10]), camera.apply([self.x + self.acceleration.x * 1000, self.y + self.acceleration.y * 1000 + 10]), 2)
@@ -70,7 +66,7 @@ class Character(MovingEntity):
         return dict(
             x=self.x,
             y=self.y,
-            a=traductor.get(self.currentClip)
+            a=translate.get(self.currentClip)
         )
 
     def setName(self, name: str):
@@ -85,7 +81,7 @@ class Character(MovingEntity):
             self.name = None
 
     def getHealthRect(self):
-        return pygame.Rect(self.x + (self.width / 2) - 20, self.y + self.height + 4, 40 * self.health / maxHealt, 8)
+        return pygame.Rect(self.x + (self.width / 2) - 20, self.y + self.height + 4, 40 * self.health / maxHealth, 8)
 
     def getHealthEmptyRect(self):
         return pygame.Rect(self.x + (self.width / 2) - 20, self.y + self.height + 4, 40, 8)
@@ -99,7 +95,7 @@ class Character(MovingEntity):
 
     @health.setter
     def health(self, health):
-        if health <= maxHealt:
+        if health <= maxHealth:
             self.__health = health
 
     def damage(self, damage=5):

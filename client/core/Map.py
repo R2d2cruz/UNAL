@@ -83,9 +83,7 @@ class Map:
             return -len(graph[nodeKey])
 
         for nodeKey in graph:
-            print(nodeKey, graph[nodeKey])
-            graph[nodeKey] = sorted(graph[nodeKey] ,key = countNeighbors)
-            print('sorted', graph[nodeKey])
+            graph[nodeKey] = sorted(graph[nodeKey], key=countNeighbors)
         return graph
 
     def getNeighbors(self, col, row):
