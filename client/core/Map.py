@@ -1,7 +1,6 @@
 import json
 import pygame
 import core.ResourceManager as res
-from core import ResourceManager
 
 
 class Map:

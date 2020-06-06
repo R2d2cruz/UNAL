@@ -7,6 +7,7 @@ from core.Client import Client
 from core.Scene import Scene
 from core.Message import Message
 
+
 class Game:
     def __init__(self, config: Config):
         self.scenes = {}

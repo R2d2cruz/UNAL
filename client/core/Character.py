@@ -1,6 +1,7 @@
 import pygame
 import core.ResourceManager as res
 from core.MovingEntity import MovingEntity
+from core.Telegram import Telegram
 
 
 compassClips = ['right', 'down', 'down', 'down', 'left', 'up', 'up', 'up']
@@ -30,6 +31,8 @@ class Character(MovingEntity):
         self.__health = 100
         self.attack = 30
         self.defense = 20
+        if not self.onMessage:
+            self.switchMessage()
 
     def update(self, deltaTime: float):
         super().update(deltaTime)
@@ -103,3 +106,7 @@ class Character(MovingEntity):
 
     def heal(self, medicine):
         self.health += medicine
+
+    def onHandleMessages(self, telegram: Telegram):
+        # estraer toda la informacion de telegram
+        pass

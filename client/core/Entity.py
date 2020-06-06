@@ -1,13 +1,41 @@
 import pygame
+from core.Telegram import Telegram
 
 
 class Entity(pygame.sprite.Sprite):
+
+    __nextID = 0
+
     def __init__(self, *groups):
         super().__init__()
         self.image = None
         self.name = None
         self.rect = pygame.Rect(0, 0, 0, 0)
         self.flag = ""
+        self.__id = self.getMyId()
+        self.__onMessages = False
+        self.handelMessages = self.offHandleMessages
+
+    @property
+    def onMessage(self):
+        return self.__onMessages
+
+    def switchMessage(self):
+        self.__onMessages = not self.__onMessages
+        if self.__onMessages:
+            self.handelMessages = self.onHandleMessages
+        else:
+            self.handelMessages = self.offHandleMessages
+
+    @staticmethod
+    def getMyId():
+        newId = Entity.__nextID
+        Entity.__nextID += 1
+        return newId
+
+    @property
+    def id(self):
+        return self.__id
 
     @property
     def x(self):
@@ -60,4 +88,13 @@ class Entity(pygame.sprite.Sprite):
             pygame.draw.rect(screen, (255, 0, 0), camera.apply(self.getCollisionRect()), 1)
 
     def dispose(self):
+        pass
+
+    def handelMessages(self, telegram: Telegram):
+        pass
+
+    def onHandleMessages(self, telegram: Telegram):
+        pass
+
+    def offHandleMessages(self, telegram: Telegram):
         pass
