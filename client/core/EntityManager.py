@@ -2,7 +2,7 @@ from core.Entity import Entity
 from core.Telegram import Telegram
 import core.Hermes as Hermes
 
-__entities = None
+__entities = {}
 __entityMap = None
 __deltaTime = 0
 

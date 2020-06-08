@@ -3,6 +3,9 @@ from core.Entity import Entity
 from core.Vector2D import Vector2D
 from Player import Player
 import core.ResourceManager as res
+import client.core.EntityManager as entManager
+import core.Hermes as Hermes
+from core.Telegram import Telegram
 
 MAXYINTERVAL = 6
 
@@ -30,8 +33,11 @@ class Item(Entity):
                 self.direction *= -1
                 self.moveY = 0
 
-    def effect(self, player):
-        return False
+    def onMessage(self, telegram: Telegram):
+        pass
+
+    def effect(self, player) -> bool:
+        pass
 
 
 # 16 8 40 48
@@ -43,7 +49,10 @@ class HealthPotion(Item):
         self.effect = self.recoveryHealth
 
     def recoveryHealth(self, player: Player):
-        player.heal(self.healPower)
+        Hermes.messageDispatch(0, self.id, player.id, "heal", {"medicine": self.healPower})
         return True
 
-
+    def onMessage(self, telegram: Telegram):
+        if telegram.message == "youHealMe":
+            # eliminar este item
+            pass

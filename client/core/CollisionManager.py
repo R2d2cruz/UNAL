@@ -51,11 +51,9 @@ class CollisionManager:
                 if entityA.getCollisionRect().colliderect(entityB.getCollisionRect()):
                     # entityA.isInCollision = True # solo se marca 1, el otro se marca en la otra ronda
                     if entityB.flag == "item":
-                        if entityB.effect(entityA):
-                            removeEntities.append(entityB)
+                        entityB.effect(entityA)
                     elif entityA.flag == "item":
-                        if entityA.effect(entityB):
-                            removeEntities.append(entityA)
+                        entityA.effect(entityB)
                     else:
                         side = sideColl(entityA, entityB)
 
