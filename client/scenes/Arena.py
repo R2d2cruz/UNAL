@@ -2,9 +2,8 @@ import pygame
 from random import choice, random
 import core.ResourceManager as res
 from core.Scene import Scene
-from core.Entity import Entity
 from core.Map import Map
-from core.camera.SimpleCamera import SimpleCamera
+from core.Camera import Camera
 from core.Game import Game
 from core.Vector2D import Vector2D
 from Player import Player
@@ -14,7 +13,7 @@ from core.Path import Path
 from core.CollisionManager import collisionManager
 
 
-def getValidRadomPos(worlRect: pygame.Rect, rect: pygame.Rect):
+def getValidRadomPos(worlRect, rect):
     while True:
         rect.x = int(random() * worlRect.w)
         rect.y = int(random() * worlRect.h)
@@ -22,7 +21,7 @@ def getValidRadomPos(worlRect: pygame.Rect, rect: pygame.Rect):
             return rect
 
 
-def locateInValidRadomPos(worlRect: pygame.Rect, entity: Entity):
+def locateInValidRadomPos(worlRect, entity):
     pos = getValidRadomPos(worlRect, entity.getCollisionRect())
     entity.x = pos.x
     entity.y = pos.y
@@ -83,7 +82,7 @@ class Playground(Scene):
         self.font = res.getFont('minecraft', 32)
         self.label = self.font.render(
             'Juego en pausa por problemas conexión. Espere un momento', True, (255, 64, 64))
-        self.camera = SimpleCamera(game.screen.get_width(
+        self.camera = Camera(game.screen.get_width(
         ), game.screen.get_height(), self.map.width, self.map.height)
         self.camera.target = self.player
         game.setPlayer(self.player)
@@ -146,6 +145,7 @@ class Playground(Scene):
 
     def render(self, screen: pygame.Surface):
         screen.fill((0, 0, 0))
+
         self.map.render(screen, self.camera)
         for k in self.characters:
             k.render(screen, self.camera)
@@ -153,8 +153,8 @@ class Playground(Scene):
             k.render(screen, self.camera)
 
         self.player.render(screen, self.camera)
-        self.buttonPath.render(screen, self.camera)
         self.camera.render(screen)
+        self.buttonPath.render(screen)
 
         # mostrar un mensaje para idicar que el juego esta pausado y la razon
         # if self.paused:

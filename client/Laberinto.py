@@ -16,9 +16,9 @@ class Laberinto(Map):
         self.frames = self.loadTileset(res.getTileset("ts1"))
         mapName = 'small'
         self.objects = self.createWalls(res.getMap(mapName))
-        self.map = self.loadMap(res.getMap(mapName)) 
+        self.cells = self.loadMap(res.getMap(mapName)) 
         self.graph = Graph()
-        self.graph.nodes = self.getGraph()
+        self.graph.nodes = Graph.getGraph(self, True)
         with open('saves/' + mapName + '.graph.json', 'w') as outfile:
             json.dump(self.graph.nodes, outfile)
         potion = HealthPotion("freshPotion", (3, 2, 10, 12), Vector2D(160, 288), 20)

@@ -1,4 +1,5 @@
 import pygame
+from core.camera.BaseCamera import BaseCamera
 
 
 class Control:
@@ -19,7 +20,7 @@ class Control:
     def update(self, deltaTime: float):
         pass
 
-    def render(self, screen):
+    def render(self, screen, camera: BaseCamera):
         pass
 
     def handleEvent(self, event):

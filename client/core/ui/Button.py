@@ -1,6 +1,7 @@
 import pygame
 from core.ui.Control import Control
 from core.ResourceManager import getText
+from core.camera.BaseCamera import BaseCamera
 
 
 class Button(Control):
@@ -24,7 +25,7 @@ class Button(Control):
         self.__textRect.x = 2 + self.rect.x + (self.rect.w - self.__surface.get_width()) / 2
         self.__textRect.y = 2 + self.rect.y + (self.rect.h - self.__surface.get_height()) / 2
 
-    def render(self, screen):
+    def render(self, screen, camera: BaseCamera):
         screen.fill((123, 123, 123), self.rect)
 
         if self.__isPressed:
