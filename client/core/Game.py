@@ -1,6 +1,7 @@
 import pygame
 import sys
 import json
+import core.Hermes as Hermes
 import core.ResourceManager as res
 from core.Config import Config
 from core.Client import Client
@@ -52,6 +53,7 @@ class Game:
             t = pygame.time.get_ticks()
             self.update((t - lastFrameTime))
             lastFrameTime = t
+            Hermes.setDeltaTime(t)
             self.render()
 
     def quit(self):

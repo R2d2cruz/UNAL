@@ -5,6 +5,7 @@ import core.EntityManager as EntityManager
 from core.Entity import Entity
 
 __priorityQ = None
+__deltaTime = float()
 
 
 def init():
@@ -12,14 +13,19 @@ def init():
     __priorityQ = queue.PriorityQueue()
 
 
-def messageDispatch(deltaTime: float, delay: float, sender: int, receiver: int, msg: str, extraInfo: str = ""):
+def setDeltaTime(deltaTime: float):
+    global __deltaTime
+    __deltaTime = deltaTime
+
+
+def messageDispatch(delay: float, sender: int, receiver: int, msg: str, extraInfo: str = ""):
     telegram = Telegram(sender, receiver, msg, 0, extraInfo)
     pReceiver = EntityManager.getEntityById(receiver)
     if delay <= 0:
         discharge(pReceiver, telegram)
     else:
         global __priorityQ
-        telegram.dispatchTime = deltaTime + delay
+        telegram.dispatchTime = __deltaTime + delay
         # noinspection PyUnresolvedReferences
         __priorityQ.put_nowait((telegram.dispatchTime, telegram))
 

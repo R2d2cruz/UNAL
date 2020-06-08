@@ -1,7 +1,10 @@
 from core.Entity import Entity
+from core.Telegram import Telegram
+import core.Hermes as Hermes
 
 __entities = None
 __entityMap = None
+__deltaTime = 0
 
 
 def init():
@@ -20,7 +23,7 @@ def setEntityMap(_entityMap):
     __entityMap = _entityMap
 
 
-def discharge(pReceiver, msg):
+def discharge(pReceiver: int, msg: Telegram):
     pass
 
 

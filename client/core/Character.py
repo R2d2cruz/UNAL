@@ -2,6 +2,7 @@ import pygame
 import core.ResourceManager as res
 from core.MovingEntity import MovingEntity
 from core.Telegram import Telegram
+import core.Hermes as Hermes
 
 compassClips = ['right', 'down', 'down', 'down', 'left', 'up', 'up', 'up']
 translate = {
@@ -94,6 +95,10 @@ class Character(MovingEntity):
     def health(self):
         return self.__health
 
+    @health.setter
+    def health(self, health):
+        self.__health = health
+
     def damage(self, damage=5):
         self.__health -= damage
 
@@ -110,5 +115,7 @@ class Character(MovingEntity):
     def onMessage(self, telegram: Telegram) -> bool:
         if telegram.message == "heal":
             if self.heal(telegram.extraInfo.get("medicine")):
+                Hermes.messageDispatch(0, self.id, telegram.sender, "youHealMe", {})
                 return True
+        Hermes.messageDispatch(0, self.id, telegram.sender, "IAlreadyHeal", {})
         return False

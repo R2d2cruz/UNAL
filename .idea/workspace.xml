@@ -22,10 +22,12 @@
   <component name="ChangeListManager">
     <list default="true" id="6f659020-7adf-4bc9-9be9-8756714b3afd" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/__main__.py" beforeDir="false" afterPath="$PROJECT_DIR$/client/__main__.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/client/core/Character.py" beforeDir="false" afterPath="$PROJECT_DIR$/client/core/Character.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/core/Entity.py" beforeDir="false" afterPath="$PROJECT_DIR$/client/core/Entity.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/client/core/EntityManager.py" beforeDir="false" afterPath="$PROJECT_DIR$/client/core/EntityManager.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/core/Game.py" beforeDir="false" afterPath="$PROJECT_DIR$/client/core/Game.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/client/core/Hermes.py" beforeDir="false" afterPath="$PROJECT_DIR$/client/core/Hermes.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/core/Telegram.py" beforeDir="false" afterPath="$PROJECT_DIR$/client/core/Telegram.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -213,7 +215,7 @@
       <workItem from="1591286852145" duration="168000" />
       <workItem from="1591311966597" duration="31000" />
       <workItem from="1591463197594" duration="15136000" />
-      <workItem from="1591582178453" duration="680000" />
+      <workItem from="1591582178453" duration="3344000" />
     </task>
     <servers />
   </component>
