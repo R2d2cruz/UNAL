@@ -3,6 +3,10 @@ import sys
 # noinspection PyUnresolvedReferences
 import core.ResourceManager as res 
 # noinspection PyUnresolvedReferences
+import core.EntityManager as entManager
+# noinspection PyUnresolvedReferences
+import core.Hermes as Hermes
+# noinspection PyUnresolvedReferences
 from constants import imgs, sounds, fonts, anims, tilesets, maps
 # noinspection PyUnresolvedReferences
 from core.Game import Game
@@ -25,12 +29,14 @@ def signal_handler(sig, frame):
 signal.signal(signal.SIGINT, signal_handler)
 
 res.init('client/assets/', imgs, sounds, fonts, anims, tilesets, maps)
+entManager.init()
+Hermes.init()
 game = Game(Config('client/config.json'))
 game.init()
 game.addScene("main", MainMenu(game))
 game.addScene("play", Playground(game, Laberinto()))
 game.setScene("main")
-res.playSong('background1')
+#res.playSong('background1')
 
 game.run()
 game.quit()
