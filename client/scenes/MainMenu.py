@@ -6,11 +6,12 @@ from core.ui.InputBox import InputBox
 from core.ui.Button import Button
 from core.ui.Label import Label
 from core.AnimatedEntity import AnimatedEntity
-
+from core.camera.NullCamera import NullCamera
 
 class MainMenu(Scene):
     def __init__(self, game: Game):
         super().__init__(game)
+        self.camera = NullCamera()
         self.font = res.getFont('minecraft', 36)
         self.index = 0
         rect = pygame.Rect(0, 0, 450, 80)
@@ -99,7 +100,7 @@ class MainMenu(Scene):
     def render(self, screen: pygame.Surface):
         screen.fill((30, 30, 30))
         for control in self.controls:
-            control.render(screen)
+            control.render(screen, self.camera)
         # TODO: si el cliente está conectado mostrar a que servidor esta conectado, sino entonces indicar que no esta conectado
 
     def onEnterScene(self):

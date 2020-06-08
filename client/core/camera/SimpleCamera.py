@@ -1,7 +1,7 @@
 import pygame
+from core.camera.BaseCamera import BaseCamera
 
-
-class Camera:
+class SimpleCamera(BaseCamera):
     def __init__(self, viewWidth, viewHeight, worldWidth, worldHeight):
         self.worldWidth = worldWidth
         self.worldHeight = worldHeight

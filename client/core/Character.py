@@ -2,6 +2,7 @@ import pygame
 import core.ResourceManager as res
 from core.MovingEntity import MovingEntity
 from core.Telegram import Telegram
+from core.camera.BaseCamera import BaseCamera
 
 
 compassClips = ['right', 'down', 'down', 'down', 'left', 'up', 'up', 'up']
@@ -47,7 +48,7 @@ class Character(MovingEntity):
         self.__nameRect.x, self.__nameRect.y = (
             self.x + (34 - self.__nameRect.width) / 2, self.y - 14)
 
-    def render(self, screen, camera):
+    def render(self, screen, camera: BaseCamera):
         super().render(screen, camera)
         if self.name is not None:
             if self.__nameSurface is not None:
@@ -56,12 +57,6 @@ class Character(MovingEntity):
             pygame.draw.rect(screen, (255 * (1 - self.health / maxHealth), 255 * self.health / maxHealth, 0, 0.4),
                              camera.apply(self.getHealthRect()))
             pygame.draw.rect(screen, (0, 0, 0, 0.4), camera.apply(self.getHealthEmptyRect()), 1)
-
-        # pygame.draw.line(screen, (255, 0, 0), camera.apply([self.x, self.y]), camera.apply([self.x + self.steeringForce.x * 1000, self.y + self.steeringForce.y * 1000]), 2)
-        # pygame.draw.line(screen, (0, 255, 0), camera.apply([self.x, self.y + 10]), camera.apply([self.x + self.acceleration.x * 1000, self.y + self.acceleration.y * 1000 + 10]), 2)
-        # pygame.draw.line(screen, (0, 0, 255), camera.apply([self.x, self.y + 20]), camera.apply([self.x + self.velocity.x * 100, self.y + self.velocity.y * 100 + 20]), 2)
-        # pygame.draw.circle(screen, (0, 0, 0), camera.apply([self.x, self.y]), 100, 2)
-
         if self.steering.followPathTarget is not None:
             self.steering.followPathTarget.render(screen, camera)
 

@@ -1,5 +1,6 @@
 import pygame
 from core.Telegram import Telegram
+from core.camera.BaseCamera import BaseCamera
 
 
 class Entity(pygame.sprite.Sprite):
@@ -66,7 +67,7 @@ class Entity(pygame.sprite.Sprite):
         return self.rect.height
 
     @height.setter
-    def height(self, height):
+    def height(self, height: int):
         self.rect.height = height
 
     def getCollisionRect(self):
@@ -78,14 +79,10 @@ class Entity(pygame.sprite.Sprite):
     def update(self, deltaTime: float):
         pass
 
-    def render(self, screen, camera=None):
-        if camera is None:
-            screen.blit(self.image, self.rect)
-            # pygame.draw.rect(screen, (255, 0, 0), self.rect, 1)
-        else:
-            screen.blit(self.image, camera.apply(self.rect))
-            pygame.draw.rect(screen, (0, 0, 255), camera.apply(self.rect), 1)
-            pygame.draw.rect(screen, (255, 0, 0), camera.apply(self.getCollisionRect()), 1)
+    def render(self, screen, camera: BaseCamera):
+        screen.blit(self.image, camera.apply(self.rect))
+        pygame.draw.rect(screen, (0, 0, 255), camera.apply(self.rect), 1)
+        pygame.draw.rect(screen, (255, 0, 0), camera.apply(self.getCollisionRect()), 1)
 
     def dispose(self):
         pass
