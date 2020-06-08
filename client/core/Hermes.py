@@ -1,7 +1,7 @@
 import queue
 
-from core.Telegram import Telegram
 import core.EntityManager as EntityManager
+from core.Telegram import Telegram
 from core.Entity import Entity
 
 __priorityQ = None
