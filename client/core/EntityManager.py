@@ -1,31 +1,41 @@
 from core.Entity import Entity
 
+__entities = None
+__entityMap = None
 
-class EntityManager:
 
-    def __init__(self):
-        self.__entityMap = None
-        self.__entities = {}
+def init():
+    global __entities
+    global __entityMap
+    __entityMap = None
+    __entities = {}
 
-    @property
-    def entityMap(self):
-        return self.__entityMap
 
-    @entityMap.setter
-    def entityMap(self, entityMap):
-        self.__entityMap = entityMap
+def entityMap():
+    return __entityMap
 
-    def discharge(self, pReceiver, msg):
-        pass
 
-    def registerEntity(self, entities: list):
-        for entity in entities:
-            if entity.__class__ is Entity:
-                self.__entities[entity.id] = entity
+def setEntityMap(_entityMap):
+    global __entityMap
+    __entityMap = _entityMap
 
-    def getEntityById(self, _id: int):
-        return self.__entities[_id]
 
-    def removeEntityById(self, _id):
-        if self.__entities.get(_id) is not None:
-            self.__entities.pop(_id)
+def discharge(pReceiver, msg):
+    pass
+
+
+def registerEntity(entities: list):
+    global __entities
+    for entity in entities:
+        if entity.__class__ is Entity:
+            __entities[entity.id] = entity
+
+
+def getEntityById(_id: int):
+    return __entities[_id]
+
+
+def removeEntityById(_id: int):
+    global __entities
+    if __entities.get(_id) is not None:
+        __entities.pop(_id)

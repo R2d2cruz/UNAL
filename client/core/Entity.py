@@ -13,19 +13,6 @@ class Entity(pygame.sprite.Sprite):
         self.rect = pygame.Rect(0, 0, 0, 0)
         self.flag = ""
         self.__id = self.getMyId()
-        self.__onMessages = False
-        self.handelMessages = self.offHandleMessages
-
-    @property
-    def onMessage(self):
-        return self.__onMessages
-
-    def switchMessage(self):
-        self.__onMessages = not self.__onMessages
-        if self.__onMessages:
-            self.handelMessages = self.onHandleMessages
-        else:
-            self.handelMessages = self.offHandleMessages
 
     @staticmethod
     def getMyId():
@@ -90,11 +77,5 @@ class Entity(pygame.sprite.Sprite):
     def dispose(self):
         pass
 
-    def handelMessages(self, telegram: Telegram):
-        pass
-
-    def onHandleMessages(self, telegram: Telegram):
-        pass
-
-    def offHandleMessages(self, telegram: Telegram):
+    def onMessage(self, telegram: Telegram) -> bool:
         pass

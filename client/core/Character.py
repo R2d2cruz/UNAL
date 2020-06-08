@@ -3,7 +3,6 @@ import core.ResourceManager as res
 from core.MovingEntity import MovingEntity
 from core.Telegram import Telegram
 
-
 compassClips = ['right', 'down', 'down', 'down', 'left', 'up', 'up', 'up']
 translate = {
     "stand_up": "stu",
@@ -21,6 +20,7 @@ maxHealth = 100
 class Character(MovingEntity):
     def __init__(self, name: str, animationName: str, position, *groups):
         super().__init__(position, *groups)
+        self.currentClip = None
         self.__color = (0, 0, 0)
         self.__nameSurface = None
         self.__nameRect = None
@@ -31,8 +31,6 @@ class Character(MovingEntity):
         self.__health = 100
         self.attack = 30
         self.defense = 20
-        if not self.onMessage:
-            self.switchMessage()
 
     def update(self, deltaTime: float):
         super().update(deltaTime)
@@ -40,7 +38,7 @@ class Character(MovingEntity):
             self.x + (34 - self.__nameRect.width) / 2, self.y - 14)
         direction = compassClips[self.heading.getCompass()]
         self.currentClip = (
-            'stand_' if self.velocity.isZero() else '') + direction
+                               'stand_' if self.velocity.isZero() else '') + direction
 
     def stop(self, x, y):
         super().stop(x, y)
@@ -96,17 +94,21 @@ class Character(MovingEntity):
     def health(self):
         return self.__health
 
-    @health.setter
-    def health(self, health):
-        if health <= maxHealth:
-            self.__health = health
-
     def damage(self, damage=5):
-        self.health -= damage
+        self.__health -= damage
 
     def heal(self, medicine):
-        self.health += medicine
+        if self.health <= maxHealth:
+            if self.health + medicine < maxHealth:
+                self.__health += medicine
+            else:
+                self.__health = maxHealth
+            return True
+        else:
+            return False
 
-    def onHandleMessages(self, telegram: Telegram):
-        # estraer toda la informacion de telegram
-        pass
+    def onMessage(self, telegram: Telegram) -> bool:
+        if telegram.message == "heal":
+            if self.heal(telegram.extraInfo.get("medicine")):
+                return True
+        return False

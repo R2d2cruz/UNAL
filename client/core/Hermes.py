@@ -1,32 +1,38 @@
 import queue
 
 from core.Telegram import Telegram
-from core.EntityManager import EntityManager
+import core.EntityManager as EntityManager
 from core.Entity import Entity
 
-
-class Hermes:
-    entManager = None
-
-    def __init__(self, entManager: EntityManager):
-        self.__priorityQ = queue.PriorityQueue()
-        Hermes.entManager = entManager
+__priorityQ = None
 
 
-    def messageDispatch(self, deltaTime: float, delay: float, sender: int, receiver: int, msg: str, extraInfo: str = ""):
-        telegram = Telegram(sender, receiver, msg, 0, extraInfo)
-        pReceiver = Hermes.entManager.getEntityById(receiver)
-        if delay <= 0:
-            self.discharge(pReceiver, telegram)
-        else:
-            telegram.dispatchTime = deltaTime + delay
-            self.__priorityQ.put_nowait((telegram.dispatchTime, telegram))
+def init():
+    global __priorityQ
+    __priorityQ = queue.PriorityQueue()
 
-    def dispatchDelayedMessages(self, delayTime: float):
-        if 0 < delayTime < self.__priorityQ.queue[0][0]:
-            telegram = self.__priorityQ.get_nowait()
-            pReceiver = Hermes.entManager.getEntityById(telegram.receiver)
-            self.discharge(pReceiver, telegram)
 
-    def discharge(self, pReceiver: Entity, telegram: Telegram):
-        pass
+def messageDispatch(deltaTime: float, delay: float, sender: int, receiver: int, msg: str, extraInfo: str = ""):
+    telegram = Telegram(sender, receiver, msg, 0, extraInfo)
+    pReceiver = EntityManager.getEntityById(receiver)
+    if delay <= 0:
+        discharge(pReceiver, telegram)
+    else:
+        global __priorityQ
+        telegram.dispatchTime = deltaTime + delay
+        # noinspection PyUnresolvedReferences
+        __priorityQ.put_nowait((telegram.dispatchTime, telegram))
+
+
+def dispatchDelayedMessages(delayTime: float):
+    global __priorityQ
+    # noinspection PyUnresolvedReferences
+    if 0 < delayTime < __priorityQ.queue[0][0]:
+        # noinspection PyUnresolvedReferences
+        telegram = __priorityQ.get_nowait()
+        pReceiver = EntityManager.getEntityById(telegram.receiver)
+        discharge(pReceiver, telegram)
+
+
+def discharge(pReceiver: Entity, telegram: Telegram):
+    pReceiver.onMessage(telegram)
