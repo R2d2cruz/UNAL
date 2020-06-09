@@ -47,12 +47,14 @@ class HealthPotion(Item):
         super().__init__(name, pygame.Rect(rect), position)
         self.healPower = healPower
         self.effect = self.recoveryHealth
+        self.isOn = True
 
     def recoveryHealth(self, player: Character):
-        Hermes.messageDispatch(0, self.id, player.id, "heal", {"medicine": self.healPower})
+        if self.isOn:
+            Hermes.messageDispatch(0, self.id, player.id, "heal", {"medicine": self.healPower})
         return True
 
     def onMessage(self, telegram: Telegram):
         if telegram.message == "youHealMe":
             # eliminar este item
-            pass
+            self.isOn = False
