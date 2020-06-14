@@ -18,7 +18,7 @@ def setDeltaTime(deltaTime: float):
     __deltaTime = deltaTime
 
 
-def messageDispatch(delay: float, sender: int, receiver: int, msg: str, extraInfo: str = ""):
+def messageDispatch(delay: float, sender: int, receiver: int, msg: str, extraInfo: dict = {}):
     telegram = Telegram(sender, receiver, msg, 0, extraInfo)
     pReceiver = EntityManager.getEntityById(receiver)
     if delay <= 0:

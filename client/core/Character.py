@@ -112,5 +112,5 @@ class Character(MovingEntity):
             if self.heal(telegram.extraInfo.get("medicine")):
                 Hermes.messageDispatch(0, self.id, telegram.sender, "youHealMe", {})
                 return True
-        Hermes.messageDispatch(0, self.id, telegram.sender, "IAlreadyHeal", {})
+        Hermes.messageDispatch(0, self.id, telegram.sender, "IAlreadyHealed", {})
         return False

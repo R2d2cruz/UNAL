@@ -1,14 +1,17 @@
 import pygame
 from core.Entity import Entity
 from core.Vector2D import Vector2D
-from Player import Player
+from core.Character import Character
 import core.ResourceManager as res
+import core.Hermes as Hermes
+from core.Telegram import Telegram
 
 MAXYINTERVAL = 6
 
 
 class Item(Entity):
     def __init__(self, name: str, rect: pygame.Rect, positionCenter: Vector2D):
+        super().__init__()
         self.name = name
         self.image = res.loadImage(self.name, rect)
         self.rect = rect
@@ -30,8 +33,11 @@ class Item(Entity):
                 self.direction *= -1
                 self.moveY = 0
 
-    def effect(self, player):
-        return False
+    def onMessage(self, telegram: Telegram):
+        pass
+
+    def effect(self, player) -> bool:
+        pass
 
 
 # 16 8 40 48
@@ -41,9 +47,14 @@ class HealthPotion(Item):
         super().__init__(name, pygame.Rect(rect), position)
         self.healPower = healPower
         self.effect = self.recoveryHealth
+        self.isOn = True
 
-    def recoveryHealth(self, player: Player):
-        player.heal(self.healPower)
+    def recoveryHealth(self, player: Character):
+        if self.isOn:
+            Hermes.messageDispatch(0, self.id, player.id, "heal", {"medicine": self.healPower})
         return True
 
-
+    def onMessage(self, telegram: Telegram):
+        if telegram.message == "youHealMe":
+            # eliminar este item
+            self.isOn = False
