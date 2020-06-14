@@ -1,6 +1,7 @@
 import pygame
 from random import choice, random
 import core.ResourceManager as res
+import core.EntityManager as entManager
 from core.Scene import Scene
 from core.Map import Map
 from core.Camera import Camera
@@ -80,6 +81,8 @@ class Playground(Scene):
         #     self.characters.append(character)
         #     collisionManager.registerMovingEntity(character)
 
+        entManager.registerEntities(self.characters)
+
         self.font = res.getFont('minecraft', 32)
         self.label = self.font.render(
             'Juego en pausa por problemas conexión. Espere un momento', True, (255, 64, 64))
@@ -87,6 +90,7 @@ class Playground(Scene):
         ), game.screen.get_height(), self.map.width, self.map.height)
         self.camera.target = self.player
         game.setPlayer(self.player)
+        entManager.registerEntity(self.player)
         self.keysPressed = {}
 
         rect = pygame.Rect(0, 0, 80, 80)

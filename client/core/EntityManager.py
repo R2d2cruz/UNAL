@@ -2,7 +2,7 @@ from core.Entity import Entity
 from core.Telegram import Telegram
 import core.Hermes as Hermes
 
-__entities = None
+__entities = {}
 __entityMap = None
 __deltaTime = 0
 
@@ -27,15 +27,18 @@ def discharge(pReceiver: int, msg: Telegram):
     pass
 
 
-def registerEntity(entities: list):
-    global __entities
+def registerEntities(entities: list):
     for entity in entities:
-        if entity.__class__ is Entity:
-            __entities[entity.id] = entity
+        registerEntity(entity)
+
+
+def registerEntity(entity: Entity):
+    global __entities
+    __entities[entity.id] = entity
 
 
 def getEntityById(_id: int):
-    return __entities[_id]
+    return __entities.get(_id)
 
 
 def removeEntityById(_id: int):

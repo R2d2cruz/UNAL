@@ -1,5 +1,6 @@
 import core.ResourceManager as res
 import json
+import core.EntityManager as entManager
 from copy import copy
 from core.Map import Map
 from core.AnimatedEntity import AnimatedEntity
@@ -31,6 +32,8 @@ class Laberinto(Map):
             fire.x = 50 * i
             fire.y = 0
             self.objects.append(fire)
+        entManager.registerEntities(self.objects)
+        print(entManager)
 
     def createWalls(self, fileName: str):
         objects = self.loadMap(fileName)
