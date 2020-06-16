@@ -141,6 +141,8 @@ class Playground(Scene):
             for i in self.players.keys():
                 self.players.get(i).update(deltaTime)
             for char in self.characters:
+                if char.script is not None:
+                    char.script.onUpdate(char)
                 char.update(deltaTime)
             for obj in self.map.objects:
                 obj.update(deltaTime)
@@ -212,10 +214,11 @@ class Playground(Scene):
                     spec = importlib.util.spec_from_file_location(moduleName, fileName)
                     foo = importlib.util.module_from_spec(spec)
                     spec.loader.exec_module(foo)
-                    newCharScript = foo.Arturo()
+
                     character = Character('Arturo', 'Charly', (0, 0), (0, 24, 34, 32))
-                    character.script = newCharScript
-                    newCharScript.onInit(character, worlRect)
+                    character.script = foo.ScriptCharacter()
+                    character.script.onInit(character, worlRect)
+                    print('Script', character.script)
                     self.characters.append(character)
                     collisionManager.registerMovingEntity(character)
                 except Exception as e:

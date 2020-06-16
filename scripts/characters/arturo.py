@@ -3,7 +3,7 @@ from core.Telegram import Telegram
 from core.Script import Script
 
 
-class Arturo(Script):
+class ScriptCharacter(Script):
 
     def onInit(self, character: Character, worlRect) -> Character:
         character.setName('Arthur')
@@ -11,8 +11,8 @@ class Arturo(Script):
         character.steering.wanderEnabled = True
         print('Cargando Arthur...')
 
-    def onUdpdate(self, character: Character):
-        print('onUpdate', character.name)
+    def onUpdate(self, character: Character):
+        pass
 
     def onMessage(self, character: Character, telegram: Telegram):
         pass

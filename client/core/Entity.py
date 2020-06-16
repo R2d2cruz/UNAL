@@ -67,8 +67,7 @@ class Entity(pygame.sprite.Sprite):
         return self.rect
 
     def update(self, deltaTime: float):
-        if self.script is not None:
-            self.script.onUpdate(self)
+        pass
 
     def render(self, screen, camera: BaseCamera):
         screen.blit(self.image, camera.apply(self.rect))
