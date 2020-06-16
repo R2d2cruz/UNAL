@@ -33,7 +33,6 @@ class Laberinto(Map):
             fire.y = 0
             self.objects.append(fire)
         entManager.registerEntities(self.objects)
-        print(entManager)
 
     def createWalls(self, fileName: str):
         objects = self.loadMap(fileName)

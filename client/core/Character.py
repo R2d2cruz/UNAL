@@ -20,8 +20,8 @@ maxHealth = 100
 
 
 class Character(MovingEntity):
-    def __init__(self, name: str, animationName: str, position, *groups):
-        super().__init__(position, *groups)
+    def __init__(self, name: str, animationName: str, position, collisionRect, *groups):
+        super().__init__(position, collisionRect, *groups)
         self.currentClip = None
         self.__color = (0, 0, 0)
         self.__nameSurface = None
@@ -39,8 +39,7 @@ class Character(MovingEntity):
         self.__nameRect.x, self.__nameRect.y = (
             self.x + (34 - self.__nameRect.width) / 2, self.y - 14)
         direction = compassClips[self.heading.getCompass()]
-        self.currentClip = (
-                               'stand_' if self.velocity.isZero() else '') + direction
+        self.currentClip = ('stand_' if self.velocity.isZero() else '') + direction
 
     def stop(self, x, y):
         super().stop(x, y)
@@ -82,9 +81,6 @@ class Character(MovingEntity):
 
     def getHealthEmptyRect(self):
         return pygame.Rect(self.x + (self.width / 2) - 20, self.y + self.height + 4, 40, 8)
-
-    def getCollisionRect(self):
-        return pygame.Rect((self.x, self.y + 24, 34, 32))
 
     @property
     def health(self):

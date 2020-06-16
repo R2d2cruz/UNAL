@@ -1,7 +1,11 @@
 import pygame
+import os
 from random import choice, random
+import importlib
+
 import core.ResourceManager as res
 import core.EntityManager as entManager
+from core.Character import Character
 from core.Scene import Scene
 from core.Entity import Entity
 from core.Map import Map
@@ -25,8 +29,7 @@ def getValidRadomPos(worlRect: pygame.Rect, rect: pygame.Rect):
 
 def locateInValidRadomPos(worlRect: pygame.Rect, entity: Entity):
     pos = getValidRadomPos(worlRect, entity.getCollisionRect())
-    entity.x = pos.x
-    entity.y = pos.y
+    entity.setPos(pos.x, pos.y)
 
 
 class Playground(Scene):
@@ -44,10 +47,12 @@ class Playground(Scene):
         name = res.getRandomCharAnimName()
         worlRect = map.getRect()
 
-        self.player = Player(name, name, (0, 0))
+        self.player = Player(name, name, (0, 0), (0, 24, 34, 32))
         locateInValidRadomPos(worlRect, self.player)
 
         collisionManager.registerMovingEntity(self.player)
+
+        self.loadScripts(worlRect)
 
         # for i in range(1, 5):
         #     character = Character('Wander', res.getRandomCharAnimName(), (0, 0))
@@ -194,3 +199,25 @@ class Playground(Scene):
                 realPath.points.append(self.map.cellToPoint(node))
             self.player.steering.followPathEnabled = True
             self.player.steering.followPathTarget = realPath
+
+    def loadScripts(self, worlRect):
+        print('Inicio carga scripts')
+        import importlib.util
+        for script in os.listdir('./scripts/characters'):
+            if script.endswith(".py"):
+                fileName = './scripts/characters/' + script
+                moduleName = os.path.basename(script)
+                try:
+                    print ('Loading ', fileName, moduleName)
+                    spec = importlib.util.spec_from_file_location(moduleName, fileName)
+                    foo = importlib.util.module_from_spec(spec)
+                    spec.loader.exec_module(foo)
+                    newCharScript = foo.Arturo()
+                    character = Character('Arturo', 'Charly', (0, 0), (0, 24, 34, 32))
+                    character.script = newCharScript
+                    newCharScript.onInit(character, worlRect)
+                    self.characters.append(character)
+                    collisionManager.registerMovingEntity(character)
+                except Exception as e:
+                    print('No se pudo cargar script', e)
+        print('Fin carga scripts')

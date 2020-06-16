@@ -20,6 +20,7 @@ class OnlinePlayer(Character):
             data.get("n"),
             data.get("A"),
             (data.get("x"), data.get("y")),
+            (0, 24, 34, 32),
             *groups
         )
         # self.x = data.get("x")
