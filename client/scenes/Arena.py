@@ -1,15 +1,9 @@
 import pygame
-import os
 from random import choice, random
-import importlib
-
 import core.ResourceManager as res
-import core.EntityManager as entManager
-from core.Character import Character
 from core.Scene import Scene
-from core.Entity import Entity
 from core.Map import Map
-from core.camera.SimpleCamera import SimpleCamera
+from core.Camera import Camera
 from core.Game import Game
 from core.Vector2D import Vector2D
 from Player import Player
@@ -19,7 +13,7 @@ from core.Path import Path
 from core.CollisionManager import collisionManager
 
 
-def getValidRadomPos(worlRect: pygame.Rect, rect: pygame.Rect):
+def getValidRadomPos(worlRect, rect):
     while True:
         rect.x = int(random() * worlRect.w)
         rect.y = int(random() * worlRect.h)
@@ -27,9 +21,10 @@ def getValidRadomPos(worlRect: pygame.Rect, rect: pygame.Rect):
             return rect
 
 
-def locateInValidRadomPos(worlRect: pygame.Rect, entity: Entity):
+def locateInValidRadomPos(worlRect, entity):
     pos = getValidRadomPos(worlRect, entity.getCollisionRect())
-    entity.setPos(pos.x, pos.y)
+    entity.x = pos.x
+    entity.y = pos.y
 
 
 class Playground(Scene):
@@ -47,12 +42,10 @@ class Playground(Scene):
         name = res.getRandomCharAnimName()
         worlRect = map.getRect()
 
-        self.player = Player(name, name, (0, 0), (0, 24, 34, 32))
+        self.player = Player(name, name, (0, 0))
         locateInValidRadomPos(worlRect, self.player)
 
         collisionManager.registerMovingEntity(self.player)
-
-        self.loadScripts(worlRect)
 
         # for i in range(1, 5):
         #     character = Character('Wander', res.getRandomCharAnimName(), (0, 0))
@@ -86,16 +79,13 @@ class Playground(Scene):
         #     self.characters.append(character)
         #     collisionManager.registerMovingEntity(character)
 
-        entManager.registerEntities(self.characters)
-
         self.font = res.getFont('minecraft', 32)
         self.label = self.font.render(
             'Juego en pausa por problemas conexión. Espere un momento', True, (255, 64, 64))
-        self.camera = SimpleCamera(game.screen.get_width(
+        self.camera = Camera(game.screen.get_width(
         ), game.screen.get_height(), self.map.width, self.map.height)
         self.camera.target = self.player
         game.setPlayer(self.player)
-        entManager.registerEntity(self.player)
         self.keysPressed = {}
 
         rect = pygame.Rect(0, 0, 80, 80)
@@ -141,8 +131,6 @@ class Playground(Scene):
             for i in self.players.keys():
                 self.players.get(i).update(deltaTime)
             for char in self.characters:
-                if char.script is not None:
-                    char.script.onUpdate(char)
                 char.update(deltaTime)
             for obj in self.map.objects:
                 obj.update(deltaTime)
@@ -157,6 +145,7 @@ class Playground(Scene):
 
     def render(self, screen: pygame.Surface):
         screen.fill((0, 0, 0))
+
         self.map.render(screen, self.camera)
         for k in self.characters:
             k.render(screen, self.camera)
@@ -164,8 +153,8 @@ class Playground(Scene):
             k.render(screen, self.camera)
 
         self.player.render(screen, self.camera)
-        self.buttonPath.render(screen, self.camera)
         self.camera.render(screen)
+        self.buttonPath.render(screen)
 
         # mostrar un mensaje para idicar que el juego esta pausado y la razon
         # if self.paused:
@@ -201,26 +190,3 @@ class Playground(Scene):
                 realPath.points.append(self.map.cellToPoint(node))
             self.player.steering.followPathEnabled = True
             self.player.steering.followPathTarget = realPath
-
-    def loadScripts(self, worlRect):
-        print('Inicio carga scripts')
-        import importlib.util
-        for script in os.listdir('./scripts/characters'):
-            if script.endswith(".py"):
-                fileName = './scripts/characters/' + script
-                moduleName = os.path.basename(script)
-                try:
-                    print ('Loading ', fileName, moduleName)
-                    spec = importlib.util.spec_from_file_location(moduleName, fileName)
-                    foo = importlib.util.module_from_spec(spec)
-                    spec.loader.exec_module(foo)
-
-                    character = Character('Arturo', 'Charly', (0, 0), (0, 24, 34, 32))
-                    character.script = foo.ScriptCharacter()
-                    character.script.onInit(character, worlRect)
-                    print('Script', character.script)
-                    self.characters.append(character)
-                    collisionManager.registerMovingEntity(character)
-                except Exception as e:
-                    print('No se pudo cargar script', e)
-        print('Fin carga scripts')

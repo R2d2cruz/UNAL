@@ -1,6 +1,7 @@
 import pygame
 from core.ui.Control import Control
 from core.ResourceManager import getText
+from core.camera.BaseCamera import BaseCamera
 
 
 class InputBox(Control):
@@ -37,7 +38,7 @@ class InputBox(Control):
         # TODO: self.caret.update()
         pass
 
-    def render(self, screen):
+    def render(self, screen, camera: BaseCamera):
         screen.blit(self.__surface, self.__textRect)
         # TODO: self.caret.render(screen)
         pygame.draw.rect(screen, self.__color, self.rect, 2)

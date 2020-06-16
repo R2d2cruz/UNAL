@@ -9,7 +9,7 @@ class Vector2D:
         self.x = x
         self.y = y
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return '<' + str(self.x) + ', ' + str(self.y) + '>'
 
     def __add__(self, vector):
@@ -49,19 +49,19 @@ class Vector2D:
         self.x = 0.0
         self.y = 0.0
 
-    def isZero(self):
+    def isZero(self) -> bool:
         return self.x == 0.0 and self.y == 0.0
 
-    def isGtEpsilon(self):
+    def isGtEpsilon(self) -> bool:
         return self.lengthSq() > EPSILON
 
-    def getCompass(self):
+    def getCompass(self) -> int:
         arc = atan2(self.y, self.x)
         quad = round(arc / PI_QUARTER)
         return (quad + 8) % 8
 
 
-def getVector2D(obj) -> Vector2D:
+def getVector2D(obj: object) -> Vector2D:
     return Vector2D(obj.x, obj.y)
 
 
@@ -78,8 +78,8 @@ def normalize(vector: Vector2D) -> Vector2D:
     return Vector2D(vector.x, vector.y)
 
 
-def distanceSq(vectorA, vectorB) -> float:
+def distanceSq(vectorA: Vector2D, vectorB: Vector2D) -> float:
     return (vectorB - vectorA).lengthSq()
 
-def distance(vectorA, vectorB) -> float:
+def distance(vectorA: Vector2D, vectorB: Vector2D) -> float:
     return (vectorB - vectorA).length()

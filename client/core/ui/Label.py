@@ -1,6 +1,7 @@
 import pygame
 from core.ui.Control import Control
 from core.ResourceManager import getText
+from core.camera.BaseCamera import BaseCamera
 
 
 class Label(Control):
@@ -25,5 +26,5 @@ class Label(Control):
         self.__textRect.x = self.rect.x + self.__padding
         self.__textRect.y = self.rect.y + (self.rect.h - self.__surface.get_height()) / 2
 
-    def render(self, screen):
+    def render(self, screen, camera: BaseCamera):
         screen.blit(self.__surface, self.__textRect)
