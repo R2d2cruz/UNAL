@@ -22,7 +22,6 @@ class Entity(pygame.sprite.Sprite):
     def getMyId():
         newId = Entity.__nextID
         Entity.__nextID += 1
-        print('Nueva entidad con ID', newId)
         return newId
 
     @property
