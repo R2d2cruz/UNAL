@@ -1,4 +1,5 @@
 import pygame
+from core.Entity import Entity
 from core.AnimatedEntity import AnimatedEntity
 from core.SteeringBehavior import SteeringBehavior
 from core.Vector2D import EPSILON, Vector2D, normalize, truncate
@@ -20,14 +21,17 @@ class MovingEntity(AnimatedEntity):
         self.steering = SteeringBehavior(self)
         self.speed = 0
         self.hasChanged = True
-        #self.isInCollision = False
 
-    def __savePos(self):
+    @Entity.x.setter
+    def x(self, x):
         self.__oldPos.x = self.x
-        self.__oldPos.y = self.y
-
-    def __updateRects(self):
+        self._Entity__pos.x = x
         self.rect.x = self.x - self.__collRect.x - self.__collRect.w / 2
+
+    @Entity.y.setter
+    def y(self, y):
+        self.__oldPos.y = self.y
+        self._Entity__pos.y = y
         self.rect.y = self.y - self.__collRect.y - self.__collRect.h / 2
 
     @property
@@ -55,16 +59,13 @@ class MovingEntity(AnimatedEntity):
         return self.__heading
 
     def setPos(self, x: float, y: float):
-        self.__savePos()
         self.x, self.y = x, y
-        self.__updateRects()
 
     def getPos(self):
         return self.__pos
 
     def update(self, deltaTime: float):
-        super().update(deltaTime)  
-        self.__savePos()
+        super().update(deltaTime)
         self.__steeringForce = self.steering.calculate() 
         self.__acceleration = (self.__steeringForce / self.__mass)
         self.__velocity += (self.__acceleration * deltaTime)
@@ -75,7 +76,6 @@ class MovingEntity(AnimatedEntity):
             self.hasChanged = True
             self.__heading = normalize(self.__velocity)
             #self.side = perp(self.heading);
-        self.__updateRects()
 
     def render(self, screen, camera):
         super().render(screen, camera)
@@ -93,7 +93,6 @@ class MovingEntity(AnimatedEntity):
         if y:
             self.__velocity.y = 0
             self.y = self.__oldPos.y
-        self.__updateRects()
 
     def move(self, vector: Vector2D):
         self.steering.fixedForce = vector
@@ -102,7 +101,6 @@ class MovingEntity(AnimatedEntity):
         collRect = pygame.Rect(self.__collRect)
         collRect.center = (self.x, self.y)
         return collRect
-        #return pygame.Rect((self.rect.x + self.__collRect.x, self.rect.y + self.__collRect.y, self.__collRect.w, self.__collRect.h))
 
     def getOldCollisionRect(self):
         collRect = pygame.Rect(self.__collRect)

@@ -35,6 +35,7 @@ class Entity(pygame.sprite.Sprite):
     @x.setter
     def x(self, x):
         self.__pos.x = x
+        self.rect.left = x
 
     @property
     def y(self):
@@ -43,6 +44,7 @@ class Entity(pygame.sprite.Sprite):
     @y.setter
     def y(self, y):
         self.__pos.y = y
+        self.rect.top = y
 
     @property
     def width(self):

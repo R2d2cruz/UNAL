@@ -34,17 +34,19 @@ class Character(MovingEntity):
         self.attack = 30
         self.defense = 20
 
+    def updateNameRect(self):
+        self.__nameRect.x = self.x - self.__nameRect.w / 2
+        self.__nameRect.y = self.rect.top - self.__nameRect.h
+
     def update(self, deltaTime: float):
         super().update(deltaTime)
-        self.__nameRect.x, self.__nameRect.y = (
-            self.x + (34 - self.__nameRect.width) / 2, self.y - 14)
+        self.updateNameRect()
         direction = compassClips[self.heading.getCompass()]
         self.currentClip = ('stand_' if self.velocity.isZero() else '') + direction
 
     def stop(self, x, y):
         super().stop(x, y)
-        self.__nameRect.x, self.__nameRect.y = (
-            self.x + (34 - self.__nameRect.width) / 2, self.y - 14)
+        self.updateNameRect()
 
     def render(self, screen, camera: BaseCamera):
         super().render(screen, camera)
