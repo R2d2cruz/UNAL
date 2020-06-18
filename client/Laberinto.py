@@ -15,7 +15,7 @@ class Laberinto(Map):
     def __init__(self):
         super().__init__()
         self.frames = self.loadTileset(res.getTileset("ts1"))
-        mapName = 'small'
+        mapName = 'laberinto'
         self.objects = self.createWalls(res.getMap(mapName))
         self.cells = self.loadMap(res.getMap(mapName)) 
         self.graph = Graph()

@@ -218,7 +218,6 @@ class Playground(Scene):
                     character = Character('Arturo', 'Charly', (0, 0), (0, 24, 34, 32))
                     character.script = foo.ScriptCharacter()
                     character.script.onInit(character, worlRect)
-                    print('Script', character.script)
                     self.characters.append(character)
                     collisionManager.registerMovingEntity(character)
                 except Exception as e:

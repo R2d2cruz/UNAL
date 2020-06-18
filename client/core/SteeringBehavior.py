@@ -130,23 +130,19 @@ class SteeringBehavior:
     def followPath(self) -> Vector2D:
         target = self.followPathTarget.getCurrentWayPoint()
         dist = distance(target, getVector2D(self.agent))
-
-        if dist < 50:
-            self.followPathTarget.setNextPoint()
-            target = self.followPathTarget.getCurrentWayPoint()
-
-        #print(dist, self.followPathTarget.getCurrentWayPoint(), getVector2D(self.agent))
         if self.followPathTarget.isFinished():
-            force = self.arrive(self.followPathTarget.getCurrentWayPoint())
             if dist < 5:
                 self.followPathEnabled = False
                 self.followPathTarget = None
                 self.agent.velocity.setZero()
-            return force
+                return Vector2D(0, 0)
+            else:
+                return self.arrive(target)
         else:
-            force = self.seek(self.followPathTarget.getCurrentWayPoint())
-            return force
-        return Vector2D(0, 0)
+            if dist < 20:
+                self.followPathTarget.setNextPoint()
+                target = self.followPathTarget.getCurrentWayPoint()
+            return self.seek(target)
 
     # interponerse entre dos entidades
     @staticmethod
@@ -193,4 +189,4 @@ class SteeringBehavior:
         if self.followPathEnabled:
             steering += self.followPath() * self.weightFollowPath
 
-        return truncate(steering, self.agent.maxForce)
+        return steering
