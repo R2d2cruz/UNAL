@@ -91,21 +91,44 @@ class Graph:
         return dist.get(end)
 
     def findShortestPath2(self, start: str, end: str) -> list:
-        dist = {start: [start]}
-        if start not in self.nodes.keys():
-            return []
-        if end not in self.nodes.keys():
-            return dist
-        q = deque([start])
-        while len(q):
-            at = q.popleft()
-            for nextNode in self.nodes[at]:
-                if nextNode not in dist:
-                    dist[nextNode] = dist[at] + [nextNode]
-                    q.append(nextNode)
-        return dist.get(end)
+        print('start', start, 'end', end)
+        path = self.findShortestPath(start, end)
+        path2=[]
+        prevNode = None
+        node = None
+        for nextNode in path:
+            if node is not None and not self.areAligned(prevNode, node, nextNode):
+                path2.append(node)
+            prevNode = node
+            node = nextNode
+        path2.append(end)
+        print('start', path2[0], 'end', path2[len(path2)- 1])
+        return path2
 
     def randomPath(self, start: str=None, end: str=None) -> list:
         self.nodeStart = choice(list(self.nodes.keys())) if start is None else start
         self.nodeEnd = choice(list(self.nodes.keys())) if end is None else end
-        return self.findShortestPath(self.nodeStart, self.nodeEnd)
+        return self.findShortestPath2(self.nodeStart, self.nodeEnd)
+
+    @staticmethod
+    def areAligned(nodeA, nodeB, nodeC):
+        if nodeA is None:
+            return False
+        coordsA = nodeA.split(',')
+        coordsB = nodeB.split(',')
+        coordsC = nodeC.split(',')
+        return (
+                coordsA[0] == coordsB[0] == coordsC[0]
+            ) or (
+                coordsA[1] == coordsB[1] == coordsC[1]
+            # ) or (
+            #     int(coordsA[0]) - int(coordsB[0]) == int(coordsB[0]) - int(coordsC[0])
+            )
+
+
+# return (
+#         int(coordsA[0]) - int(coordsB[0]) == int(coordsB[0]) - int(coordsC[0])
+#     ) or (
+#         int(coordsA[1]) - int(coordsB[1]) == int(coordsB[1]) - int(coordsC[1])
+#     )
+

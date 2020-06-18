@@ -11,7 +11,7 @@ class Entity(pygame.sprite.Sprite):
     def __init__(self, *groups):
         super().__init__()
         self.__pos = Vector2D(0, 0)
-        self.__id = self.getMyId()
+        self.__id = self.__getNextID()
         self.image = None
         self.name = None
         self.rect = pygame.Rect(0, 0, 0, 0)
@@ -19,7 +19,7 @@ class Entity(pygame.sprite.Sprite):
         self.script = None
 
     @staticmethod
-    def getMyId():
+    def __getNextID():
         newId = Entity.__nextID
         Entity.__nextID += 1
         return newId
@@ -74,7 +74,8 @@ class Entity(pygame.sprite.Sprite):
     def render(self, screen, camera: BaseCamera):
         screen.blit(self.image, camera.apply(self.rect))
         #pygame.draw.rect(screen, (0, 0, 255), camera.apply(self.rect), 1)
-        pygame.draw.rect(screen, (255, 0, 0), camera.apply(self.getCollisionRect()), 1)
+        pygame.draw.rect(screen, (255, 0, 0), camera.apply(
+            self.getCollisionRect()), 1)
 
     def dispose(self):
         pass

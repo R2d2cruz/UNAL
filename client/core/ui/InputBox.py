@@ -38,7 +38,7 @@ class InputBox(Control):
         # TODO: self.caret.update()
         pass
 
-    def render(self, screen, camera: BaseCamera):
+    def onRender(self, screen, camera: BaseCamera):
         screen.blit(self.__surface, self.__textRect)
         # TODO: self.caret.render(screen)
         pygame.draw.rect(screen, self.__color, self.rect, 2)
