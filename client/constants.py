@@ -39,5 +39,5 @@ sounds = {
 }
 
 fonts = {
-    "minecraft": "fonts/Minecraft.ttf"
+    "minecraft": "fonts/MinecraftRegular.otf"
 }

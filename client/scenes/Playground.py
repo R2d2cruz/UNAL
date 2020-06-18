@@ -15,9 +15,16 @@ from core.Vector2D import Vector2D
 from Player import Player
 from OnlinePlayer import OnlinePlayer
 from core.ui.Button import Button
+from core.ui.Text import Text
 from core.Path import Path
 from core.CollisionManager import collisionManager
 
+
+def getFirst(list, filter):
+    for x in list:
+        if filter(x):
+            return x
+    return None
 
 def getValidRadomPos(worlRect: pygame.Rect, rect: pygame.Rect):
     while True:
@@ -103,8 +110,14 @@ class Playground(Scene):
             rect.x, rect.y, rect.w, rect.h, self.font, 'Path')
         self.buttonPath.onClick = self.onGoPath
 
+        rect = pygame.Rect(0, 85, 80, 80)
+        self.buttonText = Button(
+            rect.x, rect.y, rect.w, rect.h, self.font, 'Text')
+        self.buttonText.onClick = self.onShowText
+
         self.controls = [
-            self.buttonPath
+            self.buttonPath,
+            self.buttonText,
         ]
 
     def handleEvent(self, event):
@@ -164,7 +177,6 @@ class Playground(Scene):
             k.render(screen, self.camera)
 
         self.player.render(screen, self.camera)
-        self.buttonPath.render(screen, self.camera)
         self.camera.render(screen)
 
         # mostrar un mensaje para idicar que el juego esta pausado y la razon
@@ -174,7 +186,10 @@ class Playground(Scene):
         # pintar el nodo mas cercano del player
         node = self.map.pointToCell(self.player.x, self.player.y)
         point = self.map.cellToPoint(node)
-        pygame.draw.circle(screen, (0, 255, 0), self.camera.apply(point), 5, 3)
+        pygame.draw.circle(screen, (0, 255, 0), self.camera.apply(point), 5, 3, 10)
+
+        for control in self.controls:
+            control.render(screen, self.camera)
 
     def updateOtherPlayers(self):
         # que deberia ocurrir si durante el juego se desconecta?
@@ -201,6 +216,26 @@ class Playground(Scene):
                 realPath.points.append(self.map.cellToPoint(node))
             self.player.steering.followPathEnabled = True
             self.player.steering.followPathTarget = realPath
+
+    def onShowText(self, sender):
+        if self.buttonText.tag is None:
+            longtText="""Ricardo recibió un loro por su cumpleaños; ya era un loro adulto, con una muy mala actitud y vocabulario. Cada palabra que decía estaba adornada por alguna palabrota, así como siempre, de muy mal genio. Ricardo trató, desde el primer día, de corregir la actitud del loro, diciéndole palabras bondadosas y con mucha educación, le ponía música suave y siempre lo trataba con mucho cariño.
+    Llego un día en que Ricardo perdió la paciencia y gritó al loro, el cual se puso más grosero aún, hasta que en un momento de desesperación, Ricardo puso al loro en el congelador.
+    Por un par de minutos aún pudo escuchar los gritos del loro y el revuelo que causaba en el compartimento, hasta que de pronto, todo fue silencio.
+    Luego de un rato, Ricardo arrepentido y temeroso de haber matado al loro, rápidamente abrió la puerta del congelador.
+    El loro salió y con mucha calma dio un paso al hombro de Ricardo y dijo:
+    - "Siento mucho haberte ofendido con mi lenguaje y actitud, te pido me disculpes y te prometo que en el futuro vigilaré mucho mi comportamiento".
+    Ricardo estaba muy sorprendido del tremendo cambio en la actitud del loro y estaba a punto de preguntarle qué es lo que lo había hecho cambiar de esa manera, cuando el loro continuó:
+    - ¿te puedo preguntar una cosa?...
+    - Si.. como no!!, -contestó Ricardo
+    - ¿Qué fue lo que hizo el pollo?"""
+            bubble = Text(100, 100, 800, 400, self.font, longtText)
+            self.buttonText.tag = bubble.id
+            self.controls.append(bubble)
+        else:
+            bubble = getFirst(self.controls, lambda x: x.id == self.buttonText.tag)
+            self.controls.remove(bubble)
+            self.buttonText.tag = None
 
     def loadScripts(self, worlRect):
         print('Inicio carga scripts')
