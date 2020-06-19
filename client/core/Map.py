@@ -3,22 +3,24 @@ import json
 import pygame
 
 from .ResourceManager import resourceManager
+from .Entity import Entity
 
+class Wall(Entity):
+    def __init__(self, x: int, y: int, width: int, height: int, *groups):
+        super().__init__(*groups)
+        self.x = x
+        self.y = y
+        self.width = width
+        self.height = height
+        self.image = resourceManager.loadImage("ts1", (96, 64, width, height))
 
 class Map:
-    frames = {
 
-    }
-
-    jumpPoints = [
-
-    ]
-
-    objects = [
-
-    ]
-
-    def __init__(self):
+    def __init__(self, mapName):
+        self.name = mapName
+        self.frames = {}
+        self.jumpPoints = []
+        self.objects = []
         self.cells = []
         self.x = 0
         self.y = 0
@@ -30,21 +32,27 @@ class Map:
         self.tileHeight = 32
         self.graph = None
 
+        self.loadMap(resourceManager.getMap(mapName)) 
+        self.createWalls(self.cells)
+
     def loadMap(self, fileName: str):
-        map = []
+        self.cells = []
+        tileSetName = None
         with open(fileName) as json_file:
             data = json.load(json_file)
-            for row in data:
+            tileSetName = data.get("tileset")
+            cells = data.get("cells")
+            for row in cells:
                 newRow = []
                 for col in row:
                     newRow.append(col)
-                map.append(newRow)
-        self.rows = len(map)
-        self.cols = len(map[0])
+                self.cells.append(newRow)
+        self.rows = len(self.cells)
+        self.cols = len(self.cells[0])
         self.width = self.cols * self.tileWidth
         self.height = self.rows * self.tileHeight
-        # self.surface = pygame.Surface((self.width, self.height), pygame.SRCALPHA)
-        return map
+        if tileSetName is not None:
+            self.frames = self.loadTileset(resourceManager.getTileset(tileSetName))
 
     def getRect(self):
         return pygame.Rect(self.x, self.y, self.width, self.height)
@@ -65,10 +73,10 @@ class Map:
             for col in range(self.cols):
                 screen.blit(
                     self.frames.get(self.cells[row][col]),
-                    camera.apply(
-                        (self.x + (self.tileWidth * col),
-                         self.y + (self.tileHeight * row))
-                    )
+                    camera.apply((
+                        self.x + (self.tileWidth * col),
+                        self.y + (self.tileHeight * row)
+                    ))
                 )
         for k in self.objects:
             k.render(screen, camera)
@@ -79,3 +87,12 @@ class Map:
     def cellToPoint(self, cell):
         coord = cell.split(',')
         return [int(coord[0]) * self.tileWidth + self.tileWidth / 2, int(coord[1]) * self.tileHeight + self.tileHeight / 2]
+
+    def createWalls(self, mapCells):
+        for i in range(len(mapCells)):
+            for j in range(len(mapCells[i])):
+                if mapCells[i][j] == 1:
+                    x = j * self.tileWidth
+                    y = i * self.tileHeight
+                    obj = Wall(x, y, self.tileWidth, self.tileHeight)
+                    self.objects.append(obj)

@@ -59,6 +59,9 @@ class MovingEntity(AnimatedEntity):
     def heading(self):
         return self.__heading
 
+    def getOldPos(self):
+        return self.__oldPos
+
     def update(self, deltaTime: float):
         super().update(deltaTime)
         self.__steeringForce = truncate(self.steering.calculate(), self.maxForce)

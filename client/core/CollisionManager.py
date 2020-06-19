@@ -33,8 +33,16 @@ class _CollisionManager:
         self.entities = set()
         self.walls = set()
 
+    def registerEntities(self, entities: list):
+        for entity in entities:
+            self.registerEntity(entity)
+
     def registerEntity(self, entity: Entity):
         self.entities.add(entity)
+
+    def registerMovingEntities(self, entities: list):
+        for entity in entities:
+            self.registerMovingEntity(entity)
 
     def registerMovingEntity(self, entity: MovingEntity):
         self.movingEntities.add(entity)

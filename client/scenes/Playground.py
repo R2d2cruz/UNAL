@@ -1,21 +1,23 @@
 import importlib
 import os
+import json
 from random import choice, random
 
 import pygame
 from core import (Character, Entity, Game, Map, Path, Scene, SimpleCamera,
-                  Vector2D, collisionManager, entityManager, resourceManager, SpacePartition)
+                  SpacePartition, Vector2D, collisionManager, entityManager,
+                  resourceManager, AnimatedEntity, Graph)
 from OnlinePlayer import OnlinePlayer
 from Player import Player
 from ui import Button, Text
 
+from .entities import HealthPotion
 
 def getFirst(list, filter):
     for x in list:
         if filter(x):
             return x
     return None
-
 
 def getValidRadomPos(worlRect: pygame.Rect, rect: pygame.Rect):
     while True:
@@ -41,18 +43,38 @@ class Playground(Scene):
     def __init__(self, game: Game, map: Map):
         super().__init__(game)
         self.map = map
-        self.paused = False
-        name = resourceManager.getRandomCharAnimName()
         worlRect = map.getRect()
         self.cellSpace = SpacePartition(worlRect.w, worlRect.h, int(worlRect.w / 180), int(worlRect.h / 180))
 
+        entityManager.registerEntities(map.objects)
+        collisionManager.registerEntities(map.objects) # las paredes no deberian ser objetos... o si?
+        self.cellSpace.registerEntities(map.objects)
+        
+        self.paused = False
+        name = resourceManager.getRandomCharAnimName()
+
         self.player = Player(name, name, (0, 0), (0, 24, 34, 32))
         locateInValidRadomPos(worlRect, self.player)
-
+        self.cellSpace.registerEntity(self.player)
         collisionManager.registerMovingEntity(self.player)
 
         self.loadScripts(worlRect)
         entityManager.registerEntities(self.characters)
+
+        potion = HealthPotion("freshPotion", (3, 2, 10, 12), Vector2D(160, 288), 20)
+        collisionManager.registerEntity(potion)
+
+        for i in range(1, 10):
+            fire = AnimatedEntity()
+            fire.loadAnimation(resourceManager.getAnimFile("fire"))
+            fire.x = 50 * i
+            fire.y = 0
+            entityManager.registerEntity(fire)
+    
+        self.graph = Graph()
+        self.graph.nodes = Graph.getGraph(map, True)
+        with open('saves/' + map.name + '.graph.json', 'w') as outfile:
+            json.dump(self.graph.nodes, outfile)
 
         self.font = resourceManager.getFont('minecraft', 32)
         self.label = self.font.render(
@@ -73,7 +95,6 @@ class Playground(Scene):
         self.buttonText = Button(
             rect.x, rect.y, rect.w, rect.h, self.font, 'Text')
         self.buttonText.onClick = self.onShowText
-
         self.controls = [
             self.buttonPath,
             self.buttonText,
@@ -124,6 +145,7 @@ class Playground(Scene):
 
             if self.player.hasChanged:
                 self.player.hasChanged = False
+                self.cellSpace.updateEntity(self.player, self.player.getOldPos())
                 self.game.client.sendPlayerStatus(self.player)
             self.camera.update(deltaTime)
 
@@ -170,7 +192,7 @@ class Playground(Scene):
 
     def onGoPath(self, sender):
         node = self.map.pointToCell(self.player.x, self.player.y)
-        graphPath = self.map.graph.randomPath(node)
+        graphPath = self.graph.randomPath(node)
         realPath = Path()
         if len(graphPath) > 0:
             for node in graphPath:
@@ -218,6 +240,7 @@ class Playground(Scene):
                     character.script.onInit(character, worlRect)
                     self.characters.append(character)
                     collisionManager.registerMovingEntity(character)
+                    self.cellSpace.registerEntity(self.player)
                     print('...👍')
                 except Exception as e:
                     print('❌ No se pudo cargar script', e)

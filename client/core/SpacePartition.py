@@ -7,7 +7,7 @@ from .camera.BaseCamera import BaseCamera
 
 class Cell:
     def __init__(self, rect):
-        self.__members = []
+        self.members = []
         self.rect = rect
 
 class SpacePartition:
@@ -44,11 +44,15 @@ class SpacePartition:
         for cell in self.__cells:
             cell.members.clear()
 
-    def addEntity(self, entity: Entity):
+    def registerEntities(self, entities: list):
+        for entity in entities:
+            self.registerEntity(entity)
+
+    def registerEntity(self, entity: Entity):
         index = self.posToIndex(entity.getPos())
         self.__cells[index].members.append(entity)
         
-    def positionToIndex(self, pos: Vector2D) -> int:
+    def posToIndex(self, pos: Vector2D) -> int:
         index = int(
                     self.__numCellsX * pos.x / self.__spaceWidth
                 ) + int(

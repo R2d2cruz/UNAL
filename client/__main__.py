@@ -4,9 +4,7 @@ import sys
 # noinspection PyUnresolvedReferences
 from constants import anims, fonts, imgs, maps, sounds, tilesets
 # noinspection PyUnresolvedReferences
-from core import Config, Game, hermes, resourceManager
-# noinspection PyUnresolvedReferencesx
-from Laberinto import Laberinto
+from core import Config, Game, hermes, resourceManager, Map
 # noinspection PyUnresolvedReferences
 from scenes import MainMenu, Playground
 
@@ -22,7 +20,7 @@ def main():
     game = Game(Config('client/config.json'))
     game.init()
     game.addScene("main", MainMenu(game))
-    game.addScene("play", Playground(game, Laberinto()))
+    game.addScene("play", Playground(game, Map('laberinto')))
     game.setScene("main")
     #res.playSong('background1')
     game.run()
