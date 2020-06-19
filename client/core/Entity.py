@@ -17,6 +17,7 @@ class Entity(pygame.sprite.Sprite):
         self.name = None
         self.rect = pygame.Rect(0, 0, 0, 0)
         self.flag = ""
+        self.tag = None
         self.script = None
 
     @staticmethod
@@ -62,6 +63,12 @@ class Entity(pygame.sprite.Sprite):
     @height.setter
     def height(self, height: int):
         self.rect.height = height
+
+    def setPos(self, x: float, y: float):
+        self.x, self.y = x, y
+
+    def getPos(self):
+        return self.__pos
 
     def getCollisionRect(self):
         return self.rect

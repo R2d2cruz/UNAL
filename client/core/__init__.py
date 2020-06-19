@@ -14,3 +14,4 @@ from .Path import Path
 from .ResourceManager import resourceManager
 from .Scene import Scene
 from .Vector2D import Vector2D
+from .SpacePartition import SpacePartition

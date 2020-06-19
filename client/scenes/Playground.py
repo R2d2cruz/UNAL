@@ -4,7 +4,7 @@ from random import choice, random
 
 import pygame
 from core import (Character, Entity, Game, Map, Path, Scene, SimpleCamera,
-                  Vector2D, collisionManager, entityManager, resourceManager)
+                  Vector2D, collisionManager, entityManager, resourceManager, SpacePartition)
 from OnlinePlayer import OnlinePlayer
 from Player import Player
 from ui import Button, Text
@@ -44,6 +44,7 @@ class Playground(Scene):
         self.paused = False
         name = resourceManager.getRandomCharAnimName()
         worlRect = map.getRect()
+        self.cellSpace = SpacePartition(worlRect.w, worlRect.h, int(worlRect.w / 180), int(worlRect.h / 180))
 
         self.player = Player(name, name, (0, 0), (0, 24, 34, 32))
         locateInValidRadomPos(worlRect, self.player)
@@ -51,39 +52,6 @@ class Playground(Scene):
         collisionManager.registerMovingEntity(self.player)
 
         self.loadScripts(worlRect)
-
-        # for i in range(1, 5):
-        #     character = Character('Wander', res.getRandomCharAnimName(), (0, 0))
-        #     locateInValidRadomPos(worlRect, character)
-        #     character.steering.wanderEnabled = True
-        #     self.characters.append(character)
-        #     collisionManager.registerMovingEntity(character)
-
-        # for i in range(1, 5):
-        #     character = Character('Seek', res.getRandomCharAnimName(), (0, 0))
-        #     locateInValidRadomPos(worlRect, character)
-        #     character.steering.seekEnabled = True
-        #     character.steering.seekTarget = self.player
-        #     self.characters.append(character)
-        #     collisionManager.registerMovingEntity(character)
-
-        # for i in range(1, 5):
-        #     name = res.getRandomCharAnimName()
-        #     character = Character('Flee', res.getRandomCharAnimName(), (0, 0))
-        #     locateInValidRadomPos(worlRect, character)
-        #     character.steering.fleeEnabled = True
-        #     character.steering.fleeTarget = self.player
-        #     self.characters.append(character)
-        #     collisionManager.registerMovingEntity(character)
-
-        # for i in range(1, 5):
-        #     character = Character('Arrive', res.getRandomCharAnimName(), (0, 0))
-        #     locateInValidRadomPos(worlRect, character)
-        #     character.steering.arriveEnabled = True
-        #     character.steering.arriveTarget = self.player
-        #     self.characters.append(character)
-        #     collisionManager.registerMovingEntity(character)
-
         entityManager.registerEntities(self.characters)
 
         self.font = resourceManager.getFont('minecraft', 32)
@@ -179,6 +147,8 @@ class Playground(Scene):
         point = self.map.cellToPoint(node)
         pygame.draw.circle(screen, (0, 255, 0), self.camera.apply(point), 5, 3)
 
+        self.cellSpace.render(screen, self.camera)
+
         for control in self.controls:
             control.render(screen, self.camera)
 
@@ -242,9 +212,9 @@ class Playground(Scene):
                         moduleName, fileName)
                     foo = importlib.util.module_from_spec(spec)
                     spec.loader.exec_module(foo)
-
                     character = Character(moduleName, 'Charly', (0, 0), (0, 24, 34, 32))
                     character.script = foo.ScriptCharacter()
+                    character.script.name = moduleName
                     character.script.onInit(character, worlRect)
                     self.characters.append(character)
                     collisionManager.registerMovingEntity(character)
