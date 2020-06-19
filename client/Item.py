@@ -1,5 +1,7 @@
 import pygame
-from core import Character, Entity, Hermes, Telegram, Vector2D, resourceManager, hermes
+
+from core import (Character, Entity, Telegram, Vector2D, hermes,
+                  resourceManager)
 
 MAXYINTERVAL = 6
 

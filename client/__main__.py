@@ -4,7 +4,7 @@ import sys
 # noinspection PyUnresolvedReferences
 from constants import anims, fonts, imgs, maps, sounds, tilesets
 # noinspection PyUnresolvedReferences
-from core import Config, Game, resourceManager, hermes
+from core import Config, Game, hermes, resourceManager
 # noinspection PyUnresolvedReferencesx
 from Laberinto import Laberinto
 # noinspection PyUnresolvedReferences

@@ -1,7 +1,4 @@
-import core.ResourceManager as res
-from core.Character import Character
-from core.Vector2D import Vector2D
-
+from core import Character, Vector2D
 
 onlineTraductor = {
     "stu": "stand_up",

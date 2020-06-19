@@ -1,5 +1,4 @@
-import pygame
-from core import resourceManager, Entity
+from core import Entity, resourceManager
 
 
 class Rock(Entity):

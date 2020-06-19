@@ -1,4 +1,3 @@
-import pygame
 from core.Character import Character
 
 
@@ -7,5 +6,3 @@ class NPC(Character):
     defense = 20
     HP = 500
     xp = 0
-
-

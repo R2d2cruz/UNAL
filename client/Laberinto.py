@@ -1,16 +1,10 @@
 import json
 from copy import copy
-from core import (
-    Map,
-    AnimatedEntity,
-    Vector2D,
-    collisionManager,
-    Graph,
-    entityManager,
-    resourceManager
-)
-from Objects import Wall
+
+from core import (AnimatedEntity, Graph, Map, Vector2D, collisionManager,
+                  entityManager, resourceManager)
 from Item import HealthPotion
+from Objects import Wall
 
 
 class Laberinto(Map):
