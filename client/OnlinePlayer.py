@@ -20,13 +20,8 @@ class OnlinePlayer(Character):
             (0, 24, 34, 32),
             *groups
         )
-        # self.x = data.get("x")
-        # self.y = data.get("y")
-        # self.width = 34
-        # self.height = 32
-        # self.rect.topleft = (self.x, self.y)
+        self.currentClip = onlineTraductor.get(data.get("a"))
 
-    def setPos(self, data):
-        self.x = data.get("x")
-        self.y = data.get("y")
+    def setData(self, data):
+        self.setPos(data.get("x"), data.get("y"))
         self.currentClip = onlineTraductor.get(data.get("a"))

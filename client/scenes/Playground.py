@@ -44,7 +44,7 @@ class Playground(Scene):
         super().__init__(game)
         self.map = map
         worlRect = map.getRect()
-        self.cellSpace = SpacePartition(worlRect.w, worlRect.h, int(worlRect.w / 180), int(worlRect.h / 180))
+        self.cellSpace = SpacePartition(worlRect.w, worlRect.h, int(worlRect.w / 100), int(worlRect.h / 100))
 
         entityManager.registerEntities(map.objects)
         collisionManager.registerEntities(map.objects) # las paredes no deberian ser objetos... o si?
@@ -62,6 +62,7 @@ class Playground(Scene):
         entityManager.registerEntities(self.characters)
 
         potion = HealthPotion("freshPotion", (3, 2, 10, 12), Vector2D(160, 288), 20)
+        entityManager.registerEntity(potion)
         collisionManager.registerEntity(potion)
 
         for i in range(1, 10):
@@ -131,14 +132,18 @@ class Playground(Scene):
     def update(self, deltaTime: float):
         if not self.paused:
             self.updateOtherPlayers()
-            for i in self.players.keys():
-                self.players.get(i).update(deltaTime)
+            for playerKey in playersData.keys():
+                entity = self.players[playerKey]
+                entity.update(deltaTime)
+                self.cellSpace.updateEntity(entity, entity.getOldPos())
             for char in self.characters:
                 if char.script is not None:
                     char.script.onUpdate(char)
                 char.update(deltaTime)
+                self.cellSpace.updateEntity(char, char.getOldPos())
             for obj in self.map.objects:
                 obj.update(deltaTime)
+
             self.player.update(deltaTime)
 
             collisionManager.update()
@@ -147,6 +152,7 @@ class Playground(Scene):
                 self.player.hasChanged = False
                 self.cellSpace.updateEntity(self.player, self.player.getOldPos())
                 self.game.client.sendPlayerStatus(self.player)
+
             self.camera.update(deltaTime)
 
     def render(self, screen: pygame.Surface):
@@ -169,6 +175,15 @@ class Playground(Scene):
         point = self.map.cellToPoint(node)
         pygame.draw.circle(screen, (0, 255, 0), self.camera.apply(point), 5, 3)
 
+        queryRadius = 75
+        queryRect = pygame.Rect(
+            self.player.x - queryRadius,
+            self.player.y - queryRadius,
+            queryRadius * 2,
+            queryRadius * 2
+        )
+        self.cellSpace.tagNeighborhood(self.player, queryRadius)
+        pygame.draw.rect(screen, (255, 255, 0), self.camera.apply(queryRect), 4)
         self.cellSpace.render(screen, self.camera)
 
         for control in self.controls:
@@ -181,13 +196,15 @@ class Playground(Scene):
             playerKeys = self.players.keys()
             for playerKey in playersData.keys():
                 if playerKey in playerKeys:
-                    self.players[playerKey].setPos(playersData.get(playerKey))
+                    self.players[playerKey].setData(playersData.get(playerKey))
                 else:
-                    self.players[playerKey] = OnlinePlayer(
-                        playersData.get(playerKey))
+                    self.players[playerKey] = OnlinePlayer(playersData.get(playerKey))
+                    self.cellSpace.registerEntity(self.players[playerKey])
+                    
             # remover los que no se actualizaron
             toDelete = set(self.players.keys()).difference(playersData.keys())
             for playerKey in toDelete:
+                self.cellSpace.unregisterEntity(self.players[playerKey])
                 del self.players[playerKey]
 
     def onGoPath(self, sender):

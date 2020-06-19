@@ -18,9 +18,9 @@ class _Hermes:
 
     def messageDispatch(self, delay: float, sender: int, receiver: int, msg: str, extraInfo: dict = {}):
         telegram = Telegram(sender, receiver, msg, 0, extraInfo)
-        pReceiver = entityManager.getEntityById(receiver)
+        receiver = entityManager.getEntityById(receiver)
         if delay <= 0:
-            self.discharge(pReceiver, telegram)
+            self.discharge(receiver, telegram)
         else:
             telegram.dispatchTime = self.__deltaTime + delay
             # noinspection PyUnresolvedReferences
@@ -32,11 +32,14 @@ class _Hermes:
         if 0 < delayTime < self.__priorityQ.queue[0][0]:
             # noinspection PyUnresolvedReferences
             telegram = self.__priorityQ.get_nowait()
-            pReceiver = entityManager.getEntityById(telegram.receiver)
-            self.discharge(pReceiver, telegram)
+            receiver = entityManager.getEntityById(telegram.receiver)
+            self.discharge(receiver, telegram)
 
     @staticmethod
-    def discharge(pReceiver: Entity, telegram: Telegram):
-        pReceiver.onMessage(telegram)
+    def discharge(receiver: Entity, telegram: Telegram):
+        if receiver is not None:
+            receiver.onMessage(telegram)
+        else:
+            print('Enviando mensaje a entidad nula. ID:', telegram.receiver, telegram.message)
 
 hermes = _Hermes()

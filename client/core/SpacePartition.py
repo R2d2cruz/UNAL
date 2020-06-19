@@ -24,20 +24,23 @@ class SpacePartition:
                 left  = x * self.__cellSizeX
                 top = y * self.__cellSizeY
                 self.__cells.append(Cell(
-                    pygame.Rect(left, top, left + self.__cellSizeX, top + self.__cellSizeY)
+                    pygame.Rect(left, top, self.__cellSizeX, self.__cellSizeY)
                 ))
 
-    def calculateNeighbors(self, targetPos: Vector2D, queryRadius: float):
+    def calculateNeighbors(self, targetPos: Vector2D, queryRadius: float) -> list:
         queryRect = pygame.Rect(
             targetPos.x - queryRadius,
             targetPos.y - queryRadius,
-            targetPos.x + queryRadius,
-            targetPos.y + queryRadius
+            queryRadius * 2,
+            queryRadius * 2
         )
         neighbors = []
         for cell in self.__cells:
-            if len(cell.members) and cell.rect.colliderect(queryRect):
+            if len(cell.members) and queryRect.colliderect(cell.rect):
                 neighbors += cell.members
+                cell.tag = True
+            else:
+                cell.tag = False
         return neighbors
 
     def emptyCells(self):
@@ -51,6 +54,12 @@ class SpacePartition:
     def registerEntity(self, entity: Entity):
         index = self.posToIndex(entity.getPos())
         self.__cells[index].members.append(entity)
+        return index
+
+    def unregisterEntity(self, entity: Entity):
+        index = self.posToIndex(entity.getPos())
+        if entity in self.__cells[index].members:
+            self.__cells[index].members.remove(entity)
         
     def posToIndex(self, pos: Vector2D) -> int:
         index = int(
@@ -66,12 +75,30 @@ class SpacePartition:
     def updateEntity(self, entity: Entity, oldPos: Vector2D):
         oldIndex = self.posToIndex(oldPos)
         newIndex = self.posToIndex(entity.getPos())
-        if oldIndex == newIndex:
-            return
-
-        self.__cells[oldIndex].members.remove(entity)
-        self.__cells[newIndex].members.append(entity)
+        if oldIndex != newIndex:
+            if entity in self.__cells[oldIndex].members:
+                self.__cells[oldIndex].members.remove(entity)
+            else:
+                print('Entity', entity.id, 'not registered')
+            self.__cells[newIndex].members.append(entity)
 
     def render(self, screen, camera: BaseCamera):
         for cell in self.__cells:
-            pygame.draw.rect(screen, (0, 0, 255), camera.apply(cell.rect), 1)
+            if cell.tag:
+                color = (255, 0, 0)
+                pygame.draw.rect(screen, color, camera.apply(cell.rect), 4)
+            else:
+                color = (0, 0, 0)
+                pygame.draw.rect(screen, color, camera.apply(cell.rect), 1)
+
+    def tagAll(self, value):
+        for cell in self.__cells:
+            cell.tag = value
+            for entity in cell.members:
+                entity.tag = value
+
+    def tagNeighborhood(self, entity: Entity, queryRadius: float):
+        self.tagAll(False)
+        neighbors = self.calculateNeighbors(entity.getPos(), queryRadius)
+        for entity in neighbors:
+            entity.tag = True

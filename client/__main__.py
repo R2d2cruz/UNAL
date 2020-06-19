@@ -20,7 +20,7 @@ def main():
     game = Game(Config('client/config.json'))
     game.init()
     game.addScene("main", MainMenu(game))
-    game.addScene("play", Playground(game, Map('laberinto')))
+    game.addScene("play", Playground(game, Map('small')))
     game.setScene("main")
     #res.playSong('background1')
     game.run()

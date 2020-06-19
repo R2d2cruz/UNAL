@@ -17,10 +17,11 @@ class _EntityManager:
         for entity in entities:
             self.registerEntity(entity)
 
-
     def registerEntity(self, entity: Entity):
         self.__entities[entity.id] = entity
 
+    def unregisterEntity(self, entity: Entity):
+        del self.__entities[entity.id]
 
     def getEntityById(self, _id: int):
         return self.__entities.get(_id)
