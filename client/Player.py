@@ -1,6 +1,6 @@
 import pygame
 
-from core.Character import Character
+from core import Character
 from core.Vector2D import EPSILON, Vector2D
 
 

@@ -9,7 +9,7 @@ class ScriptCharacter(Script):
         character.setName('Arthur')
         character.setPos(200, 200)
         character.steering.wanderEnabled = True
-        print('Cargando Arthur...')
+        #print('👌 Cargando Arthur...')
 
     def onUpdate(self, character: Character):
         pass

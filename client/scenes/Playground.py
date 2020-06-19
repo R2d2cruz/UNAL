@@ -1,23 +1,13 @@
-import pygame
+import importlib
 import os
 from random import choice, random
-import importlib
 
-import core.ResourceManager as res
-import core.EntityManager as entManager
-from core.Character import Character
-from core.Scene import Scene
-from core.Entity import Entity
-from core.Map import Map
-from core.camera.SimpleCamera import SimpleCamera
-from core.Game import Game
-from core.Vector2D import Vector2D
-from Player import Player
+import pygame
+from core import (Character, Entity, Game, Map, Path, Scene, SimpleCamera,
+                  Vector2D, collisionManager, entityManager, resourceManager)
 from OnlinePlayer import OnlinePlayer
-from core.ui.Button import Button
-from core.ui.Text import Text
-from core.Path import Path
-from core.CollisionManager import collisionManager
+from Player import Player
+from ui import Button, Text
 
 
 def getFirst(list, filter):
@@ -25,6 +15,7 @@ def getFirst(list, filter):
         if filter(x):
             return x
     return None
+
 
 def getValidRadomPos(worlRect: pygame.Rect, rect: pygame.Rect):
     while True:
@@ -51,7 +42,7 @@ class Playground(Scene):
         super().__init__(game)
         self.map = map
         self.paused = False
-        name = res.getRandomCharAnimName()
+        name = resourceManager.getRandomCharAnimName()
         worlRect = map.getRect()
 
         self.player = Player(name, name, (0, 0), (0, 24, 34, 32))
@@ -93,16 +84,16 @@ class Playground(Scene):
         #     self.characters.append(character)
         #     collisionManager.registerMovingEntity(character)
 
-        entManager.registerEntities(self.characters)
+        entityManager.registerEntities(self.characters)
 
-        self.font = res.getFont('minecraft', 32)
+        self.font = resourceManager.getFont('minecraft', 32)
         self.label = self.font.render(
             'Juego en pausa por problemas conexión. Espere un momento', True, (255, 64, 64))
         self.camera = SimpleCamera(game.screen.get_width(
         ), game.screen.get_height(), self.map.width, self.map.height)
         self.camera.target = self.player
         game.setPlayer(self.player)
-        entManager.registerEntity(self.player)
+        entityManager.registerEntity(self.player)
         self.keysPressed = {}
 
         rect = pygame.Rect(0, 0, 80, 80)
@@ -186,7 +177,7 @@ class Playground(Scene):
         # pintar el nodo mas cercano del player
         node = self.map.pointToCell(self.player.x, self.player.y)
         point = self.map.cellToPoint(node)
-        pygame.draw.circle(screen, (0, 255, 0), self.camera.apply(point), 5, 3, 10)
+        pygame.draw.circle(screen, (0, 255, 0), self.camera.apply(point), 5, 3)
 
         for control in self.controls:
             control.render(screen, self.camera)
@@ -219,7 +210,7 @@ class Playground(Scene):
 
     def onShowText(self, sender):
         if self.buttonText.tag is None:
-            longtText="""Ricardo recibió un loro por su cumpleaños; ya era un loro adulto, con una muy mala actitud y vocabulario. Cada palabra que decía estaba adornada por alguna palabrota, así como siempre, de muy mal genio. Ricardo trató, desde el primer día, de corregir la actitud del loro, diciéndole palabras bondadosas y con mucha educación, le ponía música suave y siempre lo trataba con mucho cariño.
+            longtText = """Ricardo recibió un loro por su cumpleaños; ya era un loro adulto, con una muy mala actitud y vocabulario. Cada palabra que decía estaba adornada por alguna palabrota, así como siempre, de muy mal genio. Ricardo trató, desde el primer día, de corregir la actitud del loro, diciéndole palabras bondadosas y con mucha educación, le ponía música suave y siempre lo trataba con mucho cariño.
     Llego un día en que Ricardo perdió la paciencia y gritó al loro, el cual se puso más grosero aún, hasta que en un momento de desesperación, Ricardo puso al loro en el congelador.
     Por un par de minutos aún pudo escuchar los gritos del loro y el revuelo que causaba en el compartimento, hasta que de pronto, todo fue silencio.
     Luego de un rato, Ricardo arrepentido y temeroso de haber matado al loro, rápidamente abrió la puerta del congelador.
@@ -233,28 +224,31 @@ class Playground(Scene):
             self.buttonText.tag = bubble.id
             self.controls.append(bubble)
         else:
-            bubble = getFirst(self.controls, lambda x: x.id == self.buttonText.tag)
+            bubble = getFirst(self.controls, lambda x: x.id ==
+                              self.buttonText.tag)
             self.controls.remove(bubble)
             self.buttonText.tag = None
 
     def loadScripts(self, worlRect):
-        print('Inicio carga scripts')
+        print('📜 Inicio carga scripts')
         import importlib.util
         for script in os.listdir('./scripts/characters'):
             if script.endswith(".py"):
                 fileName = './scripts/characters/' + script
-                moduleName = os.path.basename(script)
+                moduleName = os.path.splitext(os.path.basename(script))[0].capitalize()
                 try:
-                    print ('Loading ', fileName, moduleName)
-                    spec = importlib.util.spec_from_file_location(moduleName, fileName)
+                    print('📜 Cargando script ', moduleName, end='')
+                    spec = importlib.util.spec_from_file_location(
+                        moduleName, fileName)
                     foo = importlib.util.module_from_spec(spec)
                     spec.loader.exec_module(foo)
 
-                    character = Character('Arturo', 'Charly', (0, 0), (0, 24, 34, 32))
+                    character = Character(moduleName, 'Charly', (0, 0), (0, 24, 34, 32))
                     character.script = foo.ScriptCharacter()
                     character.script.onInit(character, worlRect)
                     self.characters.append(character)
                     collisionManager.registerMovingEntity(character)
+                    print('...👍')
                 except Exception as e:
-                    print('No se pudo cargar script', e)
-        print('Fin carga scripts')
+                    print('❌ No se pudo cargar script', e)
+        print('📜 Fin carga scripts')

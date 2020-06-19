@@ -1,47 +1,33 @@
-from core.Entity import Entity
-from core.Telegram import Telegram
 import core.Hermes as Hermes
 
-__entities = {}
-__entityMap = None
-__deltaTime = 0
+from .Entity import Entity
+from .Telegram import Telegram
 
 
-def init():
-    global __entities
-    global __entityMap
-    __entityMap = None
-    __entities = {}
+class _EntityManager:
+    def __init__(self):
+        self.__entities = {}
+        self.__entityMap = None
+        self.__deltaTime = 0
+
+    def discharge(self, pReceiver: int, msg: Telegram):
+        pass
+
+    def registerEntities(self, entities: list):
+        for entity in entities:
+            self.registerEntity(entity)
 
 
-def entityMap():
-    return __entityMap
+    def registerEntity(self, entity: Entity):
+        self.__entities[entity.id] = entity
 
 
-def setEntityMap(_entityMap):
-    global __entityMap
-    __entityMap = _entityMap
+    def getEntityById(self, _id: int):
+        return self.__entities.get(_id)
 
 
-def discharge(pReceiver: int, msg: Telegram):
-    pass
+    def removeEntityById(self, _id: int):
+        if self.__entities.get(_id) is not None:
+            self.__entities.pop(_id)
 
-
-def registerEntities(entities: list):
-    for entity in entities:
-        registerEntity(entity)
-
-
-def registerEntity(entity: Entity):
-    global __entities
-    __entities[entity.id] = entity
-
-
-def getEntityById(_id: int):
-    return __entities.get(_id)
-
-
-def removeEntityById(_id: int):
-    global __entities
-    if __entities.get(_id) is not None:
-        __entities.pop(_id)
+entityManager = _EntityManager()

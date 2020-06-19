@@ -1,9 +1,11 @@
 import pygame
-import core.ResourceManager as res
-from core.MovingEntity import MovingEntity
-from core.Telegram import Telegram
-import core.Hermes as Hermes
-from core.camera.BaseCamera import BaseCamera
+
+from .camera.BaseCamera import BaseCamera
+from .Hermes import hermes
+from .misc import getText
+from .MovingEntity import MovingEntity
+from .ResourceManager import resourceManager
+from .Telegram import Telegram
 
 compassClips = ['right', 'down', 'down', 'down', 'left', 'up', 'up', 'up']
 translate = {
@@ -29,7 +31,7 @@ class Character(MovingEntity):
         self.name = None
         self.setName(name)
         self.animName = animationName
-        self.loadAnimation(res.getAnimFile(self.animName))
+        self.loadAnimation(resourceManager.getAnimFile(self.animName))
         self.__health = 100
         self.attack = 30
         self.defense = 20
@@ -70,8 +72,8 @@ class Character(MovingEntity):
     def setName(self, name: str):
         if name is not None or name != '':
             self.name = name
-            font = res.getFont('minecraft', 14)
-            self.__nameSurface, self.__nameRect = res.getText(
+            font = resourceManager.getFont('minecraft', 14)
+            self.__nameSurface, self.__nameRect = getText(
                 self.name, font, self.__color)
         else:
             self.__nameSurface = None
@@ -108,7 +110,7 @@ class Character(MovingEntity):
     def onMessage(self, telegram: Telegram) -> bool:
         if telegram.message == "heal":
             if self.heal(telegram.extraInfo.get("medicine")):
-                Hermes.messageDispatch(0, self.id, telegram.sender, "youHealMe", {})
+                hermes.messageDispatch(0, self.id, telegram.sender, "youHealMe", {})
                 return True
-        Hermes.messageDispatch(0, self.id, telegram.sender, "IAlreadyHealed", {})
+        hermes.messageDispatch(0, self.id, telegram.sender, "IAlreadyHealed", {})
         return False

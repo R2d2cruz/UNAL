@@ -1,8 +1,9 @@
 import pygame
-from core.Entity import Entity
-from core.AnimatedEntity import AnimatedEntity
-from core.SteeringBehavior import SteeringBehavior
-from core.Vector2D import EPSILON, Vector2D, normalize, truncate
+
+from .AnimatedEntity import AnimatedEntity
+from .Entity import Entity
+from .SteeringBehavior import SteeringBehavior
+from .Vector2D import EPSILON, Vector2D, normalize, truncate
 
 
 class MovingEntity(AnimatedEntity):

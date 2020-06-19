@@ -1,7 +1,8 @@
 import pygame
-from core.ui.Control import Control
-from core.ResourceManager import blitMultiLineText
-from core.camera.BaseCamera import BaseCamera
+from core import BaseCamera
+from core.misc import blitMultiLineText
+
+from .Control import Control
 
 
 class Text(Control):

@@ -1,16 +1,11 @@
-import pygame
 from random import choice, random
-import core.ResourceManager as res
-from core.Scene import Scene
-from core.Map import Map
-from core.Camera import Camera
-from core.Game import Game
-from core.Vector2D import Vector2D
-from Player import Player
+
+import pygame
+from core import (Game, Map, Path, Scene, Vector2D, collisionManager,
+                  resourceManager)
 from OnlinePlayer import OnlinePlayer
-from core.ui.Button import Button
-from core.Path import Path
-from core.CollisionManager import collisionManager
+from Player import Player
+from ui import Button
 
 
 def getValidRadomPos(worlRect, rect):
@@ -27,7 +22,7 @@ def locateInValidRadomPos(worlRect, entity):
     entity.y = pos.y
 
 
-class Playground(Scene):
+class Arena(Scene):
     player = None
     players = {}
 

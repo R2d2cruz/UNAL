@@ -1,5 +1,6 @@
-import zmq
 import json
+
+import zmq
 
 
 class Client:

@@ -1,5 +1,6 @@
 import pygame
 
+
 class BaseCamera:
     def __init__(self, viewWidth, viewHeight, worldWidth, worldHeight):
         pass

@@ -1,5 +1,5 @@
 import pygame
-from core.camera.BaseCamera import BaseCamera
+from core import BaseCamera
 
 
 class Control:

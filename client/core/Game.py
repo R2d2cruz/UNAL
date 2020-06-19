@@ -1,12 +1,14 @@
-import pygame
-import sys
 import json
-import core.Hermes as Hermes
-import core.ResourceManager as res
-from core.Config import Config
-from core.Client import Client
-from core.Scene import Scene
-from core.Message import Message
+import sys
+
+import pygame
+
+from .Client import Client
+from .Config import Config
+from .Hermes import hermes
+from .Message import Message
+from .ResourceManager import resourceManager
+from .Scene import Scene
 
 
 class Game:
@@ -23,7 +25,7 @@ class Game:
         pygame.mixer.init()
 
     def init(self):
-        pygame.display.set_icon(res.loadImage("logo"))
+        pygame.display.set_icon(resourceManager.loadImage("logo"))
         self.screen = pygame.display.set_mode((self.config.windowWidth, self.config.windowHeight))
         self.clock = pygame.time.Clock()
         pygame.mixer.music.set_volume(self.config.volume)
@@ -53,7 +55,7 @@ class Game:
             t = pygame.time.get_ticks()
             self.update((t - lastFrameTime))
             lastFrameTime = t
-            Hermes.setDeltaTime(t)
+            hermes.setDeltaTime(t)
             self.render()
 
     def quit(self):

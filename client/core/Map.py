@@ -1,6 +1,8 @@
 import json
+
 import pygame
-import core.ResourceManager as res
+
+from .ResourceManager import resourceManager
 
 
 class Map:
@@ -52,7 +54,7 @@ class Map:
         frames = {}
         with open(fileName) as json_file:
             data = json.load(json_file)
-            image = res.loadImageByPath(res.fixPath(data.get("image")))
+            image = resourceManager.loadImageByPath(resourceManager.fixPath(data.get("image")))
             for frame in data.get("tiles"):
                 frames[frame["id"]] = image.subsurface(frame["box"])
         return frames

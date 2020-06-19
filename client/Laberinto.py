@@ -1,23 +1,25 @@
-import core.ResourceManager as res
 import json
-import core.EntityManager as entManager
 from copy import copy
-from core.Map import Map
-from core.AnimatedEntity import AnimatedEntity
+from core import (
+    Map,
+    AnimatedEntity,
+    Vector2D,
+    collisionManager,
+    Graph,
+    entityManager,
+    resourceManager
+)
 from Objects import Wall
 from Item import HealthPotion
-from core.Vector2D import Vector2D
-from core.CollisionManager import collisionManager
-from core.Graph import Graph
 
 
 class Laberinto(Map):
     def __init__(self):
         super().__init__()
-        self.frames = self.loadTileset(res.getTileset("ts1"))
+        self.frames = self.loadTileset(resourceManager.getTileset("ts1"))
         mapName = 'laberinto'
-        self.objects = self.createWalls(res.getMap(mapName))
-        self.cells = self.loadMap(res.getMap(mapName)) 
+        self.objects = self.createWalls(resourceManager.getMap(mapName))
+        self.cells = self.loadMap(resourceManager.getMap(mapName)) 
         self.graph = Graph()
         self.graph.nodes = Graph.getGraph(self, True)
         with open('saves/' + mapName + '.graph.json', 'w') as outfile:
@@ -28,11 +30,11 @@ class Laberinto(Map):
 
         for i in range(1, 10):
             fire = AnimatedEntity()
-            fire.loadAnimation(res.getAnimFile("fire"))
+            fire.loadAnimation(resourceManager.getAnimFile("fire"))
             fire.x = 50 * i
             fire.y = 0
             self.objects.append(fire)
-        entManager.registerEntities(self.objects)
+        entityManager.registerEntities(self.objects)
 
     def createWalls(self, fileName: str):
         objects = self.loadMap(fileName)

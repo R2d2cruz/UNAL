@@ -1,7 +1,9 @@
-import pygame
 import json
-import core.ResourceManager as res
-from core.Entity import Entity
+
+import pygame
+
+from .Entity import Entity
+from .ResourceManager import resourceManager
 
 
 class AnimatedEntity(Entity):
@@ -23,7 +25,7 @@ class AnimatedEntity(Entity):
     def loadAnimation(self, fileName: str):
         with open(fileName) as json_file:
             data = json.load(json_file)
-            self.sheet = res.loadImageByPath(res.fixPath(data.get("image")))
+            self.sheet = resourceManager.loadImageByPath(resourceManager.fixPath(data.get("image")))
             sprites = data.get("sprites")
             for key in sprites:
                 self.clips[key] = sprites[key]

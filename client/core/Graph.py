@@ -1,7 +1,10 @@
-import pygame
 from collections import deque
 from random import choice
-from core.Map import Map
+
+import pygame
+
+from .Map import Map
+
 
 class Graph:
     def __init__(self):
@@ -91,7 +94,6 @@ class Graph:
         return dist.get(end)
 
     def findShortestPath2(self, start: str, end: str) -> list:
-        print('start', start, 'end', end)
         path = self.findShortestPath(start, end)
         path2=[]
         prevNode = None
@@ -102,7 +104,6 @@ class Graph:
             prevNode = node
             node = nextNode
         path2.append(end)
-        print('start', path2[0], 'end', path2[len(path2)- 1])
         return path2
 
     def randomPath(self, start: str=None, end: str=None) -> list:
@@ -121,14 +122,4 @@ class Graph:
                 coordsA[0] == coordsB[0] == coordsC[0]
             ) or (
                 coordsA[1] == coordsB[1] == coordsC[1]
-            # ) or (
-            #     int(coordsA[0]) - int(coordsB[0]) == int(coordsB[0]) - int(coordsC[0])
             )
-
-
-# return (
-#         int(coordsA[0]) - int(coordsB[0]) == int(coordsB[0]) - int(coordsC[0])
-#     ) or (
-#         int(coordsA[1]) - int(coordsB[1]) == int(coordsB[1]) - int(coordsC[1])
-#     )
-

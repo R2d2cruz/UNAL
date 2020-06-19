@@ -1,5 +1,5 @@
-from core.Entity import Entity
-from core.MovingEntity import MovingEntity
+from .Entity import Entity
+from .MovingEntity import MovingEntity
 
 
 def coll(pos1, gross1, pos2, gross2):
@@ -27,7 +27,7 @@ def sideColl(bodyA: MovingEntity, bodyB: MovingEntity):
     return contact
 
 
-class CollisionManager:
+class _CollisionManager:
     def __init__(self):
         self.movingEntities = set()
         self.entities = set()
@@ -79,4 +79,4 @@ class CollisionManager:
         return False
 
 
-collisionManager = CollisionManager()
+collisionManager = _CollisionManager()

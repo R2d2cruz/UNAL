@@ -1,4 +1,4 @@
-from math import sqrt, atan2, pi
+from math import atan2, pi, sqrt
 
 EPSILON = 0.00001
 PI_QUARTER = (2 * pi / 8)

@@ -1,7 +1,8 @@
 import pygame
-from core.ui.Control import Control
-from core.ResourceManager import getText
-from core.camera.BaseCamera import BaseCamera
+from core import BaseCamera
+from core.misc import getText
+
+from .Control import Control
 
 
 class InputBox(Control):

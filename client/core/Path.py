@@ -1,5 +1,6 @@
-import pygame 
-from core.Vector2D import Vector2D
+import pygame
+
+from .Vector2D import Vector2D
 
 
 class Path:

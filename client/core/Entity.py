@@ -1,7 +1,8 @@
 import pygame
-from core.Vector2D import Vector2D
-from core.Telegram import Telegram
-from core.camera.BaseCamera import BaseCamera
+
+from .camera.BaseCamera import BaseCamera
+from .Telegram import Telegram
+from .Vector2D import Vector2D
 
 
 class Entity(pygame.sprite.Sprite):

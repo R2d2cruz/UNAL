@@ -1,5 +1,7 @@
 import pygame
-from core.camera.BaseCamera import BaseCamera
+
+from .BaseCamera import BaseCamera
+
 
 class NullCamera(BaseCamera):
     def __init__(self):

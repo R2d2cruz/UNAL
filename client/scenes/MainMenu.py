@@ -1,18 +1,13 @@
 import pygame
-import core.ResourceManager as res
-from core.Scene import Scene
-from core.Game import Game
-from core.ui.InputBox import InputBox
-from core.ui.Button import Button
-from core.ui.Label import Label
-from core.AnimatedEntity import AnimatedEntity
-from core.camera.NullCamera import NullCamera
+from core import AnimatedEntity, Game, NullCamera, Scene, resourceManager
+from ui import Button, InputBox, Label
+
 
 class MainMenu(Scene):
     def __init__(self, game: Game):
         super().__init__(game)
         self.camera = NullCamera()
-        self.font = res.getFont('minecraft', 36)
+        self.font = resourceManager.getFont('minecraft', 36)
         self.index = 0
         rect = pygame.Rect(0, 0, 450, 80)
         rect.center = (game.config.windowWidth / 4,
@@ -38,8 +33,8 @@ class MainMenu(Scene):
         self.inputBox1.onChange = self.onChangeName
 
         self.anim = AnimatedEntity()
-        self.anim.loadAnimation(res.getAnimFile(
-            res.namesAnimList[self.index]))
+        self.anim.loadAnimation(resourceManager.getAnimFile(
+            resourceManager.getAnimName(self.index)))
         self.anim.x, self.anim.y = ((game.config.windowWidth * 3 / 4) - (self.anim.width / 2),
                                     (game.config.windowHeight / 3) - (self.anim.height / 2))
         self.anim.currentClip = 'down'
@@ -112,7 +107,7 @@ class MainMenu(Scene):
         # TODO: evaluar si se escribió un nombre valido y arrojar un error en pantalla si no
         self.game.player.setName(self.inputBox1.text)
         self.game.player.loadAnimation(
-            res.getAnimFile(res.namesAnimList[self.index]))
+            resourceManager.getAnimFile(resourceManager.getAnimName(self.index)))
         self.game.saveSettings()
         if not self.game.client.connected:
             if not self.game.client.connect(self.game.player):
@@ -121,40 +116,40 @@ class MainMenu(Scene):
                 res.playSound('error')
                 pass
         if self.game.client.connected:
-            res.playSound('title')
+            resourceManager.playSound('title')
             self.game.setScene('play')
 
     def onGoQuit(self, sender):
         self.game.quit()
 
     def goToLeftList(self, sender):
-        res.playSound('select')
+        resourceManager.playSound('select')
         self.index -= 1
         if self.index < 0:
-            self.index = len(res.namesAnimList) - 1
-        self.anim.loadAnimation(res.getAnimFile(
-            res.namesAnimList[self.index]))
+            self.index = resourceManager.getAnimCount() - 1
+        self.anim.loadAnimation(resourceManager.getAnimFile(
+            resourceManager.getAnimName(self.index)))
         self.anim.currentClip = 'down'
 
     def goToRightList(self, sender):
-        res.playSound('select')
+        resourceManager.playSound('select')
         self.index += 1
-        if self.index > len(res.namesAnimList) - 1:
+        if self.index > (resourceManager.getAnimCount() - 1):
             self.index = 0
-        self.anim.loadAnimation(res.getAnimFile(
-            res.namesAnimList[self.index]))
+        self.anim.loadAnimation(resourceManager.getAnimFile(
+            resourceManager.getAnimName(self.index)))
         self.anim.currentClip = 'down'
 
     @staticmethod
     def onChangeName(sender):
-        res.playSound('hit-key')
+        resourceManager.playSound('hit-key')
 
     @staticmethod
     def onMusicButton(sender: Button):
-        enable = "ON" if res.flipEnableMusic() else "OFF"
+        enable = "ON" if resourceManager.flipEnableMusic() else "OFF"
         sender.text = "Music: " + enable
 
     @staticmethod
     def onSoundButton(sender: Button):
-        enable = "ON" if res.flipEnableSound() else "OFF"
+        enable = "ON" if resourceManager.flipEnableSound() else "OFF"
         sender.text = "Sounds: " + enable

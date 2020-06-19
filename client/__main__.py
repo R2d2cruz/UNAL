@@ -1,23 +1,15 @@
 import signal
 import sys
+
 # noinspection PyUnresolvedReferences
-import core .ResourceManager as res 
+from constants import anims, fonts, imgs, maps, sounds, tilesets
 # noinspection PyUnresolvedReferences
-import core.EntityManager as entManager
-# noinspection PyUnresolvedReferences
-import core.Hermes as Hermes
-# noinspection PyUnresolvedReferences
-from core.Game import Game
-# noinspection PyUnresolvedReferences
-from core.Config import Config
+from core import Config, Game, resourceManager, hermes
 # noinspection PyUnresolvedReferencesx
 from Laberinto import Laberinto
 # noinspection PyUnresolvedReferences
-from scenes.MainMenu import MainMenu
-# noinspection PyUnresolvedReferences
-from scenes.Playground import Playground
-# noinspection PyUnresolvedReferences
-from constants import imgs, sounds, fonts, anims, tilesets, maps
+from scenes import MainMenu, Playground
+
 
 # esta funcion sirve para que el juego se cierre cuando el usuario presiona Ctr + C en la consola
 def signal_handler(sig, frame):
@@ -26,9 +18,7 @@ def signal_handler(sig, frame):
 
 def main():
     signal.signal(signal.SIGINT, signal_handler)
-    res.init('client/assets/', imgs, sounds, fonts, anims, tilesets, maps)
-    entManager.init()
-    Hermes.init()
+    resourceManager.init('client/assets/', imgs, sounds, fonts, anims, tilesets, maps)
     game = Game(Config('client/config.json'))
     game.init()
     game.addScene("main", MainMenu(game))
