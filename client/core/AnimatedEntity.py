@@ -56,7 +56,6 @@ class AnimatedEntity(Entity):
             self.lastFrameTime -= self.timeStep
             self.getNextFrame()
 
-
 # class Animation:
 #     frames = []
 #     lapse = 0

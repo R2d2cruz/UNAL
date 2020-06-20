@@ -1,8 +1,6 @@
 from collections import deque
 from random import choice
 
-import pygame
-
 from .Map import Map
 
 
@@ -70,7 +68,7 @@ class Graph:
     @staticmethod
     def getNeighbors4(map: Map, col: int, row: int) -> list:
         nodes = []
-        for cell in [[-1,  0], [ 1,  0], [ 0, -1], [ 0, 1]]:
+        for cell in [[-1, 0], [1, 0], [0, -1], [0, 1]]:
             x = cell[0] + col
             y = cell[1] + row
             if 0 <= y < map.rows and 0 <= x < map.cols:
@@ -95,7 +93,7 @@ class Graph:
 
     def findShortestPath2(self, start: str, end: str) -> list:
         path = self.findShortestPath(start, end)
-        path2=[]
+        path2 = []
         prevNode = None
         node = None
         for nextNode in path:
@@ -106,7 +104,7 @@ class Graph:
         path2.append(end)
         return path2
 
-    def randomPath(self, start: str=None, end: str=None) -> list:
+    def randomPath(self, start: str = None, end: str = None) -> list:
         self.nodeStart = choice(list(self.nodes.keys())) if start is None else start
         self.nodeEnd = choice(list(self.nodes.keys())) if end is None else end
         return self.findShortestPath2(self.nodeStart, self.nodeEnd)
@@ -119,7 +117,7 @@ class Graph:
         coordsB = nodeB.split(',')
         coordsC = nodeC.split(',')
         return (
-                coordsA[0] == coordsB[0] == coordsC[0]
-            ) or (
-                coordsA[1] == coordsB[1] == coordsC[1]
-            )
+                       coordsA[0] == coordsB[0] == coordsC[0]
+               ) or (
+                       coordsA[1] == coordsB[1] == coordsC[1]
+               )

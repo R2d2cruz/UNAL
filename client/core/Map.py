@@ -2,8 +2,9 @@ import json
 
 import pygame
 
-from .ResourceManager import resourceManager
 from .Entity import Entity
+from .ResourceManager import resourceManager
+
 
 class Wall(Entity):
     def __init__(self, x: int, y: int, width: int, height: int, *groups):
@@ -13,6 +14,7 @@ class Wall(Entity):
         self.width = width
         self.height = height
         self.image = resourceManager.loadImage("ts1", (96, 64, width, height))
+
 
 class Map:
 
@@ -32,7 +34,7 @@ class Map:
         self.tileHeight = 32
         self.graph = None
 
-        self.loadMap(resourceManager.getMap(mapName)) 
+        self.loadMap(resourceManager.getMap(mapName))
         self.createWalls(self.cells)
 
     def loadMap(self, fileName: str):
@@ -86,7 +88,8 @@ class Map:
 
     def cellToPoint(self, cell):
         coord = cell.split(',')
-        return [int(coord[0]) * self.tileWidth + self.tileWidth / 2, int(coord[1]) * self.tileHeight + self.tileHeight / 2]
+        return [int(coord[0]) * self.tileWidth + self.tileWidth / 2,
+                int(coord[1]) * self.tileHeight + self.tileHeight / 2]
 
     def createWalls(self, mapCells):
         for i in range(len(mapCells)):

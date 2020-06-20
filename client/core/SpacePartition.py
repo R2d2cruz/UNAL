@@ -1,14 +1,15 @@
 import pygame
 
-
-from .Vector2D import Vector2D
 from .Entity import Entity
+from .Vector2D import Vector2D
 from .camera.BaseCamera import BaseCamera
+
 
 class Cell:
     def __init__(self, rect):
         self.members = []
         self.rect = rect
+
 
 class SpacePartition:
     def __init__(self, width: int, height: int, cellsX: int, cellsY: int):
@@ -16,12 +17,12 @@ class SpacePartition:
         self.__spaceHeight = height
         self.__numCellsX = cellsX
         self.__numCellsY = cellsY
-        self.__cellSizeX = width  / cellsX
+        self.__cellSizeX = width / cellsX
         self.__cellSizeY = height / cellsY
         self.__cells = []
         for y in range(0, self.__numCellsY):
             for x in range(0, self.__numCellsX):
-                left  = x * self.__cellSizeX
+                left = x * self.__cellSizeX
                 top = y * self.__cellSizeY
                 self.__cells.append(Cell(
                     pygame.Rect(left, top, self.__cellSizeX, self.__cellSizeY)
@@ -60,27 +61,38 @@ class SpacePartition:
         index = self.posToIndex(entity.getPos())
         if entity in self.__cells[index].members:
             self.__cells[index].members.remove(entity)
-        
+
     def posToIndex(self, pos: Vector2D) -> int:
         index = int(
-                    self.__numCellsX * pos.x / self.__spaceWidth
-                ) + int(
-                    self.__numCellsY * pos.y / self.__spaceHeight
-                ) * self.__numCellsX
+            self.__numCellsX * pos.x / self.__spaceWidth
+        ) + int(
+            self.__numCellsY * pos.y / self.__spaceHeight
+        ) * self.__numCellsX
         numCells = len(self.__cells) - 1
         if index > numCells:
             index = numCells
         return index
 
     def updateEntity(self, entity: Entity, oldPos: Vector2D):
-        oldIndex = self.posToIndex(oldPos)
+        if entity.cellIndex is None:
+            oldIndex = self.posToIndex(oldPos)
+        else:
+            oldIndex = entity.cellIndex
         newIndex = self.posToIndex(entity.getPos())
         if oldIndex != newIndex:
             if entity in self.__cells[oldIndex].members:
                 self.__cells[oldIndex].members.remove(entity)
+                entity.cellIndex = None
             else:
-                print('Entity', entity.id, 'not registered')
-            self.__cells[newIndex].members.append(entity)
+                print('Entity', entity.id, entity.name, 'not registered')
+            if 0 < newIndex < len(self.__cells):
+                self.__cells[newIndex].members.append(entity)
+                entity.cellIndex = newIndex
+            else:
+                print('Invalid index', newIndex)
+            return newIndex
+        else:
+            return oldIndex
 
     def render(self, screen, camera: BaseCamera):
         for cell in self.__cells:
@@ -100,5 +112,8 @@ class SpacePartition:
     def tagNeighborhood(self, entity: Entity, queryRadius: float):
         self.tagAll(False)
         neighbors = self.calculateNeighbors(entity.getPos(), queryRadius)
+        if entity in neighbors:
+            neighbors.remove(entity)
         for entity in neighbors:
             entity.tag = True
+        return neighbors

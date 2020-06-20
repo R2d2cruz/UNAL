@@ -36,12 +36,12 @@ class InputBox(Control):
         self.onChange(self)
 
     def update(self, deltaTime: float):
-        # TODO: self.caret.update()
+        #  TODO: self.caret.update()
         pass
 
     def onRender(self, screen, camera: BaseCamera):
         screen.blit(self.__surface, self.__textRect)
-        # TODO: self.caret.render(screen)
+        #  TODO: self.caret.render(screen)
         pygame.draw.rect(screen, self.__color, self.rect, 2)
 
     def onMouseEnter(self, event):
@@ -59,6 +59,6 @@ class InputBox(Control):
             self.text = self.text[:-1]
         elif not self.maxLengthReached:
             self.text += event.unicode
-    
+
     def onChange(self, sender):
         pass

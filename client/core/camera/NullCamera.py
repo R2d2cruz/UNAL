@@ -1,5 +1,3 @@
-import pygame
-
 from .BaseCamera import BaseCamera
 
 

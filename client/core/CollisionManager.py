@@ -1,9 +1,7 @@
+from .SpacePartition import SpacePartition
+from .Vector2D import Vector2D
 from .Entity import Entity
 from .MovingEntity import MovingEntity
-
-
-def coll(pos1, gross1, pos2, gross2):
-    pass
 
 
 def sideColl(bodyA: MovingEntity, bodyB: MovingEntity):
@@ -20,7 +18,6 @@ def sideColl(bodyA: MovingEntity, bodyB: MovingEntity):
     maxBodyColl = maxBody.getCollisionRect()
 
     if minBodyColl.y + minBodyColl.h >= maxBodyColl.y:
-
         contact[1] = minBody.getOldCollisionRect().y + minBodyColl.h <= maxBodyColl.y or \
                      maxBody.getOldCollisionRect().y >= minBodyColl.y + minBodyColl.h
 
@@ -47,42 +44,44 @@ class _CollisionManager:
     def registerMovingEntity(self, entity: MovingEntity):
         self.movingEntities.add(entity)
 
-    def update(self):
-        removeEntities = []
-        # quitar marcas
-        for entity in self.movingEntities:
-            entity.isInCollision = False
-
+    def update(self, cellSpace: SpacePartition):
         for entityA in self.movingEntities:
-            # contra items fijos
-            for entityB in self.entities:
-                if entityA.getCollisionRect().colliderect(entityB.getCollisionRect()):
-                    # entityA.isInCollision = True # solo se marca 1, el otro se marca en la otra ronda
-                    if entityB.flag == "item":
-                        entityB.effect(entityA)
-                    elif entityA.flag == "item":
-                        entityA.effect(entityB)
-                    else:
-                        side = sideColl(entityA, entityB)
-
-                        entityA.stop(side[0], side[1])
-
-            # contra todos, esto se puede optimizar para no repetir validaciones
-            for entityB in self.movingEntities:
+            neighbors = cellSpace.calculateNeighbors(entityA.getPos(), 75)
+            for entityB in neighbors:
                 if entityA != entityB:
                     if entityA.getCollisionRect().colliderect(entityB.getCollisionRect()):
-                        # entityA.isInCollision = True # solo se marca 1, el otro se marca en la otra ronda
-                        side = sideColl(entityA, entityB)
+                        if entityB.flag == "item":
+                            entityB.effect(entityA)
+                        elif entityA.flag == "item":
+                            entityA.effect(entityB)
+                        else:
+                            side = sideColl(entityA, entityB)
+                            entityA.stop(side[0], side[1])
+            # for entityB in self.entities:
+            #     i += 1
+            #     if entityA.getCollisionRect().colliderect(entityB.getCollisionRect()):
+            #         # entityA.isInCollision = True # solo se marca 1, el otro se marca en la otra ronda
+            #         if entityB.flag == "item":
+            #             entityB.effect(entityA)
+            #         elif entityA.flag == "item":
+            #             entityA.effect(entityB)
+            #         else:
+            #             side = sideColl(entityA, entityB)
+            #             entityA.stop(side[0], side[1])
+            #
+            # # contra todos, esto se puede optimizar para no repetir validaciones
+            # for entityB in self.movingEntities:
+            #     if entityA != entityB:
+            #         i += 1
+            #         if entityA.getCollisionRect().colliderect(entityB.getCollisionRect()):
+            #             # entityA.isInCollision = True # solo se marca 1, el otro se marca en la otra ronda
+            #             side = sideColl(entityA, entityB)
+            #             entityA.stop(side[0], side[1])
 
-                        entityA.stop(side[0], side[1])
-
-    def checkCollistion(self, rect) -> bool:
-        for entity in self.entities:
-            if rect.colliderect(entity.getCollisionRect()):
-                return True
-        # contra todos, esto se puede optimizar para no repetir validaciones
-        for entity in self.movingEntities:
-            if rect.colliderect(entity.getCollisionRect()):
+    def checkCollistion(self, rect, cellSpace) -> bool:
+        neighbors = cellSpace.calculateNeighbors(Vector2D(rect.x, rect.y), 75)
+        for neighbor in neighbors:
+            if rect.colliderect(neighbor.getCollisionRect()):
                 return True
         return False
 

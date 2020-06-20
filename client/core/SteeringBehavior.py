@@ -1,8 +1,8 @@
 import math
 import random
 
-from .Vector2D import (EPSILON, Vector2D, distance, distanceSq, getVector2D,
-                       normalize, truncate)
+from .Vector2D import (Vector2D, distance, distanceSq, getVector2D,
+                       normalize)
 
 # el radio limite para wander
 WANDER_RADIUS = 1.2

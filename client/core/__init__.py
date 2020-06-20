@@ -1,5 +1,4 @@
 from .AnimatedEntity import AnimatedEntity
-from .camera import BaseCamera, NullCamera, SimpleCamera
 from .Character import Character
 from .Client import Client
 from .CollisionManager import collisionManager
@@ -13,5 +12,6 @@ from .Map import Map
 from .Path import Path
 from .ResourceManager import resourceManager
 from .Scene import Scene
-from .Vector2D import Vector2D
 from .SpacePartition import SpacePartition
+from .Vector2D import Vector2D
+from .camera import BaseCamera, NullCamera, SimpleCamera

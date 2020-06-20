@@ -1,4 +1,4 @@
-from core import Character, Vector2D
+from core import Character
 
 onlineTraductor = {
     "stu": "stand_up",
@@ -10,6 +10,7 @@ onlineTraductor = {
     "wll": "left",
     "wlr": "right"
 }
+
 
 class OnlinePlayer(Character):
     def __init__(self, data, *groups):

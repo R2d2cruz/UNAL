@@ -1,17 +1,18 @@
-import importlib
 import os
 import json
-from random import choice, random
+import os
+from random import random
 
 import pygame
-from core import (Character, Entity, Game, Map, Path, Scene, SimpleCamera,
-                  SpacePartition, Vector2D, collisionManager, entityManager,
-                  resourceManager, AnimatedEntity, Graph)
 from OnlinePlayer import OnlinePlayer
 from Player import Player
+from core import (Character, Entity, Game, Map, Path, Scene, SimpleCamera,
+                  SpacePartition, Vector2D, collisionManager, entityManager,
+                  resourceManager, Graph, AnimatedEntity)
 from ui import Button, Text
 
 from .entities import HealthPotion
+
 
 def getFirst(list, filter):
     for x in list:
@@ -19,44 +20,30 @@ def getFirst(list, filter):
             return x
     return None
 
-def getValidRadomPos(worlRect: pygame.Rect, rect: pygame.Rect):
-    while True:
-        rect.x = int(random() * worlRect.w)
-        rect.y = int(random() * worlRect.h)
-        if not collisionManager.checkCollistion(rect):
-            return rect
-
-
-def locateInValidRadomPos(worlRect: pygame.Rect, entity: Entity):
-    pos = getValidRadomPos(worlRect, entity.getCollisionRect())
-    entity.setPos(pos.x, pos.y)
-
 
 class Playground(Scene):
-    player = None
-    players = {}
-
-    characters = [
-
-    ]
 
     def __init__(self, game: Game, map: Map):
         super().__init__(game)
+        self.player = None
+        self.players = {}
+        self.characters = []
         self.map = map
         worlRect = map.getRect()
         self.cellSpace = SpacePartition(worlRect.w, worlRect.h, int(worlRect.w / 100), int(worlRect.h / 100))
 
         entityManager.registerEntities(map.objects)
-        collisionManager.registerEntities(map.objects) # las paredes no deberian ser objetos... o si?
+        collisionManager.registerEntities(map.objects)  # las paredes no deberian ser objetos... o si?
         self.cellSpace.registerEntities(map.objects)
-        
+
         self.paused = False
         name = resourceManager.getRandomCharAnimName()
 
         self.player = Player(name, name, (0, 0), (0, 24, 34, 32))
-        locateInValidRadomPos(worlRect, self.player)
+        self.locateInValidRadomPos(worlRect, self.player)
         self.cellSpace.registerEntity(self.player)
         collisionManager.registerMovingEntity(self.player)
+        entityManager.registerEntity(self.player)
 
         self.loadScripts(worlRect)
         entityManager.registerEntities(self.characters)
@@ -71,7 +58,7 @@ class Playground(Scene):
             fire.x = 50 * i
             fire.y = 0
             entityManager.registerEntity(fire)
-    
+
         self.graph = Graph()
         self.graph.nodes = Graph.getGraph(map, True)
         with open('saves/' + map.name + '.graph.json', 'w') as outfile:
@@ -84,7 +71,6 @@ class Playground(Scene):
         ), game.screen.get_height(), self.map.width, self.map.height)
         self.camera.target = self.player
         game.setPlayer(self.player)
-        entityManager.registerEntity(self.player)
         self.keysPressed = {}
 
         rect = pygame.Rect(0, 0, 80, 80)
@@ -131,11 +117,7 @@ class Playground(Scene):
 
     def update(self, deltaTime: float):
         if not self.paused:
-            self.updateOtherPlayers()
-            for playerKey in playersData.keys():
-                entity = self.players[playerKey]
-                entity.update(deltaTime)
-                self.cellSpace.updateEntity(entity, entity.getOldPos())
+            self.updateOtherPlayers(deltaTime)
             for char in self.characters:
                 if char.script is not None:
                     char.script.onUpdate(char)
@@ -146,7 +128,7 @@ class Playground(Scene):
 
             self.player.update(deltaTime)
 
-            collisionManager.update()
+            collisionManager.update(self.cellSpace)
 
             if self.player.hasChanged:
                 self.player.hasChanged = False
@@ -183,13 +165,14 @@ class Playground(Scene):
             queryRadius * 2
         )
         self.cellSpace.tagNeighborhood(self.player, queryRadius)
+
         pygame.draw.rect(screen, (255, 255, 0), self.camera.apply(queryRect), 4)
         self.cellSpace.render(screen, self.camera)
 
         for control in self.controls:
             control.render(screen, self.camera)
 
-    def updateOtherPlayers(self):
+    def updateOtherPlayers(self, deltaTime: float):
         # que deberia ocurrir si durante el juego se desconecta?
         playersData = self.game.client.getStatus()
         if playersData is not None:
@@ -200,12 +183,16 @@ class Playground(Scene):
                 else:
                     self.players[playerKey] = OnlinePlayer(playersData.get(playerKey))
                     self.cellSpace.registerEntity(self.players[playerKey])
-                    
+
             # remover los que no se actualizaron
             toDelete = set(self.players.keys()).difference(playersData.keys())
             for playerKey in toDelete:
                 self.cellSpace.unregisterEntity(self.players[playerKey])
                 del self.players[playerKey]
+
+        for playerKey in self.players.keys():
+            self.players[playerKey].update(deltaTime)
+            self.cellSpace.updateEntity(self.players[playerKey], self.players[playerKey].getOldPos())
 
     def onGoPath(self, sender):
         node = self.map.pointToCell(self.player.x, self.player.y)
@@ -234,7 +221,7 @@ class Playground(Scene):
             self.controls.append(bubble)
         else:
             bubble = getFirst(self.controls, lambda x: x.id ==
-                              self.buttonText.tag)
+                                                       self.buttonText.tag)
             self.controls.remove(bubble)
             self.buttonText.tag = None
 
@@ -257,8 +244,19 @@ class Playground(Scene):
                     character.script.onInit(character, worlRect)
                     self.characters.append(character)
                     collisionManager.registerMovingEntity(character)
-                    self.cellSpace.registerEntity(self.player)
+                    self.cellSpace.registerEntity(character)
                     print('...👍')
                 except Exception as e:
                     print('❌ No se pudo cargar script', e)
         print('📜 Fin carga scripts')
+
+    def getValidRadomPos(self, worlRect: pygame.Rect, rect: pygame.Rect):
+        while True:
+            rect.x = int(random() * worlRect.w)
+            rect.y = int(random() * worlRect.h)
+            if not collisionManager.checkCollistion(rect, self.cellSpace):
+                return rect
+
+    def locateInValidRadomPos(self, worlRect: pygame.Rect, entity: Entity):
+        pos = self.getValidRadomPos(worlRect, entity.getCollisionRect())
+        entity.setPos(pos.x, pos.y)

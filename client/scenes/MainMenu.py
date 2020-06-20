@@ -113,7 +113,7 @@ class MainMenu(Scene):
             if not self.game.client.connect(self.game.player):
                 # TODO: en vez de finaizar aqui simplemente se muestra un mensaje en pantalla indicandole al usuario que no se pudo conectar
                 # TODO: un boton en la pantalla permite salir, esta linea va allá
-                res.playSound('error')
+                resourceManager.playSound('error')
                 pass
         if self.game.client.connected:
             resourceManager.playSound('title')

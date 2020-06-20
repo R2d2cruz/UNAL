@@ -3,7 +3,6 @@ from core import BaseCamera
 
 
 class Control:
-
     __nextID = 0
 
     WHITE = (255, 255, 255)

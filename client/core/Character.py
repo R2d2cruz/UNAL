@@ -1,11 +1,11 @@
 import pygame
 
-from .camera.BaseCamera import BaseCamera
 from .Hermes import hermes
-from .misc import getText
 from .MovingEntity import MovingEntity
 from .ResourceManager import resourceManager
 from .Telegram import Telegram
+from .camera.BaseCamera import BaseCamera
+from .misc import getText
 
 compassClips = ['right', 'down', 'down', 'down', 'left', 'up', 'up', 'up']
 translate = {

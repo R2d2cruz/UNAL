@@ -3,14 +3,12 @@ import pygame
 from .AnimatedEntity import AnimatedEntity
 from .Entity import Entity
 from .SteeringBehavior import SteeringBehavior
-from .Vector2D import EPSILON, Vector2D, normalize, truncate
+from .Vector2D import Vector2D, normalize, truncate
 
 
 class MovingEntity(AnimatedEntity):
     def __init__(self, position, collissionRect, *groups):
         super().__init__(*groups)
-        self.rect.centerx, self.rect.centery = position
-        self.__oldPos = Vector2D(self.rect.centerx, self.rect.centery)
         self.__mass = 10
         self.__maxSpeed = 0.15
         self.__maxForce = .02
@@ -19,6 +17,9 @@ class MovingEntity(AnimatedEntity):
         self.__acceleration = Vector2D(0.0, 0.0)
         self.__heading = Vector2D(0.0, 1.0)
         self.__collRect = pygame.Rect(collissionRect)
+        #self.rect.centerx, self.rect.centery = position
+        self.__oldPos = Vector2D(position[0], position[1])
+        self.setPos(position[0], position[1])
         self.steering = SteeringBehavior(self)
         self.speed = 0
         self.hasChanged = True
@@ -67,13 +68,13 @@ class MovingEntity(AnimatedEntity):
         self.__steeringForce = truncate(self.steering.calculate(), self.maxForce)
         self.__acceleration = (self.__steeringForce / self.__mass)
         self.__velocity += (self.__acceleration * deltaTime)
-        self.__velocity = truncate(self.__velocity, self.__maxSpeed)      
+        self.__velocity = truncate(self.__velocity, self.__maxSpeed)
         self.x += self.__velocity.x * deltaTime
         self.y += self.__velocity.y * deltaTime
         if self.__velocity.isGtEpsilon():
             self.hasChanged = True
             self.__heading = normalize(self.__velocity)
-            #self.side = perp(self.heading);
+            # self.side = perp(self.heading);
 
     def render(self, screen, camera):
         super().render(screen, camera)

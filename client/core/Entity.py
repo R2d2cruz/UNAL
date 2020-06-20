@@ -1,12 +1,11 @@
 import pygame
 
-from .camera.BaseCamera import BaseCamera
 from .Telegram import Telegram
 from .Vector2D import Vector2D
+from .camera.BaseCamera import BaseCamera
 
 
 class Entity(pygame.sprite.Sprite):
-
     __nextID = 0
 
     def __init__(self, *groups):
@@ -19,6 +18,7 @@ class Entity(pygame.sprite.Sprite):
         self.flag = ""
         self.tag = None
         self.script = None
+        self.cellIndex = None
 
     @staticmethod
     def __getNextID():
@@ -81,7 +81,7 @@ class Entity(pygame.sprite.Sprite):
 
     def render(self, screen, camera: BaseCamera):
         screen.blit(self.image, camera.apply(self.rect))
-        #pygame.draw.rect(screen, (0, 0, 255), camera.apply(self.rect), 1)
+        # pygame.draw.rect(screen, (0, 0, 255), camera.apply(self.rect), 1)
         if self.tag:
             color = (255, 0, 0)
             pygame.draw.rect(screen, color, camera.apply(self.getCollisionRect()), 4)

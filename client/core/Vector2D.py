@@ -81,5 +81,6 @@ def normalize(vector: Vector2D) -> Vector2D:
 def distanceSq(vectorA: Vector2D, vectorB: Vector2D) -> float:
     return (vectorB - vectorA).lengthSq()
 
+
 def distance(vectorA: Vector2D, vectorB: Vector2D) -> float:
     return (vectorB - vectorA).length()

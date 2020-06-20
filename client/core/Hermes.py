@@ -5,16 +5,14 @@ from .EntityManager import entityManager
 from .Telegram import Telegram
 
 
-class _Hermes: 
+class _Hermes:
 
     def __init__(self):
         self.__deltaTime = float()
         self.__priorityQ = queue.PriorityQueue()
 
-
     def setDeltaTime(self, deltaTime: float):
         self.__deltaTime = deltaTime
-
 
     def messageDispatch(self, delay: float, sender: int, receiver: int, msg: str, extraInfo: dict = {}):
         telegram = Telegram(sender, receiver, msg, 0, extraInfo)
@@ -25,7 +23,6 @@ class _Hermes:
             telegram.dispatchTime = self.__deltaTime + delay
             # noinspection PyUnresolvedReferences
             self.__priorityQ.put_nowait((telegram.dispatchTime, telegram))
-
 
     def dispatchDelayedMessages(self, delayTime: float):
         # noinspection PyUnresolvedReferences
@@ -41,5 +38,6 @@ class _Hermes:
             receiver.onMessage(telegram)
         else:
             print('Enviando mensaje a entidad nula. ID:', telegram.receiver, telegram.message)
+
 
 hermes = _Hermes()

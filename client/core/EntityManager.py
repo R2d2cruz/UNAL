@@ -1,5 +1,3 @@
-import core.Hermes as Hermes
-
 from .Entity import Entity
 from .Telegram import Telegram
 
@@ -26,9 +24,9 @@ class _EntityManager:
     def getEntityById(self, _id: int):
         return self.__entities.get(_id)
 
-
     def removeEntityById(self, _id: int):
         if self.__entities.get(_id) is not None:
             self.__entities.pop(_id)
+
 
 entityManager = _EntityManager()

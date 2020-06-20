@@ -1,4 +1,3 @@
-import pygame
 from core import BaseCamera
 from core.misc import getText
 

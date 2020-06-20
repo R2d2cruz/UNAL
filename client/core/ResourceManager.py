@@ -4,8 +4,21 @@ import pygame
 
 
 class _ResourceManager:
+    def __init__(self):
+        self.__soundLibrary = {}
+        self.__enableSound = True
+        self.__enableMusic = True
+        self.__resPath = {}
+        self.__imgs = {}
+        self.__sounds = {}
+        self.__fonts = {}
+        self.__animations = {}
+        self.__tilesets = {}
+        self.__maps = {}
+        self.__namesAnimList = []
 
-    def init(self, resPathVal: str, imgsVal: {}, soundsVal: {}, fontsVal: {}, animsVal: {}, tilesetsVal: {}, mapsVal: {}):
+    def init(self, resPathVal: str, imgsVal: {}, soundsVal: {}, fontsVal: {}, animsVal: {}, tilesetsVal: {},
+             mapsVal: {}):
         self.__soundLibrary = {}
         self.__enableSound = True
         self.__enableMusic = True
@@ -13,7 +26,7 @@ class _ResourceManager:
         self.__imgs = imgsVal
         self.__sounds = soundsVal
         self.__fonts = fontsVal
-        self.__anims = animsVal
+        self.__animations = animsVal
         self.__tilesets = tilesetsVal
         self.__maps = mapsVal
         self.__namesAnimList = ['Bob', 'Henry', 'John', 'Charly']
@@ -28,7 +41,7 @@ class _ResourceManager:
         return self.fixPath(self.__sounds.get(name))
 
     def getAnimFile(self, name: str) -> str:
-        return self.fixPath(self.__anims.get(name))
+        return self.fixPath(self.__animations.get(name))
 
     def getFont(self, name: str, size) -> pygame.font.Font:
         fontDef = self.fixPath(self.__fonts.get(name))
@@ -76,7 +89,7 @@ class _ResourceManager:
         except Exception as e:
             print("😞 No se pudo cargar audio " + self.getSoundPath(name), e)
 
-    def playSong(self, name: str, loops: int=-1):
+    def playSong(self, name: str, loops: int = -1):
         try:
             pygame.mixer.music.load(self.getSoundPath(name))
             pygame.mixer.music.play(loops)
@@ -105,5 +118,6 @@ class _ResourceManager:
     #     __currentlySong = nextSong
     #     pygame.mixer.music.load(nextSong)
     #     pygame.mixer.music.play()
+
 
 resourceManager = _ResourceManager()

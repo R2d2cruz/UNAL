@@ -1,7 +1,7 @@
 import pygame
 
 from core import Character
-from core.Vector2D import EPSILON, Vector2D
+from core.Vector2D import Vector2D
 
 
 class Player(Character):
@@ -31,4 +31,3 @@ class Player(Character):
                 else:
                     self.stop(collideRect.x + collideRect.w >= listRect[i].x or
                               collideRect.x >= listRect[i].x + listRect[i].w)
-
