@@ -7,7 +7,7 @@ from .Vector2D import (Vector2D, distance, distanceSq, getVector2D,
 # el radio limite para wander
 WANDER_RADIUS = 1.2
 # distancia de proyeccion del circulo de wnader frente a la entidad
-WANDER_DIST = 2.0
+WANDER_DIST = 10.0
 # cambio de angulo
 ANGLE_CHANGE = 1
 

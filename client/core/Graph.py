@@ -1,7 +1,7 @@
 from collections import deque
 from random import choice
 
-from .Map import Map
+from .TiledMap import TiledMap
 
 
 class Graph:
@@ -39,7 +39,7 @@ class Graph:
     #     pygame.draw.line(screen, color, camera.apply(cords), camera.apply(cordsM), 2)
 
     @staticmethod
-    def getGraph(map: Map, useAllDirections: bool = False):
+    def getGraph(map: TiledMap, useAllDirections: bool = False):
         graph = {}
         getNeighbors = Graph.getNeighbors8 if useAllDirections else Graph.getNeighbors4
         for row in range(0, map.rows):
@@ -55,7 +55,7 @@ class Graph:
         return graph
 
     @staticmethod
-    def getNeighbors8(map: Map, col: int, row: int) -> list:
+    def getNeighbors8(map: TiledMap, col: int, row: int) -> list:
         nodes = []
         for y in range(row - 1, row + 2):
             if 0 <= y < map.rows:
@@ -66,7 +66,7 @@ class Graph:
         return nodes
 
     @staticmethod
-    def getNeighbors4(map: Map, col: int, row: int) -> list:
+    def getNeighbors4(map: TiledMap, col: int, row: int) -> list:
         nodes = []
         for cell in [[-1, 0], [1, 0], [0, -1], [0, 1]]:
             x = cell[0] + col

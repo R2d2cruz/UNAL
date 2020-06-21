@@ -6,8 +6,8 @@ from core.Script import Script
 class ScriptCharacter(Script):
 
     def onInit(self, character: Character) -> Character:
-        character.setName('Arthur')
-        character.setPos(64, 64)
+        character.setName('Juan')
+        character.setPos(192, 192)
         character.steering.wanderEnabled = True
 
     def onUpdate(self, character: Character):

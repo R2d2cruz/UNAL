@@ -1,12 +1,9 @@
 import signal
 import sys
 
-# noinspection PyUnresolvedReferences
-from constants import anims, fonts, imgs, maps, sounds, tilesets
-# noinspection PyUnresolvedReferences
-from core import Config, Game, hermes, resourceManager, Map
-# noinspection PyUnresolvedReferences
-from scenes import MainMenu, Playground
+from client.constants import anims, fonts, imgs, maps, sounds, tilesets
+from client.core import Config, Game, resourceManager, TiledMap
+from client.scenes import MainMenu, Playground, Physics
 
 
 # esta funcion sirve para que el juego se cierre cuando el usuario presiona Ctr + C en la consola
@@ -21,7 +18,8 @@ def main():
     game = Game(Config('client/config.json'))
     game.init()
     game.addScene("main", MainMenu(game))
-    game.addScene("play", Playground(game, Map('big')))
+    game.addScene("physics", Physics(game))
+    game.addScene("play", Playground(game, TiledMap('small')))
     game.setScene("main")
     # res.playSong('background1')
     game.run()

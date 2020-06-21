@@ -20,6 +20,7 @@ class SpacePartition:
         self.__cellSizeX = width / cellsX
         self.__cellSizeY = height / cellsY
         self.__cells = []
+        self.__numCells = 0
         for y in range(0, self.__numCellsY):
             for x in range(0, self.__numCellsX):
                 left = x * self.__cellSizeX
@@ -27,6 +28,7 @@ class SpacePartition:
                 self.__cells.append(Cell(
                     pygame.Rect(left, top, self.__cellSizeX, self.__cellSizeY)
                 ))
+        self.__numCells = len(self.__cells)
 
     def calculateNeighbors(self, targetPos: Vector2D, queryRadius: float) -> list:
         queryRect = pygame.Rect(
@@ -54,13 +56,19 @@ class SpacePartition:
 
     def registerEntity(self, entity: Entity):
         index = self.posToIndex(entity.getPos())
-        self.__cells[index].members.append(entity)
+        if 0 <= index < self.__numCells:
+            self.__cells[index].members.append(entity)
+        else:
+            print('❌ Entity can not be registered', entity.id, entity.name, entity.getPos())
         return index
 
     def unregisterEntity(self, entity: Entity):
         index = self.posToIndex(entity.getPos())
-        if entity in self.__cells[index].members:
-            self.__cells[index].members.remove(entity)
+        if 0 <= index < self.__numCells:
+            if entity in self.__cells[index].members:
+                self.__cells[index].members.remove(entity)
+        else:
+            print('❌ Entity can not be unregistered', entity.id, entity.name, entity.getPos())
 
     def posToIndex(self, pos: Vector2D) -> int:
         index = int(
@@ -73,26 +81,22 @@ class SpacePartition:
             index = numCells
         return index
 
-    def updateEntity(self, entity: Entity, oldPos: Vector2D):
+    def updateEntity(self, entity: Entity):
         if entity.cellIndex is None:
-            oldIndex = self.posToIndex(oldPos)
+            oldIndex = self.posToIndex(entity.getOldPos())
         else:
             oldIndex = entity.cellIndex
         newIndex = self.posToIndex(entity.getPos())
         if oldIndex != newIndex:
-            if entity in self.__cells[oldIndex].members:
-                self.__cells[oldIndex].members.remove(entity)
-                entity.cellIndex = None
-            else:
-                print('Entity', entity.id, entity.name, 'not registered')
-            if 0 < newIndex < len(self.__cells):
+            if 0 <= oldIndex < self.__numCells:
+                if entity in self.__cells[oldIndex].members:
+                    self.__cells[oldIndex].members.remove(entity)
+                    entity.cellIndex = None
+                else:
+                    print('❌ Entity', entity.id, entity.name, 'not registered')
+            if 0 <= newIndex < self.__numCells:
                 self.__cells[newIndex].members.append(entity)
                 entity.cellIndex = newIndex
-            else:
-                print('Invalid index', newIndex)
-            return newIndex
-        else:
-            return oldIndex
 
     def render(self, screen, camera: BaseCamera):
         for cell in self.__cells:

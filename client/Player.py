@@ -1,7 +1,6 @@
 import pygame
 
-from core import Character
-from core.Vector2D import Vector2D
+from .core import Character, Vector2D
 
 
 class Player(Character):

@@ -70,10 +70,10 @@ class Entity(pygame.sprite.Sprite):
     def getPos(self):
         return self.__pos
 
-    def getCollisionRect(self):
+    def getCollisionRect(self) -> pygame.Rect:
         return self.rect
 
-    def getOldCollisionRect(self):
+    def getOldCollisionRect(self) -> pygame.Rect:
         return self.rect
 
     def update(self, deltaTime: float):
@@ -85,9 +85,9 @@ class Entity(pygame.sprite.Sprite):
         if self.tag:
             color = (255, 0, 0)
             pygame.draw.rect(screen, color, camera.apply(self.getCollisionRect()), 4)
-        else:
-            color = (0, 0, 0)
-            pygame.draw.rect(screen, color, camera.apply(self.getCollisionRect()), 1)
+        # else:
+        #     color = (0, 0, 0)
+        #     pygame.draw.rect(screen, color, camera.apply(self.getCollisionRect()), 1)
 
     def dispose(self):
         pass

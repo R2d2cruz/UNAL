@@ -1,6 +1,7 @@
 import pygame
-from core import AnimatedEntity, Game, NullCamera, Scene, resourceManager
-from ui import Button, InputBox, Label
+
+from ..core import AnimatedEntity, Game, NullCamera, Scene, resourceManager
+from ..ui import Button, InputBox, Label
 
 
 class MainMenu(Scene):
@@ -23,7 +24,7 @@ class MainMenu(Scene):
         self.buttonQuit.onClick = self.onGoQuit
 
         rect.center = (game.config.windowWidth * 3 / 4, -
-                       55 + game.config.windowHeight * 2 / 3)
+        55 + game.config.windowHeight * 2 / 3)
         self.label1 = Label(rect.x, rect.y, rect.w, rect.h,
                             self.font, 'Nombre del heroe:', (0, 128, 255))
 
@@ -75,6 +76,8 @@ class MainMenu(Scene):
             self.musicButton,
             self.soundButton
         ]
+
+        # self.container = GridContainer(0, 0, self.game.screen.get_width(), self.game.screen.get_height())
 
     def handleEvent(self, event):
         if event.type == pygame.KEYDOWN:

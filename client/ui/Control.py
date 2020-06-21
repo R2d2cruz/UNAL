@@ -1,5 +1,6 @@
 import pygame
-from core import BaseCamera
+
+from ..core import BaseCamera
 
 
 class Control:
@@ -9,7 +10,7 @@ class Control:
     COLOR_INACTIVE = pygame.Color('lightskyblue3')
     COLOR_ACTIVE = pygame.Color('dodgerblue2')
 
-    def __init__(self, x, y, width, height):
+    def __init__(self, x: int, y: int, width: int, height: int):
         self.__id = self.__getNextID()
         self.__visible = True
         self.__enabled = True
@@ -27,6 +28,45 @@ class Control:
     @property
     def id(self):
         return self.__id
+
+    @property
+    def x(self):
+        return self.rect.x
+
+    @x.setter
+    def x(self, x):
+        self.rect.x = x
+        self.__refresh()
+
+    @property
+    def y(self):
+        return self.rect.y
+
+    @y.setter
+    def y(self, y):
+        self.rect.y = y
+        self.__refresh()
+
+    @property
+    def width(self):
+        return self.rect.width
+
+    @width.setter
+    def width(self, width):
+        self.rect.width = width
+        self.__refresh()
+
+    @property
+    def height(self):
+        return self.rect.height
+
+    @height.setter
+    def height(self, height: int):
+        self.rect.height = height
+        self.__refresh()
+
+    def __refresh(self):
+        pass
 
     def show(self):
         self.__visible = True

@@ -1,5 +1,6 @@
 import pygame
 
+from .ResourceManager import resourceManager
 from .AnimatedEntity import AnimatedEntity
 from .Entity import Entity
 from .SteeringBehavior import SteeringBehavior
@@ -17,12 +18,13 @@ class MovingEntity(AnimatedEntity):
         self.__acceleration = Vector2D(0.0, 0.0)
         self.__heading = Vector2D(0.0, 1.0)
         self.__collRect = pygame.Rect(collissionRect)
-        #self.rect.centerx, self.rect.centery = position
         self.__oldPos = Vector2D(position[0], position[1])
+        self.__step = Vector2D()
         self.setPos(position[0], position[1])
         self.steering = SteeringBehavior(self)
         self.speed = 0
         self.hasChanged = True
+        self.font = resourceManager.getFont('minecraft', 16)
 
     @Entity.x.setter
     def x(self, x):
@@ -71,6 +73,7 @@ class MovingEntity(AnimatedEntity):
         self.__velocity = truncate(self.__velocity, self.__maxSpeed)
         self.x += self.__velocity.x * deltaTime
         self.y += self.__velocity.y * deltaTime
+        self.__step = self.__velocity * deltaTime
         if self.__velocity.isGtEpsilon():
             self.hasChanged = True
             self.__heading = normalize(self.__velocity)
@@ -78,11 +81,27 @@ class MovingEntity(AnimatedEntity):
 
     def render(self, screen, camera):
         super().render(screen, camera)
-        pygame.draw.line(screen, (255, 0, 0), camera.apply([self.x, self.y]), camera.apply([self.x + self.__steeringForce.x * 3000, self.y + self.__steeringForce.y * 3000]), 2)
-        pygame.draw.line(screen, (0, 255, 0), camera.apply([self.x, self.y + 10]), camera.apply([self.x + self.__acceleration.x * 3000, self.y + self.__acceleration.y * 3000 + 10]), 2)
-        pygame.draw.line(screen, (0, 0, 255), camera.apply([self.x, self.y + 20]), camera.apply([self.x + self.__velocity.x * 300, self.y + self.__velocity.y * 300 + 20]), 2)
         pygame.draw.circle(screen, (0, 0, 0), camera.apply([self.x, self.y]), 100, 2)
         pygame.draw.circle(screen, (0, 0, 0), camera.apply([self.x, self.y]), 16, 2)
+        label = self.font.render(f" F {self.__steeringForce.length():.4f}", True, (255, 255, 255))
+        screen.blit(label, camera.apply([self.x + 20, self.y]))
+        pygame.draw.line(screen, (255, 0, 0), camera.apply([self.x, self.y]),
+                         camera.apply([self.x + self.__steeringForce.x * 3000, self.y + self.__steeringForce.y * 3000]),
+                         2)
+
+        label = self.font.render(f" a {self.__acceleration.length():.4f}", True, (255, 255, 255))
+        screen.blit(label, camera.apply([self.x + 20, self.y + 18]))
+        pygame.draw.line(screen, (0, 255, 0), camera.apply([self.x, self.y + 10]), camera.apply(
+            [self.x + self.__acceleration.x * 3000, self.y + self.__acceleration.y * 3000 + 10]), 2)
+
+        label = self.font.render(f" v {self.__velocity.length():.4f}", True, (255, 255, 255))
+        screen.blit(label, camera.apply([self.x + 20, self.y + 36]))
+        pygame.draw.line(screen, (0, 0, 255), camera.apply([self.x, self.y + 20]),
+                         camera.apply([self.x + self.__velocity.x * 300, self.y + self.__velocity.y * 300 + 20]), 2)
+
+        label = self.font.render(f"dX {self.__step.length():.4f}", True, (255, 200, 200))
+        screen.blit(label, camera.apply([self.x + 20, self.y + 54]))
+
 
     def stop(self, x: bool, y: bool):
         # self.__velocity.setZero()

@@ -1,4 +1,4 @@
-from core import Character
+from .core import Character
 
 onlineTraductor = {
     "stu": "stand_up",

@@ -1,10 +1,12 @@
 import pygame
+from pygame.constants import BLEND_RGBA_MIN, BLEND_RGBA_MAX
 
 
 def blitMultiLineText(surface, text, rect, font, color=pygame.Color('black')):
     words = [word.split(' ') for word in text.splitlines()]  # 2D array where each row is a list of words.
     space = font.size(' ')[0]  # The width of a space.
     maxWidth, maxHeight = rect.w, rect.h
+    wordWidth, wordHeight = 0, 0
     x, y = 0, 0
     for line in words:
         for word in line:
@@ -28,16 +30,16 @@ def AAfilledRoundedRect(surface, rect, color, radius=0.4):
     color   : rgb or rgba
     radius  : 0 <= radius <= 1
     """
-    rect = Rect(rect)
-    color = Color(*color)
+    rect = pygame.Rect(rect)
+    color = pygame.Color(*color)
     alpha = color.a
     color.a = 0
     pos = rect.topleft
     rect.topleft = 0, 0
-    rectangle = Surface(rect.size, SRCALPHA)
-    circle = Surface([min(rect.size) * 3] * 2, SRCALPHA)
-    draw.ellipse(circle, (0, 0, 0), circle.get_rect(), 0)
-    circle = transform.smoothscale(circle, [int(min(rect.size) * radius)] * 2)
+    rectangle = pygame.Surface(rect.size, pygame.SRCALPHA)
+    circle = pygame.Surface([min(rect.size) * 3] * 2, pygame.SRCALPHA)
+    pygame.draw.ellipse(circle, (0, 0, 0), circle.get_rect(), 0)
+    circle = pygame.transform.smoothscale(circle, [int(min(rect.size) * radius)] * 2)
     radius = rectangle.blit(circle, (0, 0))
     radius.bottomright = rect.bottomright
     rectangle.blit(circle, radius)
@@ -56,3 +58,10 @@ def AAfilledRoundedRect(surface, rect, color, radius=0.4):
 def getText(text, font, col):
     surface = font.render(text, True, col)
     return surface, pygame.Rect(0, 0, surface.get_width(), surface.get_height())
+
+
+def getFirst(itemList: list, filter):
+    for x in itemList:
+        if filter(x):
+            return x
+    return None

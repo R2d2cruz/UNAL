@@ -1,15 +1,12 @@
-import pygame
-
-
 class BaseCamera:
-    def __init__(self, viewWidth, viewHeight, worldWidth, worldHeight):
+    def __init__(self):
         pass
 
     def follow(self, target):
         pass
 
-    def apply(self, rect: pygame.Rect) -> pygame.Rect:
-        return rect
+    def apply(self, pos):
+        return pos.x, pos.y
 
     def update(self, deltaTime: float):
         pass

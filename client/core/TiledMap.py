@@ -16,7 +16,7 @@ class Wall(Entity):
         self.image = resourceManager.loadImage("ts1", (96, 64, width, height))
 
 
-class Map:
+class TiledMap:
 
     def __init__(self, mapName):
         self.name = mapName

@@ -45,7 +45,7 @@ class Game:
     def render(self):
         self.currentScene.render(self.screen)
         pygame.display.update()
-        self.clock.tick(200)
+        self.clock.tick(50)
 
     def run(self):
         self.isRunning = True

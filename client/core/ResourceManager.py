@@ -9,7 +9,7 @@ class _ResourceManager:
         self.__enableSound = True
         self.__enableMusic = True
         self.__resPath = {}
-        self.__imgs = {}
+        self.__images = {}
         self.__sounds = {}
         self.__fonts = {}
         self.__animations = {}
@@ -23,7 +23,7 @@ class _ResourceManager:
         self.__enableSound = True
         self.__enableMusic = True
         self.__resPath = resPathVal
-        self.__imgs = imgsVal
+        self.__images = imgsVal
         self.__sounds = soundsVal
         self.__fonts = fontsVal
         self.__animations = animsVal
@@ -35,7 +35,7 @@ class _ResourceManager:
         return self.__resPath + filePath
 
     def getImageFile(self, name: str) -> str:
-        return self.fixPath(self.__imgs.get(name))
+        return self.fixPath(self.__images.get(name))
 
     def getSoundPath(self, name: str) -> str:
         return self.fixPath(self.__sounds.get(name))

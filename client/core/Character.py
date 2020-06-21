@@ -52,15 +52,21 @@ class Character(MovingEntity):
 
     def render(self, screen, camera: BaseCamera):
         super().render(screen, camera)
-        if self.name is not None:
-            if self.__nameSurface is not None:
-                screen.blit(self.__nameSurface, camera.apply(self.__nameRect))
-        if self.health != maxHealth:
-            pygame.draw.rect(screen, (255 * (1 - self.health / maxHealth), 255 * self.health / maxHealth, 0, 0.4),
-                             camera.apply(self.getHealthRect()))
-            pygame.draw.rect(screen, (0, 0, 0, 0.4), camera.apply(self.getHealthEmptyRect()), 1)
+        self.renderHealthBar(camera, screen)
+        if (self.name is not None) and (self.__nameSurface is not None):
+            screen.blit(self.__nameSurface, camera.apply(self.__nameRect))
         if self.steering.followPathTarget is not None:
             self.steering.followPathTarget.render(screen, camera)
+
+    def renderHealthBar(self, camera, screen):
+        if self.health != maxHealth:
+            barWidth = 40
+            healthValue = self.health / maxHealth
+            healthColor = (int(255 * (1 - healthValue)), int(255 * healthValue), 0)
+            x = self.x - barWidth / 2
+            y = self.rect.bottom + 4
+            pygame.draw.rect(screen, healthColor, camera.apply(pygame.Rect(x, y, barWidth * healthValue, 8)))
+            pygame.draw.rect(screen, (0, 0, 0), camera.apply(pygame.Rect(x, y, barWidth, 8)), 1)
 
     def toDict(self):
         return dict(
@@ -79,12 +85,6 @@ class Character(MovingEntity):
             self.__nameSurface = None
             self.__nameRect = None
             self.name = None
-
-    def getHealthRect(self):
-        return pygame.Rect(self.x + (self.width / 2) - 20, self.y + self.height + 4, 40 * self.health / maxHealth, 8)
-
-    def getHealthEmptyRect(self):
-        return pygame.Rect(self.x + (self.width / 2) - 20, self.y + self.height + 4, 40, 8)
 
     @property
     def health(self):

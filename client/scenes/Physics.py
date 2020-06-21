@@ -1,91 +1,55 @@
-import json
 import os
 from random import random
 
 import pygame
 
-from .entities import HealthPotion
 from ..OnlinePlayer import OnlinePlayer
-from ..Player import Player
-from ..core import (Character, Entity, Game, TiledMap, Path, Scene, SimpleCamera,
-                    SpacePartition, Vector2D, collisionManager, entityManager,
-                    resourceManager, Graph, AnimatedEntity)
+from ..core import (Character, Entity, Game, Path, Scene, SimpleCamera,
+                    SpacePartition, Vector2D, collisionManager, resourceManager)
+from ..ui import Button, Text
 from ..core.misc import getFirst
-from ..ui import Button, Text, GridContainer, Container
 
 
-class Playground(Scene):
+class Physics(Scene):
 
-    def __init__(self, game: Game, tiledMap: TiledMap):
+    def __init__(self, game: Game):
         super().__init__(game)
-        self.player = None
-        self.players = {}
-        self.characters = []
-        self.map = tiledMap
-        worlRect = tiledMap.getRect()
+        self.entity = []
+        worlRect = pygame.Rect(0, 0, 1000, 1000)
         self.cellSpace = SpacePartition(worlRect.w, worlRect.h, int(worlRect.w / 100), int(worlRect.h / 100))
 
-        entityManager.registerEntities(tiledMap.objects)
-        collisionManager.registerEntities(tiledMap.objects)  # las paredes no deberian ser objetos... o si?
-        self.cellSpace.registerEntities(tiledMap.objects)
-
-        self.paused = False
-        name = resourceManager.getRandomCharAnimName()
-
-        self.player = Player(name, name, (0, 0), (0, 24, 34, 32))
-        self.locateInValidRadomPos(worlRect, self.player)
-        self.cellSpace.registerEntity(self.player)
-        collisionManager.registerMovingEntity(self.player)
-        entityManager.registerEntity(self.player)
-
-        self.loadScripts(worlRect)
-        entityManager.registerEntities(self.characters)
-
-        potion = HealthPotion("freshPotion", (3, 2, 10, 12), Vector2D(160, 288), 20)
-        entityManager.registerEntity(potion)
-        collisionManager.registerEntity(potion)
-
-        for i in range(1, 10):
-            fire = AnimatedEntity()
-            fire.loadAnimation(resourceManager.getAnimFile("fire"))
-            fire.x = 50 * i
-            fire.y = 0
-            entityManager.registerEntity(fire)
-
-        self.camera = SimpleCamera(game.screen.get_width(
-        ), game.screen.get_height(), self.map.width, self.map.height)
-        self.camera.target = self.player
-        game.setPlayer(self.player)
+        self.camera = SimpleCamera(game.screen.get_width(), game.screen.get_height(), worlRect.w, worlRect.h)
+        self.camera.target = self.camera
+        game.setPlayer(self.camera)
         self.keysPressed = {}
-
-        self.graph = Graph()
-        self.graph.nodes = Graph.getGraph(tiledMap, True)
-        with open('saves/' + tiledMap.name + '.graph.json', 'w') as outfile:
-            json.dump(self.graph.nodes, outfile)
 
         self.font = resourceManager.getFont('minecraft', 24)
         self.label = self.font.render('Juego en pausa por problemas conexión. Espere un momento', True, (255, 64, 64))
-        self.container = Container(0, 0, self.game.screen.get_width(), self.game.screen.get_height())
 
-        grid = GridContainer(0, 0, 140, self.game.screen.get_height())
-        grid.setGrid(10, 1)
+        rect = pygame.Rect(0, 0, 140, 50)
+        self.buttonPath = Button(
+            rect.x, rect.y, rect.w, rect.h, self.font, 'Follow Path')
+        self.buttonPath.onClick = self.onGoPath
 
-        buttonPath = Button(0, 0, 0, 0, self.font, 'Follow Path')
-        buttonPath.onClick = self.onGoPath
-        grid.addControl(buttonPath, (0, 0))
+        rect = pygame.Rect(0, 55, 140, 50)
+        self.buttonWander = Button(
+            rect.x, rect.y, rect.w, rect.h, self.font, 'Wander')
+        self.buttonWander.onClick = self.onGoWander
 
-        buttonWander = Button(0, 0, 0, 0, self.font, 'Wander')
-        buttonWander.onClick = self.onGoWander
-        grid.addControl(buttonWander, (1, 0))
+        rect = pygame.Rect(0, 110, 140, 50)
+        self.buttonText = Button(
+            rect.x, rect.y, rect.w, rect.h, self.font, 'Text')
+        self.buttonText.onClick = self.onShowText
 
-        buttonText = Button(0, 0, 0, 0, self.font, 'Text')
-        buttonText.onClick = self.onShowText
-        grid.addControl(buttonText, (2, 0))
-
-        self.container.addControl(grid)
+        self.controls = [
+            self.buttonPath,
+            self.buttonWander,
+            self.buttonText,
+        ]
 
     def handleEvent(self, event):
-        self.container.handleEvent(event)
+        for box in self.controls:
+            box.handleEvent(event)
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
                 self.game.setScene("main")
@@ -105,7 +69,7 @@ class Playground(Scene):
             vectorMov.y += 1
         if self.keysPressed.get(pygame.K_UP):
             vectorMov.y -= 1
-        self.player.move(vectorMov)
+        self.camera.move(vectorMov)
 
     def handleMessage(self, message):
         if message.type == 'diconnected':
@@ -113,33 +77,18 @@ class Playground(Scene):
 
     def update(self, deltaTime: float):
         if not self.paused:
-            self.updateOtherPlayers(deltaTime)
-            for char in self.characters:
-                if char.script is not None:
-                    char.script.onUpdate(char)
-                char.update(deltaTime)
-                self.cellSpace.updateEntity(char)
-            for obj in self.map.objects:
-                obj.update(deltaTime)
+            for entity in self.entities:
+                entity.update(deltaTime)
 
             self.player.update(deltaTime)
-
             collisionManager.update(self.cellSpace)
-
-            if self.player.hasChanged:
-                self.player.hasChanged = False
-                self.cellSpace.updateEntity(self.player)
-                self.game.client.sendPlayerStatus(self.player)
-
             self.camera.update(deltaTime)
 
     def render(self, screen: pygame.Surface):
         screen.fill((0, 0, 0))
         self.map.render(screen, self.camera)
-        for k in self.characters:
-            k.render(screen, self.camera)
-        for k in self.players.values():
-            k.render(screen, self.camera)
+        for entity in self.entities:
+            entity.render(screen, self.camera)
 
         self.player.render(screen, self.camera)
         # self.camera.render(screen)
@@ -164,7 +113,9 @@ class Playground(Scene):
         # self.cellSpace.tagNeighborhood(self.player, queryRadius)
         # pygame.draw.rect(screen, (255, 255, 0), self.camera.apply(queryRect), 4)
         # self.cellSpace.render(screen, self.camera)
-        self.container.render(screen, self.camera)
+
+        for control in self.controls:
+            control.render(screen, self.camera)
 
     def updateOtherPlayers(self, deltaTime: float):
         # que deberia ocurrir si durante el juego se desconecta?
@@ -208,7 +159,7 @@ class Playground(Scene):
             self.player.steering.wanderEnabled = True
 
     def onShowText(self, sender):
-        if sender.tag is None:
+        if self.buttonText.tag is None:
             longtText = """Ricardo recibió un loro por su cumpleaños; ya era un loro adulto, con una muy mala actitud y vocabulario. Cada palabra que decía estaba adornada por alguna palabrota, así como siempre, de muy mal genio. Ricardo trató, desde el primer día, de corregir la actitud del loro, diciéndole palabras bondadosas y con mucha educación, le ponía música suave y siempre lo trataba con mucho cariño.
     Llego un día en que Ricardo perdió la paciencia y gritó al loro, el cual se puso más grosero aún, hasta que en un momento de desesperación, Ricardo puso al loro en el congelador.
     Por un par de minutos aún pudo escuchar los gritos del loro y el revuelo que causaba en el compartimento, hasta que de pronto, todo fue silencio.
@@ -220,12 +171,12 @@ class Playground(Scene):
     - Si.. como no!!, -contestó Ricardo
     - ¿Qué fue lo que hizo el pollo?"""
             bubble = Text(100, 100, 800, 400, self.font, longtText)
-            sender.tag = bubble.id
-            self.container.addControl(bubble)
+            self.buttonText.tag = bubble.id
+            self.controls.append(bubble)
         else:
-            bubble = self.container.getControl(sender.tag)
-            self.container.removeControl(bubble)
-            sender.tag = None
+            bubble = getFirst(self.controls, lambda x: x.id == self.buttonText.tag)
+            self.controls.remove(bubble)
+            self.buttonText.tag = None
 
     def loadScripts(self, worlRect):
         print('📜 Inicio carga scripts')
