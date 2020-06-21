@@ -1,9 +1,11 @@
 import pygame
-import core.ResourceManager as res
-from core.MovingEntity import MovingEntity
-from core.Telegram import Telegram
-import core.Hermes as Hermes
-from core.camera.BaseCamera import BaseCamera
+
+from .Hermes import hermes
+from .MovingEntity import MovingEntity
+from .ResourceManager import resourceManager
+from .Telegram import Telegram
+from .camera.BaseCamera import BaseCamera
+from .misc import getText
 
 compassClips = ['right', 'down', 'down', 'down', 'left', 'up', 'up', 'up']
 translate = {
@@ -29,7 +31,7 @@ class Character(MovingEntity):
         self.name = None
         self.setName(name)
         self.animName = animationName
-        self.loadAnimation(res.getAnimFile(self.animName))
+        self.loadAnimation(resourceManager.getAnimFile(self.animName))
         self.__health = 100
         self.attack = 30
         self.defense = 20
@@ -50,15 +52,21 @@ class Character(MovingEntity):
 
     def render(self, screen, camera: BaseCamera):
         super().render(screen, camera)
-        if self.name is not None:
-            if self.__nameSurface is not None:
-                screen.blit(self.__nameSurface, camera.apply(self.__nameRect))
-        if self.health != maxHealth:
-            pygame.draw.rect(screen, (255 * (1 - self.health / maxHealth), 255 * self.health / maxHealth, 0, 0.4),
-                             camera.apply(self.getHealthRect()))
-            pygame.draw.rect(screen, (0, 0, 0, 0.4), camera.apply(self.getHealthEmptyRect()), 1)
+        self.renderHealthBar(camera, screen)
+        if (self.name is not None) and (self.__nameSurface is not None):
+            screen.blit(self.__nameSurface, camera.apply(self.__nameRect))
         if self.steering.followPathTarget is not None:
             self.steering.followPathTarget.render(screen, camera)
+
+    def renderHealthBar(self, camera, screen):
+        if self.health != maxHealth:
+            barWidth = 40
+            healthValue = self.health / maxHealth
+            healthColor = (int(255 * (1 - healthValue)), int(255 * healthValue), 0)
+            x = self.x - barWidth / 2
+            y = self.rect.bottom + 4
+            pygame.draw.rect(screen, healthColor, camera.apply(pygame.Rect(x, y, barWidth * healthValue, 8)))
+            pygame.draw.rect(screen, (0, 0, 0), camera.apply(pygame.Rect(x, y, barWidth, 8)), 1)
 
     def toDict(self):
         return dict(
@@ -70,19 +78,13 @@ class Character(MovingEntity):
     def setName(self, name: str):
         if name is not None or name != '':
             self.name = name
-            font = res.getFont('minecraft', 14)
-            self.__nameSurface, self.__nameRect = res.getText(
+            font = resourceManager.getFont('minecraft', 14)
+            self.__nameSurface, self.__nameRect = getText(
                 self.name, font, self.__color)
         else:
             self.__nameSurface = None
             self.__nameRect = None
             self.name = None
-
-    def getHealthRect(self):
-        return pygame.Rect(self.x + (self.width / 2) - 20, self.y + self.height + 4, 40 * self.health / maxHealth, 8)
-
-    def getHealthEmptyRect(self):
-        return pygame.Rect(self.x + (self.width / 2) - 20, self.y + self.height + 4, 40, 8)
 
     @property
     def health(self):
@@ -108,7 +110,7 @@ class Character(MovingEntity):
     def onMessage(self, telegram: Telegram) -> bool:
         if telegram.message == "heal":
             if self.heal(telegram.extraInfo.get("medicine")):
-                Hermes.messageDispatch(0, self.id, telegram.sender, "youHealMe", {})
+                hermes.messageDispatch(0, self.id, telegram.sender, "youHealMe", {})
                 return True
-        Hermes.messageDispatch(0, self.id, telegram.sender, "IAlreadyHealed", {})
+        hermes.messageDispatch(0, self.id, telegram.sender, "IAlreadyHealed", {})
         return False

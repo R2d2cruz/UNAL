@@ -1,5 +1,6 @@
-import pygame 
-from core.Vector2D import Vector2D
+import pygame
+
+from .Vector2D import Vector2D
 
 
 class Path:
@@ -16,7 +17,7 @@ class Path:
             self.__currentPointIndex += 1
         else:
             self.__finished = True
-    
+
     def getCurrentWayPoint(self) -> Vector2D:
         point = self.points[self.__currentPointIndex]
         return Vector2D(point[0], point[1])

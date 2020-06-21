@@ -1,11 +1,11 @@
 import pygame
-from core.Vector2D import Vector2D
-from core.Telegram import Telegram
-from core.camera.BaseCamera import BaseCamera
+
+from .Telegram import Telegram
+from .Vector2D import Vector2D
+from .camera.BaseCamera import BaseCamera
 
 
 class Entity(pygame.sprite.Sprite):
-
     __nextID = 0
 
     def __init__(self, *groups):
@@ -16,7 +16,9 @@ class Entity(pygame.sprite.Sprite):
         self.name = None
         self.rect = pygame.Rect(0, 0, 0, 0)
         self.flag = ""
+        self.tag = None
         self.script = None
+        self.cellIndex = None
 
     @staticmethod
     def __getNextID():
@@ -62,10 +64,16 @@ class Entity(pygame.sprite.Sprite):
     def height(self, height: int):
         self.rect.height = height
 
-    def getCollisionRect(self):
+    def setPos(self, x: float, y: float):
+        self.x, self.y = x, y
+
+    def getPos(self):
+        return self.__pos
+
+    def getCollisionRect(self) -> pygame.Rect:
         return self.rect
 
-    def getOldCollisionRect(self):
+    def getOldCollisionRect(self) -> pygame.Rect:
         return self.rect
 
     def update(self, deltaTime: float):
@@ -73,9 +81,13 @@ class Entity(pygame.sprite.Sprite):
 
     def render(self, screen, camera: BaseCamera):
         screen.blit(self.image, camera.apply(self.rect))
-        #pygame.draw.rect(screen, (0, 0, 255), camera.apply(self.rect), 1)
-        pygame.draw.rect(screen, (255, 0, 0), camera.apply(
-            self.getCollisionRect()), 1)
+        # pygame.draw.rect(screen, (0, 0, 255), camera.apply(self.rect), 1)
+        if self.tag:
+            color = (255, 0, 0)
+            pygame.draw.rect(screen, color, camera.apply(self.getCollisionRect()), 4)
+        # else:
+        #     color = (0, 0, 0)
+        #     pygame.draw.rect(screen, color, camera.apply(self.getCollisionRect()), 1)
 
     def dispose(self):
         pass

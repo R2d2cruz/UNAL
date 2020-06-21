@@ -1,7 +1,4 @@
-import core.ResourceManager as res
-from core.Character import Character
-from core.Vector2D import Vector2D
-
+from .core import Character
 
 onlineTraductor = {
     "stu": "stand_up",
@@ -14,6 +11,7 @@ onlineTraductor = {
     "wlr": "right"
 }
 
+
 class OnlinePlayer(Character):
     def __init__(self, data, *groups):
         super().__init__(
@@ -23,13 +21,8 @@ class OnlinePlayer(Character):
             (0, 24, 34, 32),
             *groups
         )
-        # self.x = data.get("x")
-        # self.y = data.get("y")
-        # self.width = 34
-        # self.height = 32
-        # self.rect.topleft = (self.x, self.y)
+        self.currentClip = onlineTraductor.get(data.get("a"))
 
-    def setPos(self, data):
-        self.x = data.get("x")
-        self.y = data.get("y")
+    def setData(self, data):
+        self.setPos(data.get("x"), data.get("y"))
         self.currentClip = onlineTraductor.get(data.get("a"))

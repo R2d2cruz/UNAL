@@ -1,10 +1,7 @@
 import pygame
-from core.Entity import Entity
-from core.Vector2D import Vector2D
-from core.Character import Character
-import core.ResourceManager as res
-import core.Hermes as Hermes
-from core.Telegram import Telegram
+
+from ...core import (Character, Entity, Telegram, Vector2D, hermes,
+                     resourceManager)
 
 MAXYINTERVAL = 6
 
@@ -13,7 +10,8 @@ class Item(Entity):
     def __init__(self, name: str, rect: pygame.Rect, positionCenter: Vector2D):
         super().__init__()
         self.name = name
-        self.image = res.loadImage(self.name, rect)
+        print(name)
+        self.image = resourceManager.loadImage(self.name, rect)
         self.rect = rect
         self.x = positionCenter.x - self.rect.w
         self.y = positionCenter.y - self.rect.h
@@ -51,7 +49,7 @@ class HealthPotion(Item):
 
     def recoveryHealth(self, player: Character):
         if self.isOn:
-            Hermes.messageDispatch(0, self.id, player.id, "heal", {"medicine": self.healPower})
+            hermes.messageDispatch(0, self.id, player.id, "heal", {"medicine": self.healPower})
         return True
 
     def onMessage(self, telegram: Telegram):

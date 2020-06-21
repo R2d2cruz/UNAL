@@ -1,39 +1,44 @@
 import pygame
-from core.camera.BaseCamera import BaseCamera
+
+from .BaseCamera import BaseCamera
+from ..Vector2D import Vector2D
+
 
 class SimpleCamera(BaseCamera):
     def __init__(self, viewWidth, viewHeight, worldWidth, worldHeight):
-        self.worldWidth = worldWidth
-        self.worldHeight = worldHeight
+        super().__init__()
+        self.__worldRect = pygame.Rect(0, 0, worldWidth, worldHeight)
         self.target = None
         self.boundLeft = 0
-        self.boundRight = -self.worldWidth
+        self.boundRight = -self.__worldRect.width
         self.boundTop = 0
-        self.boundBottom = -self.worldHeight
-        self.fixToView = True
+        self.boundBottom = -self.__worldRect.height
+        self.fixToView = False
         self.view = pygame.Rect(0, 0, viewWidth, viewHeight)
         self.__calculateBounds()
 
     def __calculateBounds(self):
         if self.fixToView:
             self.boundLeft = -int(self.view.width / 2)
-            self.boundRight = -self.worldWidth + int(self.view.width / 2)
+            self.boundRight = -self.__worldRect.width + int(self.view.width / 2)
             self.boundTop = -int(self.view.height / 2)
-            self.boundBottom = -self.worldHeight + int(self.view.height / 2)
+            self.boundBottom = -self.__worldRect.height + int(self.view.height / 2)
         else:
             self.boundLeft = 0
-            self.boundRight = -self.worldWidth
             self.boundTop = 0
-            self.boundBottom = -self.worldHeight
+            self.boundRight = -self.__worldRect.width
+            self.boundBottom = -self.__worldRect.height
 
     def follow(self, target):
         self.target = target
 
-    def apply(self, rect):
-        if type(rect) == pygame.Rect:
-            return rect.move(self.view.topleft)
-        elif type(rect) == tuple or type(rect) == list:
-            return int(rect[0] + self.view.x), int(rect[1] + self.view.y)
+    def apply(self, pos):
+        if type(pos) == pygame.Rect:
+            return pos.move(self.view.topleft)
+        elif type(pos) == Vector2D:
+            return int(pos.x + self.view.x), int(pos.y + self.view.y)
+        elif type(pos) == tuple or type(pos) == list:
+            return int(pos[0] + self.view.x), int(pos[1] + self.view.y)
 
     def update(self, deltaTime: float):
         if self.target is not None:
@@ -57,9 +62,4 @@ class SimpleCamera(BaseCamera):
             self.view.width,
             self.view.height)
         pygame.draw.rect(screen, (255, 0, 0), self.apply(rect), 1)
-        rect = pygame.Rect(
-            0,
-            0,
-            self.worldWidth,
-            self.worldHeight)
-        pygame.draw.rect(screen, (0, 255, 0), self.apply(rect), 1)
+        pygame.draw.rect(screen, (0, 255, 0), self.apply(self.__worldRect), 1)

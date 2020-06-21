@@ -1,7 +1,8 @@
-import pygame
 from collections import deque
 from random import choice
-from core.Map import Map
+
+from .TiledMap import TiledMap
+
 
 class Graph:
     def __init__(self):
@@ -38,7 +39,7 @@ class Graph:
     #     pygame.draw.line(screen, color, camera.apply(cords), camera.apply(cordsM), 2)
 
     @staticmethod
-    def getGraph(map: Map, useAllDirections: bool = False):
+    def getGraph(map: TiledMap, useAllDirections: bool = False):
         graph = {}
         getNeighbors = Graph.getNeighbors8 if useAllDirections else Graph.getNeighbors4
         for row in range(0, map.rows):
@@ -54,7 +55,7 @@ class Graph:
         return graph
 
     @staticmethod
-    def getNeighbors8(map: Map, col: int, row: int) -> list:
+    def getNeighbors8(map: TiledMap, col: int, row: int) -> list:
         nodes = []
         for y in range(row - 1, row + 2):
             if 0 <= y < map.rows:
@@ -65,9 +66,9 @@ class Graph:
         return nodes
 
     @staticmethod
-    def getNeighbors4(map: Map, col: int, row: int) -> list:
+    def getNeighbors4(map: TiledMap, col: int, row: int) -> list:
         nodes = []
-        for cell in [[-1,  0], [ 1,  0], [ 0, -1], [ 0, 1]]:
+        for cell in [[-1, 0], [1, 0], [0, -1], [0, 1]]:
             x = cell[0] + col
             y = cell[1] + row
             if 0 <= y < map.rows and 0 <= x < map.cols:
@@ -91,9 +92,8 @@ class Graph:
         return dist.get(end)
 
     def findShortestPath2(self, start: str, end: str) -> list:
-        print('start', start, 'end', end)
         path = self.findShortestPath(start, end)
-        path2=[]
+        path2 = []
         prevNode = None
         node = None
         for nextNode in path:
@@ -102,10 +102,9 @@ class Graph:
             prevNode = node
             node = nextNode
         path2.append(end)
-        print('start', path2[0], 'end', path2[len(path2)- 1])
         return path2
 
-    def randomPath(self, start: str=None, end: str=None) -> list:
+    def randomPath(self, start: str = None, end: str = None) -> list:
         self.nodeStart = choice(list(self.nodes.keys())) if start is None else start
         self.nodeEnd = choice(list(self.nodes.keys())) if end is None else end
         return self.findShortestPath2(self.nodeStart, self.nodeEnd)
@@ -118,17 +117,7 @@ class Graph:
         coordsB = nodeB.split(',')
         coordsC = nodeC.split(',')
         return (
-                coordsA[0] == coordsB[0] == coordsC[0]
-            ) or (
-                coordsA[1] == coordsB[1] == coordsC[1]
-            # ) or (
-            #     int(coordsA[0]) - int(coordsB[0]) == int(coordsB[0]) - int(coordsC[0])
-            )
-
-
-# return (
-#         int(coordsA[0]) - int(coordsB[0]) == int(coordsB[0]) - int(coordsC[0])
-#     ) or (
-#         int(coordsA[1]) - int(coordsB[1]) == int(coordsB[1]) - int(coordsC[1])
-#     )
-
+                       coordsA[0] == coordsB[0] == coordsC[0]
+               ) or (
+                       coordsA[1] == coordsB[1] == coordsC[1]
+               )
