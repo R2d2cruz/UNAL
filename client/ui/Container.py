@@ -13,9 +13,9 @@ class Container(Control):
     def removeControl(self, control: Control):
         self.__controls.remove(control)
 
-    def render(self, screen, camera):
+    def render(self, surface, camera):
         for control in self.__controls:
-            control.render(screen, camera)
+            control.render(surface, camera)
 
     def handleEvent(self, event):
         for control in self.__controls:
@@ -59,11 +59,11 @@ class GridContainer(Control):
             control.x = control.width * pos[1]
             control.y = control.height * pos[0]
 
-    def render(self, screen, camera):
+    def render(self, surface, camera):
         for row in self.__cells:
             for cell in row:
                 if cell is not None:
-                    cell.render(screen, camera)
+                    cell.render(surface, camera)
 
     def handleEvent(self, event):
         for row in self.__cells:

@@ -89,9 +89,9 @@ class Control:
     def update(self, deltaTime: float):
         pass
 
-    def render(self, screen, camera: BaseCamera):
+    def render(self, surface, camera: BaseCamera):
         if self.__visible:
-            self.onRender(screen, camera)
+            self.onRender(surface, camera)
 
     def handleEvent(self, event):
         if (not self.__visible) or (not self.__enabled):
@@ -120,7 +120,7 @@ class Control:
             if self.__active:
                 self.onKeyDown(event)
 
-    def onRender(self, screen, camera):
+    def onRender(self, surface, camera):
         pass
 
     def onMouseUp(self, event):

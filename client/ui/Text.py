@@ -34,5 +34,5 @@ class Text(Control):
             self.rect.h - (self.__padding * 2))
         blitMultiLineText(self.__surface, text, self.__textRect, self.__font)
 
-    def onRender(self, screen, camera: BaseCamera):
-        screen.blit(self.__surface, self.rect)
+    def onRender(self, surface, camera: BaseCamera):
+        surface.blit(self.__surface, self.rect)

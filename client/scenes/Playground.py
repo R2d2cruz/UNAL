@@ -1,16 +1,13 @@
-import json
 import os
-from random import random
 
 import pygame
 
 from .entities import HealthPotion
 from ..OnlinePlayer import OnlinePlayer
 from ..Player import Player
-from ..core import (Character, Entity, Game, TiledMap, Path, Scene, SimpleCamera,
-                    SpacePartition, Vector2D, collisionManager, entityManager,
-                    resourceManager, Graph, AnimatedEntity)
-from ..core.misc import getFirst
+from ..core import (Character, Game, TiledMap, Scene, SimpleCamera,
+                    Vector2D, resourceManager, AnimatedEntity)
+from ..core.World import World
 from ..ui import Button, Text, GridContainer, Container
 
 
@@ -18,74 +15,53 @@ class Playground(Scene):
 
     def __init__(self, game: Game, tiledMap: TiledMap):
         super().__init__(game)
-        self.player = None
+        self.keysPressed = {}
         self.players = {}
-        self.characters = []
-        self.map = tiledMap
-        worlRect = tiledMap.getRect()
-        self.cellSpace = SpacePartition(worlRect.w, worlRect.h, int(worlRect.w / 100), int(worlRect.h / 100))
+        self.world = World(tiledMap, pygame.Rect(140, 20, 800, 600))
 
-        entityManager.registerEntities(tiledMap.objects)
-        collisionManager.registerEntities(tiledMap.objects)  # las paredes no deberian ser objetos... o si?
-        self.cellSpace.registerEntities(tiledMap.objects)
-
-        self.paused = False
         name = resourceManager.getRandomCharAnimName()
-
         self.player = Player(name, name, (0, 0), (0, 24, 34, 32))
-        self.locateInValidRadomPos(worlRect, self.player)
-        self.cellSpace.registerEntity(self.player)
-        collisionManager.registerMovingEntity(self.player)
-        entityManager.registerEntity(self.player)
+        self.world.addEntity(self.player)
+        self.world.locateInValidRandomPos(self.player)
+        game.setPlayer(self.player)
 
-        self.loadScripts(worlRect)
-        entityManager.registerEntities(self.characters)
-
-        potion = HealthPotion("freshPotion", (3, 2, 10, 12), Vector2D(160, 288), 20)
-        entityManager.registerEntity(potion)
-        collisionManager.registerEntity(potion)
+        self.camera = SimpleCamera(
+            self.world.view.width, self.world.view.height,
+            self.world.rect.width, self.world.rect.height)
+        self.camera.follow(self.player)
+        self.paused = False
+        self.loadScripts(self.world.rect)
+        self.world.addEntity(HealthPotion("freshPotion", (3, 2, 10, 12), Vector2D(160, 288), 20))
 
         for i in range(1, 10):
             fire = AnimatedEntity()
             fire.loadAnimation(resourceManager.getAnimFile("fire"))
             fire.x = 50 * i
             fire.y = 0
-            entityManager.registerEntity(fire)
-
-        self.camera = SimpleCamera(game.screen.get_width(
-        ), game.screen.get_height(), self.map.width, self.map.height)
-        self.camera.target = self.player
-        game.setPlayer(self.player)
-        self.keysPressed = {}
-
-        self.graph = Graph()
-        self.graph.nodes = Graph.getGraph(tiledMap, True)
-        with open('saves/' + tiledMap.name + '.graph.json', 'w') as outfile:
-            json.dump(self.graph.nodes, outfile)
+            self.world.addEntity(fire, False)
 
         self.font = resourceManager.getFont('minecraft', 24)
-        self.label = self.font.render('Juego en pausa por problemas conexión. Espere un momento', True, (255, 64, 64))
-        self.container = Container(0, 0, self.game.screen.get_width(), self.game.screen.get_height())
+        # self.label = self.font.render('Juego en pausa por problemas conexión. Espere un momento', True, (255, 64, 64))
+        self.ui = self.createUI()
 
-        grid = GridContainer(0, 0, 140, self.game.screen.get_height())
+    def createUI(self):
+        grid = GridContainer(0, 0, 140, self.game.surface.get_height())
         grid.setGrid(10, 1)
-
         buttonPath = Button(0, 0, 0, 0, self.font, 'Follow Path')
         buttonPath.onClick = self.onGoPath
         grid.addControl(buttonPath, (0, 0))
-
         buttonWander = Button(0, 0, 0, 0, self.font, 'Wander')
         buttonWander.onClick = self.onGoWander
         grid.addControl(buttonWander, (1, 0))
-
         buttonText = Button(0, 0, 0, 0, self.font, 'Text')
         buttonText.onClick = self.onShowText
         grid.addControl(buttonText, (2, 0))
-
-        self.container.addControl(grid)
+        ui = Container(0, 0, self.game.surface.get_width(), self.game.surface.get_height())
+        ui.addControl(grid)
+        return ui
 
     def handleEvent(self, event):
-        self.container.handleEvent(event)
+        self.ui.handleEvent(event)
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
                 self.game.setScene("main")
@@ -114,44 +90,27 @@ class Playground(Scene):
     def update(self, deltaTime: float):
         if not self.paused:
             self.updateOtherPlayers(deltaTime)
-            for char in self.characters:
-                if char.script is not None:
-                    char.script.onUpdate(char)
-                char.update(deltaTime)
-                self.cellSpace.updateEntity(char)
-            for obj in self.map.objects:
-                obj.update(deltaTime)
-
-            self.player.update(deltaTime)
-
-            collisionManager.update(self.cellSpace)
+            self.world.update(deltaTime)
 
             if self.player.hasChanged:
                 self.player.hasChanged = False
-                self.cellSpace.updateEntity(self.player)
                 self.game.client.sendPlayerStatus(self.player)
 
             self.camera.update(deltaTime)
 
-    def render(self, screen: pygame.Surface):
-        screen.fill((0, 0, 0))
-        self.map.render(screen, self.camera)
-        for k in self.characters:
-            k.render(screen, self.camera)
-        for k in self.players.values():
-            k.render(screen, self.camera)
-
-        self.player.render(screen, self.camera)
-        # self.camera.render(screen)
+    def render(self, surface: pygame.Surface):
+        surface.fill((0, 0, 0))
+        self.world.render(surface, self.camera)
+        # self.camera.render(surface)
 
         # mostrar un mensaje para idicar que el juego esta pausado y la razon
         # if self.paused:
-        #    screen.blit(self.label, (160, 80))
+        #    surface.blit(self.label, (160, 80))
 
         # pintar el nodo mas cercano del player
         # node = self.map.pointToCell(self.player.x, self.player.y)
         # point = self.map.cellToPoint(node)
-        # pygame.draw.circle(screen, (0, 255, 0), self.camera.apply(point), 5, 3)
+        # pygame.draw.circle(surface, (0, 255, 0), self.camera.apply(point), 5, 3)
 
         # pintar los vecinos mas cercanos y la grida
         # queryRadius = 75
@@ -162,9 +121,10 @@ class Playground(Scene):
         #     queryRadius * 2
         # )
         # self.cellSpace.tagNeighborhood(self.player, queryRadius)
-        # pygame.draw.rect(screen, (255, 255, 0), self.camera.apply(queryRect), 4)
-        # self.cellSpace.render(screen, self.camera)
-        self.container.render(screen, self.camera)
+        # pygame.draw.rect(surface, (255, 255, 0), self.camera.apply(queryRect), 4)
+        # self.cellSpace.render(surface, self.camera)
+
+        self.ui.render(surface, self.camera)
 
     def updateOtherPlayers(self, deltaTime: float):
         # que deberia ocurrir si durante el juego se desconecta?
@@ -176,17 +136,13 @@ class Playground(Scene):
                     self.players[playerKey].setData(playersData.get(playerKey))
                 else:
                     self.players[playerKey] = OnlinePlayer(playersData.get(playerKey))
-                    self.cellSpace.registerEntity(self.players[playerKey])
+                    self.world.addEntity(self.players[playerKey])
 
             # remover los que no se actualizaron
             toDelete = set(self.players.keys()).difference(playersData.keys())
             for playerKey in toDelete:
-                self.cellSpace.unregisterEntity(self.players[playerKey])
+                self.world.removeEntity(self.players[playerKey])
                 del self.players[playerKey]
-
-        for playerKey in self.players.keys():
-            self.players[playerKey].update(deltaTime)
-            self.cellSpace.updateEntity(self.players[playerKey])
 
     def onGoPath(self, sender):
         if self.player.steering.followPathEnabled:
@@ -197,7 +153,7 @@ class Playground(Scene):
         else:
             self.player.steering.weightWander = 0.1
             sender.backColor = (255, 64, 64)
-            self.followRandomPath(self.player)
+            self.world.followRandomPath(self.player)
 
     def onGoWander(self, sender):
         if self.player.steering.wanderEnabled:
@@ -221,10 +177,10 @@ class Playground(Scene):
     - ¿Qué fue lo que hizo el pollo?"""
             bubble = Text(100, 100, 800, 400, self.font, longtText)
             sender.tag = bubble.id
-            self.container.addControl(bubble)
+            self.ui.addControl(bubble)
         else:
-            bubble = self.container.getControl(sender.tag)
-            self.container.removeControl(bubble)
+            bubble = self.ui.getControl(sender.tag)
+            self.ui.removeControl(bubble)
             sender.tag = None
 
     def loadScripts(self, worlRect):
@@ -244,31 +200,8 @@ class Playground(Scene):
                     character.script = foo.ScriptCharacter()
                     character.script.name = moduleName
                     character.script.onInit(character)
-                    self.characters.append(character)
-                    collisionManager.registerMovingEntity(character)
-                    self.cellSpace.registerEntity(character)
+                    self.world.addEntity(character)
                     print('...👍')
                 except Exception as e:
                     print('❌ No se pudo cargar script', e)
         print('📜 Fin carga scripts')
-
-    def getValidRadomPos(self, worlRect: pygame.Rect, rect: pygame.Rect):
-        while True:
-            rect.x = int(random() * worlRect.w)
-            rect.y = int(random() * worlRect.h)
-            if not collisionManager.checkCollistion(rect, self.cellSpace):
-                return rect
-
-    def locateInValidRadomPos(self, worlRect: pygame.Rect, entity: Entity):
-        pos = self.getValidRadomPos(worlRect, entity.getCollisionRect())
-        entity.setPos(pos.x, pos.y)
-
-    def followRandomPath(self, entity):
-        node = self.map.pointToCell(entity.x, entity.y)
-        graphPath = self.graph.randomPath(node)
-        realPath = Path()
-        if len(graphPath) > 0:
-            for node in graphPath:
-                realPath.points.append(self.map.cellToPoint(node))
-            entity.steering.followPathEnabled = True
-            entity.steering.followPathTarget = realPath

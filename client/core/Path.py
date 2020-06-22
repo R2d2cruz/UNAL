@@ -22,25 +22,25 @@ class Path:
         point = self.points[self.__currentPointIndex]
         return Vector2D(point[0], point[1])
 
-    def render(self, screen, camera):
+    def render(self, surface, camera):
         color = (0, 0, 255)
         prevPoint = None
         for point in self.points:
-            pygame.draw.circle(screen, color, camera.apply(point), 5, 3)
+            pygame.draw.circle(surface, color, camera.apply(point), 5, 3)
             if prevPoint is not None:
-                pygame.draw.line(screen, color, camera.apply(point), camera.apply(prevPoint), 2)
+                pygame.draw.line(surface, color, camera.apply(point), camera.apply(prevPoint), 2)
             prevPoint = point
         point = self.points[self.__currentPointIndex]
         if point is not None:
-            pygame.draw.circle(screen, (255, 0, 0), camera.apply(point), 5, 3)
+            pygame.draw.circle(surface, (255, 0, 0), camera.apply(point), 5, 3)
 
-    # def renderNode(self, screen, camera, cords, color):
+    # def renderNode(self, surface, camera, cords, color):
     #     cords[0] = int(cords[0]) * self.tileWidth + self.tileWidth / 2 
     #     cords[1] = int(cords[1]) * self.tileHeight + self.tileHeight / 2 
-    #     pygame.draw.circle(screen, color, camera.apply(cords), 5, 3)
+    #     pygame.draw.circle(surface, color, camera.apply(cords), 5, 3)
 
-    # def renderArc(self, screen, camera, cords, arc, color):
+    # def renderArc(self, surface, camera, cords, arc, color):
     #     cordsM = arc.split(',')
     #     cordsM[0] = int(cordsM[0]) * self.tileWidth + self.tileWidth / 2 
     #     cordsM[1] = int(cordsM[1]) * self.tileHeight + self.tileHeight / 2 
-    #     pygame.draw.line(screen, color, camera.apply(cords), camera.apply(cordsM), 2)
+    #     pygame.draw.line(surface, color, camera.apply(cords), camera.apply(cordsM), 2)

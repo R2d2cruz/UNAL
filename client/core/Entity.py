@@ -79,15 +79,15 @@ class Entity(pygame.sprite.Sprite):
     def update(self, deltaTime: float):
         pass
 
-    def render(self, screen, camera: BaseCamera):
-        screen.blit(self.image, camera.apply(self.rect))
-        # pygame.draw.rect(screen, (0, 0, 255), camera.apply(self.rect), 1)
+    def render(self, surface, camera: BaseCamera):
+        surface.blit(self.image, camera.apply(self.rect))
+        # pygame.draw.rect(surface, (0, 0, 255), camera.apply(self.rect), 1)
         if self.tag:
             color = (255, 0, 0)
-            pygame.draw.rect(screen, color, camera.apply(self.getCollisionRect()), 4)
+            pygame.draw.rect(surface, color, camera.apply(self.getCollisionRect()), 4)
         # else:
         #     color = (0, 0, 0)
-        #     pygame.draw.rect(screen, color, camera.apply(self.getCollisionRect()), 1)
+        #     pygame.draw.rect(surface, color, camera.apply(self.getCollisionRect()), 1)
 
     def dispose(self):
         pass

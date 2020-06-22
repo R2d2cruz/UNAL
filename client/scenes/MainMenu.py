@@ -77,7 +77,7 @@ class MainMenu(Scene):
             self.soundButton
         ]
 
-        # self.container = GridContainer(0, 0, self.game.screen.get_width(), self.game.screen.get_height())
+        # self.container = GridContainer(0, 0, self.game.surface.get_width(), self.game.surface.get_height())
 
     def handleEvent(self, event):
         if event.type == pygame.KEYDOWN:
@@ -95,10 +95,10 @@ class MainMenu(Scene):
         for box in self.controls:
             box.update(deltaTime)
 
-    def render(self, screen: pygame.Surface):
-        screen.fill((30, 30, 30))
+    def render(self, surface: pygame.Surface):
+        surface.fill((30, 30, 30))
         for control in self.controls:
-            control.render(screen, self.camera)
+            control.render(surface, self.camera)
         # TODO: si el cliente está conectado mostrar a que servidor esta conectado, sino entonces indicar que no esta conectado
 
     def onEnterScene(self):

@@ -6,7 +6,8 @@ from ..core.misc import getText
 
 
 class Button(Control):
-    def __init__(self, x: int, y: int, width: int, height: int, font: pygame.font.Font, text: str = '', foreColor=Control.WHITE):
+    def __init__(self, x: int, y: int, width: int, height: int, font: pygame.font.Font, text: str = '',
+                 foreColor=Control.WHITE):
         super().__init__(x, y, width, height)
         self.__surface = None
         self.__textRect = None
@@ -30,13 +31,13 @@ class Button(Control):
         self.__surface, self.__textRect = getText(self.__text, self.__font, self.__color)
         self._Control__refresh()
 
-    def onRender(self, screen, camera: BaseCamera):
-        screen.fill(self.backColor, self.rect)
+    def onRender(self, surface, camera: BaseCamera):
+        surface.fill(self.backColor, self.rect)
         if self.__isPressed:
-            screen.blit(self.__surface, self.__textRect.move(1, 2))
+            surface.blit(self.__surface, self.__textRect.move(1, 2))
         else:
-            screen.blit(self.__surface, self.__textRect)
-        pygame.draw.rect(screen, self.COLOR_INACTIVE, self.rect, 3)
+            surface.blit(self.__surface, self.__textRect)
+        pygame.draw.rect(surface, self.COLOR_INACTIVE, self.rect, 3)
 
     def onMouseUp(self, event):
         self.__isPressed = False

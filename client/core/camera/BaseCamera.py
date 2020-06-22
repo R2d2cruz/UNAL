@@ -11,5 +11,5 @@ class BaseCamera:
     def update(self, deltaTime: float):
         pass
 
-    def render(self, screen):
+    def render(self, surface):
         pass
