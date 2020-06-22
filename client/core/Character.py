@@ -50,23 +50,23 @@ class Character(MovingEntity):
         super().stop(x, y)
         self.updateNameRect()
 
-    def render(self, screen, camera: BaseCamera):
-        super().render(screen, camera)
-        self.renderHealthBar(camera, screen)
+    def render(self, surface, camera: BaseCamera):
+        super().render(surface, camera)
+        self.renderHealthBar(surface, camera)
         if (self.name is not None) and (self.__nameSurface is not None):
-            screen.blit(self.__nameSurface, camera.apply(self.__nameRect))
+            surface.blit(self.__nameSurface, camera.apply(self.__nameRect))
         if self.steering.followPathTarget is not None:
-            self.steering.followPathTarget.render(screen, camera)
+            self.steering.followPathTarget.render(surface, camera)
 
-    def renderHealthBar(self, camera, screen):
+    def renderHealthBar(self, surface, camera):
         if self.health != maxHealth:
             barWidth = 40
             healthValue = self.health / maxHealth
             healthColor = (int(255 * (1 - healthValue)), int(255 * healthValue), 0)
             x = self.x - barWidth / 2
             y = self.rect.bottom + 4
-            pygame.draw.rect(screen, healthColor, camera.apply(pygame.Rect(x, y, barWidth * healthValue, 8)))
-            pygame.draw.rect(screen, (0, 0, 0), camera.apply(pygame.Rect(x, y, barWidth, 8)), 1)
+            pygame.draw.rect(surface, healthColor, camera.apply(pygame.Rect(x, y, barWidth * healthValue, 8)))
+            pygame.draw.rect(surface, (0, 0, 0), camera.apply(pygame.Rect(x, y, barWidth, 8)), 1)
 
     def toDict(self):
         return dict(

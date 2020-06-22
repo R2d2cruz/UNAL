@@ -1,6 +1,7 @@
-import zmq
 import json
 import sys
+
+import zmq
 # noinspection PyUnresolvedReferences
 from Player import Player
 
@@ -48,7 +49,7 @@ class Server:
                 senderId = message.get('id')
                 if senderId is not None: senderId = int(senderId)
                 data = message.get('data')
-                #print('📨 mensaje: ', message, data)
+                # print('📨 mensaje: ', message, data)
                 self.commands.get(message.get('command'))(senderId, data)
             except KeyboardInterrupt:
                 self.isRunning = False
@@ -62,7 +63,7 @@ class Server:
             self.players[self.counter] = Player(playerData.get("name"), playerData.get("anim"))
             self.players[self.counter].id = self.counter
             print('🎮 Se ha conectado el jugador ' +
-                self.players[self.counter].name)
+                  self.players[self.counter].name)
             self.send(self.players[self.counter].id)
             self.counter += 1
             self.printPlayers()

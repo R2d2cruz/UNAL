@@ -44,10 +44,10 @@ class InputBox(Control):
         #  TODO: self.caret.update()
         pass
 
-    def onRender(self, screen, camera: BaseCamera):
-        screen.blit(self.__surface, self.__textRect)
-        #  TODO: self.caret.render(screen)
-        pygame.draw.rect(screen, self.__color, self.rect, 2)
+    def onRender(self, surface, camera: BaseCamera):
+        surface.blit(self.__surface, self.__textRect)
+        #  TODO: self.caret.render(surface)
+        pygame.draw.rect(surface, self.__color, self.rect, 2)
 
     def onMouseEnter(self, event):
         self.__color = self.COLOR_ACTIVE

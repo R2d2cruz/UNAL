@@ -1,7 +1,10 @@
-from .SpacePartition import SpacePartition
-from .Vector2D import Vector2D
+import pygame
+
+from .EntityManager import entityManager
 from .Entity import Entity
 from .MovingEntity import MovingEntity
+from .SpacePartition import SpacePartition
+from .Vector2D import Vector2D
 
 
 def sideColl(bodyA: MovingEntity, bodyB: MovingEntity):
@@ -25,46 +28,43 @@ def sideColl(bodyA: MovingEntity, bodyB: MovingEntity):
 
 
 class _CollisionManager:
-    def __init__(self):
-        self.movingEntities = set()
-        self.entities = set()
-        self.walls = set()
+    @staticmethod
+    def inBoundaries(rect, entity: Entity):
+        coll = entity.getCollisionRect()
+        if coll.left < rect.left or coll.right > rect.right:
+            return False
+        if coll.top < rect.top or coll.bottom > rect.bottom:
+            return False
+        return True
 
-    def registerEntities(self, entities: list):
-        for entity in entities:
-            self.registerEntity(entity)
-
-    def registerEntity(self, entity: Entity):
-        self.entities.add(entity)
-
-    def registerMovingEntities(self, entities: list):
-        for entity in entities:
-            self.registerMovingEntity(entity)
-
-    def registerMovingEntity(self, entity: MovingEntity):
-        self.movingEntities.add(entity)
-
-    def update(self, cellSpace: SpacePartition):
-        for entityA in self.movingEntities:
+    @staticmethod
+    def update(cellSpace: SpacePartition, worldRect):
+        for entityA in entityManager.movingEntities:
             entityA.tag = False
-            neighbors = cellSpace.calculateNeighbors(entityA.getPos(), 75)
-            for entityB in neighbors:
-                if entityA != entityB:
-                    if entityA.getCollisionRect().colliderect(entityB.getCollisionRect()):
-                        entityA.tag = True
-                        entityB.tag = True
-                        if entityB.flag == "item":
-                            entityB.effect(entityA)
-                        elif entityA.flag == "item":
-                            entityA.effect(entityB)
+            if not _CollisionManager.inBoundaries(worldRect, entityA):
+                # side = sideColl(entityA, worldRect)
+                side = [True, True]
+                entityA.stop(side[0], side[1])
+            else:
+                neighbors = cellSpace.calculateNeighbors(entityA.getPos(), 75)
+                for entityB in neighbors:
+                    if entityA != entityB:
+                        if entityA.getCollisionRect().colliderect(entityB.getCollisionRect()):
+                            entityA.tag = True
+                            entityB.tag = True
+                            if entityB.flag == "item":
+                                entityB.effect(entityA)
+                            elif entityA.flag == "item":
+                                entityA.effect(entityB)
+                            else:
+                                side = sideColl(entityA, entityB)
+                                # side = [True, True]
+                                entityA.stop(side[0], side[1])
                         else:
-                            side = sideColl(entityA, entityB)
-                            #side = [True, True]
-                            entityA.stop(side[0], side[1])
-                    else:
-                        entityB.tag = False
+                            entityB.tag = False
 
-    def checkCollistion(self, rect, cellSpace) -> bool:
+    @staticmethod
+    def checkCollition(rect, cellSpace) -> bool:
         neighbors = cellSpace.calculateNeighbors(Vector2D(rect.x, rect.y), 75)
         for neighbor in neighbors:
             if rect.colliderect(neighbor.getCollisionRect()):

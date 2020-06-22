@@ -1,6 +1,5 @@
 import pygame
 
-
 class Scene:
     KEYDOWN = {
         pygame.K_UP: "up",
@@ -37,5 +36,5 @@ class Scene:
     def update(self, deltaTime: float):
         pass
 
-    def render(self, screen):
+    def render(self, surface):
         pass

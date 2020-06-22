@@ -1,6 +1,3 @@
-import json
-
-
 # movements:
 # std = stand down
 # stu = stand up

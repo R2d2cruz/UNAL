@@ -1,6 +1,8 @@
 from collections import deque
 from random import choice
 
+import pygame
+
 from .TiledMap import TiledMap
 
 
@@ -10,33 +12,33 @@ class Graph:
         self.tileWidth = 32
         self.tileHeight = 32
 
-    # def render(self, screen, camera: BaseCamera):
-    #     for n in self.nodes:
-    #         cords = n.split(',')
-    #         self.renderNode(screen, camera, cords, (255, 225, 0))
-    #         for arc in self.nodes[n]:
-    #             self.renderArc(screen, camera, cords, arc, (255, 255, 0))
+    def render(self, surface, camera):
+        for n in self.nodes:
+            cords = n.split(',')
+            self.renderNode(surface, camera, cords, (255, 225, 0))
+            for arc in self.nodes[n]:
+                self.renderArc(surface, camera, cords, arc, (255, 255, 0))
 
-    # def renderPath(self, screen, camera: BaseCamera, path):
+    def renderNode(self, surface, camera, cords, color):
+        cords[0] = int(cords[0]) * self.tileWidth + self.tileWidth / 2
+        cords[1] = int(cords[1]) * self.tileHeight + self.tileHeight / 2
+        pygame.draw.circle(surface, color, camera.apply(cords), 5, 3)
+
+    def renderArc(self, surface, camera, cords, arc, color):
+        cordsM = arc.split(',')
+        cordsM[0] = int(cordsM[0]) * self.tileWidth + self.tileWidth / 2
+        cordsM[1] = int(cordsM[1]) * self.tileHeight + self.tileHeight / 2
+        pygame.draw.line(surface, color, camera.apply(cords), camera.apply(cordsM), 2)
+
+    # def renderPath(self, surface, camera, path):
     #     if path is not None:
     #         prevNode = None
     #         for node in path:
     #             cords = node.split(',')
-    #             self.renderNode(screen, camera, cords, (255, 0, 0))
+    #             self.renderNode(surface, camera, cords, (255, 0, 0))
     #             if prevNode is not None:
-    #                 self.renderArc(screen, camera, cords, prevNode, (255, 0, 0))
+    #                 self.renderArc(surface, camera, cords, prevNode, (255, 0, 0))
     #             prevNode = node
-
-    # def renderNode(self, screen, camera: BaseCamera, cords, color):
-    #     cords[0] = int(cords[0]) * self.tileWidth + self.tileWidth / 2 
-    #     cords[1] = int(cords[1]) * self.tileHeight + self.tileHeight / 2 
-    #     pygame.draw.circle(screen, color, camera.apply(cords), 5, 3)
-
-    # def renderArc(self, screen, camera: BaseCamera, cords, arc, color):
-    #     cordsM = arc.split(',')
-    #     cordsM[0] = int(cordsM[0]) * self.tileWidth + self.tileWidth / 2 
-    #     cordsM[1] = int(cordsM[1]) * self.tileHeight + self.tileHeight / 2 
-    #     pygame.draw.line(screen, color, camera.apply(cords), camera.apply(cordsM), 2)
 
     @staticmethod
     def getGraph(map: TiledMap, useAllDirections: bool = False):
@@ -44,7 +46,8 @@ class Graph:
         getNeighbors = Graph.getNeighbors8 if useAllDirections else Graph.getNeighbors4
         for row in range(0, map.rows):
             for col in range(0, map.cols):
-                if map.cells[row][col] == 0:
+                tile = map.tileset.getTileInfo(map.cells[row][col])
+                if tile.walkable:
                     graph[str(col) + ',' + str(row)] = getNeighbors(map, col, row)
 
         def countNeighbors(nodeKey: str):
@@ -61,20 +64,28 @@ class Graph:
             if 0 <= y < map.rows:
                 for x in range(col - 1, col + 2):
                     if 0 <= x < map.cols:
-                        if map.cells[y][x] == 0 and map.cells[y][col] == 0 and map.cells[row][x] == 0:
+                        if Graph.areContinuous(map, col, row, x, y):
                             nodes.append(str(x) + ',' + str(y))
         return nodes
 
     @staticmethod
-    def getNeighbors4(map: TiledMap, col: int, row: int) -> list:
+    def getNeighbors4(tileMap: TiledMap, col: int, row: int) -> list:
         nodes = []
         for cell in [[-1, 0], [1, 0], [0, -1], [0, 1]]:
             x = cell[0] + col
             y = cell[1] + row
-            if 0 <= y < map.rows and 0 <= x < map.cols:
-                if map.cells[y][x] == 0 and map.cells[y][col] == 0 and map.cells[row][x] == 0:
+            if 0 <= y < tileMap.rows and 0 <= x < tileMap.cols:
+                if Graph.areContinuous(tileMap, col, row, x, y):
                     nodes.append(str(x) + ',' + str(y))
         return nodes
+
+    @staticmethod
+    def areContinuous(tileMap: TiledMap, col: int, row: int, x: int, y: int):
+        tile1 = tileMap.tileset.getTileInfo(tileMap.cells[y][x])
+        tile2 = tileMap.tileset.getTileInfo(tileMap.cells[y][col])
+        tile3 = tileMap.tileset.getTileInfo(tileMap.cells[row][x])
+        areContinuous = tile1.walkable and tile2.walkable and tile3.walkable
+        return areContinuous
 
     def findShortestPath(self, start: str, end: str) -> list:
         dist = {start: [start]}

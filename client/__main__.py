@@ -3,7 +3,7 @@ import sys
 
 from client.constants import anims, fonts, imgs, maps, sounds, tilesets
 from client.core import Config, Game, resourceManager, TiledMap
-from client.scenes import MainMenu, Playground, Physics
+from client.scenes import MainMenu, Playground
 
 
 # esta funcion sirve para que el juego se cierre cuando el usuario presiona Ctr + C en la consola
@@ -18,7 +18,6 @@ def main():
     game = Game(Config('client/config.json'))
     game.init()
     game.addScene("main", MainMenu(game))
-    game.addScene("physics", Physics(game))
     game.addScene("play", Playground(game, TiledMap('small')))
     game.setScene("main")
     # res.playSong('background1')

@@ -31,5 +31,5 @@ class Label(Control):
         self.__surface, self.__textRect = getText(self.__text, self.__font, self.__color)
         self._Control__refresh()
 
-    def onRender(self, screen, camera: BaseCamera):
-        screen.blit(self.__surface, self.__textRect)
+    def onRender(self, surface, camera: BaseCamera):
+        surface.blit(self.__surface, self.__textRect)

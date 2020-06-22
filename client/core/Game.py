@@ -16,7 +16,7 @@ class Game:
         self.scenes = {}
         self.config: Config = config
         self.isRunning = False
-        self.screen = None
+        self.surface = None
         self.clock = None
         self.currentScene = None
         self.player = None
@@ -26,7 +26,7 @@ class Game:
 
     def init(self):
         pygame.display.set_icon(resourceManager.loadImage("logo"))
-        self.screen = pygame.display.set_mode((self.config.windowWidth, self.config.windowHeight))
+        self.surface = pygame.display.set_mode((self.config.windowWidth, self.config.windowHeight))
         self.clock = pygame.time.Clock()
         pygame.mixer.music.set_volume(self.config.volume)
 
@@ -43,7 +43,7 @@ class Game:
         self.currentScene.update(deltaTime)
 
     def render(self):
-        self.currentScene.render(self.screen)
+        self.currentScene.render(self.surface)
         pygame.display.update()
         self.clock.tick(50)
 

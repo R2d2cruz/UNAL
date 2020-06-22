@@ -98,14 +98,14 @@ class SpacePartition:
                 self.__cells[newIndex].members.append(entity)
                 entity.cellIndex = newIndex
 
-    def render(self, screen, camera: BaseCamera):
+    def render(self, surface, camera: BaseCamera):
         for cell in self.__cells:
             if cell.tag:
                 color = (255, 0, 0)
-                pygame.draw.rect(screen, color, camera.apply(cell.rect), 4)
+                pygame.draw.rect(surface, color, camera.apply(cell.rect), 4)
             else:
                 color = (0, 0, 0)
-                pygame.draw.rect(screen, color, camera.apply(cell.rect), 1)
+                pygame.draw.rect(surface, color, camera.apply(cell.rect), 1)
 
     def tagAll(self, value):
         for cell in self.__cells:
