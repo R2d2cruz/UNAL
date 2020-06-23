@@ -1,6 +1,6 @@
-from client.core.Character import Character
-from client.core.Script import Script
-from client.core.Telegram import Telegram
+from game.core.Character import Character
+from game.core.Script import Script
+from game.core.Telegram import Telegram
 
 
 class ScriptCharacter(Script):
