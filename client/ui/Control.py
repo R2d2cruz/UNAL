@@ -17,6 +17,7 @@ class Control:
         self.__active = False
         self.__hovered = False
         self.tag = None
+        self.name = 'Control' + str(self.__id)
         self.rect = pygame.Rect(x, y, width, height)
 
     @staticmethod
@@ -36,7 +37,7 @@ class Control:
     @x.setter
     def x(self, x):
         self.rect.x = x
-        self.__refresh()
+        self.refresh()
 
     @property
     def y(self):
@@ -45,7 +46,61 @@ class Control:
     @y.setter
     def y(self, y):
         self.rect.y = y
-        self.__refresh()
+        self.refresh()
+
+    @property
+    def top(self):
+        return self.rect.top
+
+    @top.setter
+    def top(self, top):
+        self.rect.top = top
+        self.refresh()
+
+    @property
+    def left(self):
+        return self.rect.left
+
+    @left.setter
+    def left(self, left):
+        self.rect.left = left
+        self.refresh()
+
+    @property
+    def right(self):
+        return self.rect.right
+
+    @right.setter
+    def right(self, right):
+        self.rect.right = right
+        self.refresh()
+
+    @property
+    def bottom(self):
+        return self.rect.bottom
+
+    @bottom.setter
+    def bottom(self, bottom):
+        self.rect.right = bottom
+        self.refresh()
+
+    @property
+    def centerx(self):
+        return self.rect.centerx
+
+    @centerx.setter
+    def centerx(self, centerx):
+        self.rect.centerx = centerx
+        self.refresh()
+
+    @property
+    def centery(self):
+        return self.rect.centery
+
+    @centery.setter
+    def centery(self, centery):
+        self.rect.centery = centery
+        self.refresh()
 
     @property
     def width(self):
@@ -54,7 +109,7 @@ class Control:
     @width.setter
     def width(self, width):
         self.rect.width = width
-        self.__refresh()
+        self.refresh()
 
     @property
     def height(self):
@@ -63,9 +118,9 @@ class Control:
     @height.setter
     def height(self, height: int):
         self.rect.height = height
-        self.__refresh()
+        self.refresh()
 
-    def __refresh(self):
+    def refresh(self):
         pass
 
     def show(self):
@@ -76,6 +131,12 @@ class Control:
 
     def isVisible(self) -> bool:
         return self.__visible
+
+    def isActive(self) -> bool:
+        return self.__active
+
+    def isHovered(self) -> bool:
+        return self.__hovered
 
     def enable(self):
         self.__enabled = True

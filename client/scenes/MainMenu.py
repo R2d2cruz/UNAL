@@ -1,7 +1,7 @@
 import pygame
 
 from ..core import AnimatedEntity, Game, NullCamera, Scene, resourceManager
-from ..ui import Button, InputBox, Label
+from ..ui import Button, InputBox, Label, GridContainer, Container, BoxContainer
 
 
 class MainMenu(Scene):
@@ -11,27 +11,6 @@ class MainMenu(Scene):
         self.font = resourceManager.getFont('minecraft', 36)
         self.index = 0
         rect = pygame.Rect(0, 0, 450, 80)
-        rect.center = (game.config.windowWidth / 4,
-                       game.config.windowHeight / 3)
-        self.buttonPlay = Button(
-            rect.x, rect.y, rect.w, rect.h, self.font, 'Quiero jugar!')
-        self.buttonPlay.onClick = self.onGoPlay
-
-        rect.center = (game.config.windowWidth / 4,
-                       game.config.windowHeight * 2 / 3)
-        self.buttonQuit = Button(
-            rect.x, rect.y, rect.w, rect.h, self.font, 'Tengo miedo!, me salgo')
-        self.buttonQuit.onClick = self.onGoQuit
-
-        rect.center = (game.config.windowWidth * 3 / 4, -
-        55 + game.config.windowHeight * 2 / 3)
-        self.label1 = Label(rect.x, rect.y, rect.w, rect.h,
-                            self.font, 'Nombre del heroe:', (0, 128, 255))
-
-        rect.center = (game.config.windowWidth * 3 / 4,
-                       game.config.windowHeight * 2 / 3)
-        self.inputBox1 = InputBox(rect.x, rect.y, rect.w, rect.h, self.font)
-        self.inputBox1.onChange = self.onChangeName
 
         self.anim = AnimatedEntity()
         self.anim.loadAnimation(resourceManager.getAnimFile(
@@ -39,18 +18,6 @@ class MainMenu(Scene):
         self.anim.x, self.anim.y = ((game.config.windowWidth * 3 / 4) - (self.anim.width / 2),
                                     (game.config.windowHeight / 3) - (self.anim.height / 2))
         self.anim.currentClip = 'down'
-
-        rect = pygame.Rect(0, 0, 256, 64)
-        rect.center = (game.config.windowWidth * 7 /
-                       8, game.config.windowHeight / 8)
-        self.musicButton = Button(
-            rect.x, rect.y, rect.w, rect.h, self.font, 'Music: ON')
-        self.musicButton.onClick = self.onMusicButton
-
-        rect.centerx = game.config.windowWidth * 5 / 8
-        self.soundButton = Button(
-            rect.x, rect.y, rect.w, rect.h, self.font, 'Sounds: ON')
-        self.soundButton.onClick = self.onSoundButton
 
         rect = pygame.Rect(0, 0, 64, 64)
         rect.center = (game.config.windowWidth * 5 /
@@ -64,51 +31,85 @@ class MainMenu(Scene):
             rect.x, rect.y, rect.w, rect.h, self.font, '>')
         self.rightListButton.onClick = self.goToRightList
 
+        self.ui = self.createUI()
         self.done = False
         self.controls = [
-            self.buttonPlay,
-            self.buttonQuit,
-            self.label1,
-            self.inputBox1,
             self.anim,
             self.leftListButton,
             self.rightListButton,
-            self.musicButton,
-            self.soundButton
         ]
 
-        # self.container = GridContainer(0, 0, self.game.surface.get_width(), self.game.surface.get_height())
+    def createUI(self):
+        grid1 = GridContainer(0, 0, self.game.surface.get_width() / 3, self.game.surface.get_height())
+        grid1.setGrid(2, 1)
+
+        buttonPlay = Button(0, 0, 450, 70, self.font, 'Quiero jugar!')
+        buttonPlay.onClick = self.onGoPlay
+        grid1.addControl(buttonPlay, (0, 0))
+
+        buttonQuit = Button(0, 0, 450, 70, self.font, 'Tengo miedo!, me salgo')
+        buttonQuit.onClick = self.onGoQuit
+        grid1.addControl(buttonQuit, (1, 0))
+
+        box1 = BoxContainer(BoxContainer.VERTICAL, self.game.surface.get_width() / 2, 0,
+                            self.game.surface.get_width() / 2, self.game.surface.get_height())
+
+        musicButton = Button(0, 0, 256, 64, self.font, 'Music: ON')
+        musicButton.onClick = self.onMusicButton
+        box1.addControl(musicButton)
+
+        soundButton = Button(0, 0, 256, 64, self.font, 'Sounds: ON')
+        soundButton.onClick = self.onSoundButton
+        box1.addControl(soundButton)
+
+        label1 = Label(0, 0, 450, 70, self.font, 'Nombre del heroe:', (0, 128, 255))
+        box1.addControl(label1)
+
+        inputBox1 = InputBox(0, 0, 450, 70, self.font)
+        inputBox1.name = 'playerName'
+        inputBox1.onChange = self.onChangeName
+
+        box1.addControl(inputBox1)
+        # grid3 = GridContainer()
+        # grid3.setGrid(1, 2)
+        # grid3.addControl(grid1, (0, 0))
+        # grid3.addControl(grid2, (0, 2))
+
+        ui = Container(0, 0, self.game.surface.get_width(), self.game.surface.get_height())
+        ui.addControl(grid1)
+        ui.addControl(box1)
+        # ui.addControl(grid3)
+        return ui
 
     def handleEvent(self, event):
+        self.ui.handleEvent(event)
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
                 # TODO: preguntarle al usuario si esta seguro de salir
                 self.game.quit()
                 return
-        for box in self.controls:
-            box.handleEvent(event)
 
     def handleMessage(self, message):
         pass
 
-    def update(self, deltaTime: float):
-        for box in self.controls:
-            box.update(deltaTime)
+    # def update(self, deltaTime: float):
+    #     self.ui.update(deltaTime)
 
     def render(self, surface: pygame.Surface):
         surface.fill((30, 30, 30))
-        for control in self.controls:
-            control.render(surface, self.camera)
+        self.ui.render(surface, self.camera)
         # TODO: si el cliente está conectado mostrar a que servidor esta conectado, sino entonces indicar que no esta conectado
 
     def onEnterScene(self):
         if (self.game.player is not None) and (self.game.player.name is None):
             self.game.loadSettings()
-        self.inputBox1.text = self.game.player.name
+        control = self.ui.getControlByName('playerName')
+        control.text = self.game.player.name
 
     def onGoPlay(self, sender):
         # TODO: evaluar si se escribió un nombre valido y arrojar un error en pantalla si no
-        self.game.player.setName(self.inputBox1.text)
+        control = self.ui.getControlByName('playerName')
+        self.game.player.setName(control.text)
         self.game.player.loadAnimation(
             resourceManager.getAnimFile(resourceManager.getAnimName(self.index)))
         self.game.saveSettings()

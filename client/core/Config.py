@@ -8,6 +8,7 @@ class Config:
         self.volume = 0
         self.windowWidth = 1280
         self.windowHeight = 800
+        self.skin = None
         self.load(fileName)
         if len(self.servers) == 0:
             raise Exception(
@@ -21,3 +22,4 @@ class Config:
                 self.servers.append(p)
             self.maxAttemptsPerServer = data['maxAttemptsPerServer']
             self.volume = data['volume']
+            self.skin = data['skin']

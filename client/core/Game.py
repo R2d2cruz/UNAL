@@ -6,7 +6,7 @@ import pygame
 from .Client import Client
 from .Config import Config
 from .Hermes import hermes
-from .Message import Message
+from .Telegram import Telegram
 from .ResourceManager import resourceManager
 from .Scene import Scene
 
@@ -36,8 +36,8 @@ class Game:
                 self.quit()
                 continue
             self.currentScene.handleEvent(event)
-        if not self.client.connected:
-            self.currentScene.handleMessage(Message(Message.DISCONNECTED))
+        # if not self.client.connected:
+        #     self.currentScene.handleMessage(Message(Message.DISCONNECTED))
 
     def update(self, deltaTime: float):
         self.currentScene.update(deltaTime)
@@ -45,7 +45,7 @@ class Game:
     def render(self):
         self.currentScene.render(self.surface)
         pygame.display.update()
-        self.clock.tick(50)
+        self.clock.tick(20)
 
     def run(self):
         self.isRunning = True

@@ -17,7 +17,7 @@ class Label(Control):
         self.__isPressed = False
         self.text = text
 
-    def _Control__refresh(self):
+    def refresh(self):
         self.__textRect.x = self.rect.x + self.__padding
         self.__textRect.y = self.rect.y + (self.rect.h - self.__surface.get_height()) / 2
 
@@ -29,7 +29,7 @@ class Label(Control):
     def text(self, text):
         self.__text = text
         self.__surface, self.__textRect = getText(self.__text, self.__font, self.__color)
-        self._Control__refresh()
+        self.refresh()
 
     def onRender(self, surface, camera: BaseCamera):
         surface.blit(self.__surface, self.__textRect)

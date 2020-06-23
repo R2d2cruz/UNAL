@@ -1,3 +1,4 @@
+from . import gui
 from .Control import Control
 from ..core.misc import getFirst
 
@@ -5,37 +6,65 @@ from ..core.misc import getFirst
 class Container(Control):
     def __init__(self, x: int, y: int, width: int, height: int):
         super().__init__(x, y, width, height)
-        self.__controls = []
+        self.children = []
+        self.__padding = 10
+
+    @property
+    def padding(self):
+        return self.__padding
+
+    @padding.setter
+    def padding(self, padding):
+        self.__padding = padding
+        self.refresh()
 
     def addControl(self, control: Control):
-        self.__controls.append(control)
+        self.children.append(control)
+        self.refresh()
 
     def removeControl(self, control: Control):
-        self.__controls.remove(control)
+        self.children.remove(control)
 
     def render(self, surface, camera):
-        for control in self.__controls:
+        #gui.renderElement(surface, self.rect, "panel")
+        for control in self.children:
             control.render(surface, camera)
 
     def handleEvent(self, event):
-        for control in self.__controls:
+        for control in self.children:
             control.handleEvent(event)
 
-    def getControl(self, controlId: int):
-        control = getFirst(self.__controls, lambda x: x.id == controlId)
+    def refresh(self):
+        for control in self.children:
+            control.refresh()
+
+    def getControlById(self, controlId: int):
+        control = getFirst(self.children, lambda x: x.id == controlId or x.name == controlId)
         if control is not None:
             return control
-        for control in self.__controls:
+        for control in self.children:
             if control.id == controlId:
                 return control
-            if isinstance(control, Container):
-                control = control.getControl(controlId)
+            if isinstance(control, (Container, GridContainer, BoxContainer)):
+                control = control.getControlById(controlId)
+                if control is not None:
+                    return control
+
+    def getControlByName(self, controlName: str):
+        control = getFirst(self.children, lambda x: x.name == controlName)
+        if control is not None:
+            return control
+        for control in self.children:
+            if control.name == controlName:
+                return control
+            if isinstance(control, (Container, GridContainer, BoxContainer)):
+                control = control.getControlByName(controlName)
                 if control is not None:
                     return control
 
 
-class GridContainer(Control):
-    def __init__(self, x: int, y: int, width: int, height: int):
+class GridContainer(Container):
+    def __init__(self, x: int = 0, y: int = 0, width: int = 0, height: int = 0):
         super().__init__(x, y, width, height)
         self.__cells = []
         self.__rows = 0
@@ -52,14 +81,13 @@ class GridContainer(Control):
             self.__cells = []
 
     def addControl(self, control: Control, pos: tuple):
+        super().addControl(control)
         if pos is not None and (0 <= pos[0] < self.__rows) and (0 <= pos[1] < self.__cols):
             self.__cells[pos[0]][pos[1]] = control
-            control.width = self.rect.width / self.__cols
-            control.height = self.rect.height / self.__rows
-            control.x = control.width * pos[1]
-            control.y = control.height * pos[0]
+            self.refresh()
 
     def render(self, surface, camera):
+        gui.renderElement(surface, self.rect, "panel")
         for row in self.__cells:
             for cell in row:
                 if cell is not None:
@@ -70,3 +98,74 @@ class GridContainer(Control):
             for cell in row:
                 if cell is not None:
                     cell.handleEvent(event)
+
+    def refresh(self):
+        cellWidth = self.width / self.__cols
+        cellHeight = self.height / self.__rows
+        innerWidth = cellWidth - self.padding * 2
+        innerHeight = cellHeight - self.padding * 2
+        for row in range(self.__rows):
+            for col in range(self.__cols):
+                control = self.__cells[row][col]
+                if control is not None:
+                    control.centerx = (cellWidth * col) + (cellWidth / 2)
+                    control.centery = (cellHeight * row) + (cellHeight / 2)
+                    control.width = innerWidth if control.width == 0 else min(innerWidth, control.width)
+                    control.height = innerHeight if control.height == 0 else min(innerHeight, control.height)
+                    control.refresh()
+
+class BoxContainer(Container):
+
+    VERTICAL = 'VERTICAL'
+    HORIZONTAL = 'HORIZONTAL'
+
+    CENTER = 'CENTER'
+    LEFT = 'LEFT'
+    RIGHT = 'RIGHT'
+    TOP = 'TOP'
+    BOTTOM = 'BOTTOM'
+
+    def __init__(self, boxType: str, x: int = 0, y: int = 0, width: int = 0, height: int = 0):
+        super().__init__(x, y, width, height)
+        self.__boxType = boxType
+        self.__align = BoxContainer.CENTER
+
+    def addControl(self, control: Control):
+        super().addControl(control)
+        self.refresh()
+
+    def render(self, surface, camera):
+        gui.renderElement(surface, self.rect, "panel")
+        super().render(surface, camera)
+
+    def refresh(self):
+        n = len(self.children)
+        for i in range(n):
+            if self.__boxType == BoxContainer.HORIZONTAL:
+                # noinspection DuplicatedCode
+                if i == 0:
+                    self.children[i].left = self.left
+                else:
+                    self.children[i].left = self.children[i-1].right
+                if self.__align == BoxContainer.CENTER:
+                    self.children[i].centery = self.centery
+                elif self.__align == BoxContainer.TOP:
+                    self.children[i].top = self.top
+                elif self.__align == BoxContainer.BOTTOM:
+                    self.children[i].bottom = self.bottom
+                self.children[i].height = min(self.children[i].height, self.height)
+
+            elif self.__boxType == BoxContainer.VERTICAL:
+                # noinspection DuplicatedCode
+                if i == 0:
+                    self.children[i].top = self.top
+                else:
+                    self.children[i].top = self.children[i-1].bottom
+                if self.__align == BoxContainer.CENTER:
+                    self.children[i].centerx = self.centerx
+                elif self.__align == BoxContainer.LEFT:
+                    self.children[i].left = self.left
+                elif self.__align == BoxContainer.BOTTOM:
+                    self.children[i].right = self.right
+                self.children[i].width = min(self.children[i].width, self.width)
+            self.children[i].refresh()

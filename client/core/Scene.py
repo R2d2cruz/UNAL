@@ -1,5 +1,6 @@
 import pygame
 
+
 class Scene:
     KEYDOWN = {
         pygame.K_UP: "up",

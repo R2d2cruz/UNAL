@@ -17,7 +17,7 @@ class Playground(Scene):
         super().__init__(game)
         self.keysPressed = {}
         self.players = {}
-        self.world = World(tiledMap, pygame.Rect(140, 20, 800, 600))
+        self.world = World(tiledMap, pygame.Rect(160, 20, 1000, 700))
 
         name = resourceManager.getRandomCharAnimName()
         self.player = Player(name, name, (0, 0), (0, 24, 34, 32))
@@ -45,7 +45,7 @@ class Playground(Scene):
         self.ui = self.createUI()
 
     def createUI(self):
-        grid = GridContainer(0, 0, 140, self.game.surface.get_height())
+        grid = GridContainer(0, 0, 160, self.game.surface.get_height())
         grid.setGrid(10, 1)
         buttonPath = Button(0, 0, 0, 0, self.font, 'Follow Path')
         buttonPath.onClick = self.onGoPath
@@ -179,7 +179,7 @@ class Playground(Scene):
             sender.tag = bubble.id
             self.ui.addControl(bubble)
         else:
-            bubble = self.ui.getControl(sender.tag)
+            bubble = self.ui.getControlById(sender.tag)
             self.ui.removeControl(bubble)
             sender.tag = None
 

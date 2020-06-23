@@ -1,5 +1,6 @@
 import pygame
 
+from .gui import gui
 from .Control import Control
 from ..core import BaseCamera
 from ..core.misc import getText
@@ -20,7 +21,7 @@ class InputBox(Control):
         self.maxLengthReached = False
         self.onEnter = None
 
-    def _Control__refresh(self):
+    def refresh(self):
         self.__textRect.x = self.rect.x + self.__padding
         self.__textRect.y = self.rect.y + (self.rect.h - self.__surface.get_height()) / 2
 
@@ -32,7 +33,7 @@ class InputBox(Control):
     def text(self, text):
         self.__text = text
         self.__surface, self.__textRect = getText(self.__text, self.__font, self.__color)
-        self._Control__refresh()
+        self.refresh()
         if self.fixedWidth:
             self.maxLengthReached = self.__surface.get_width() + (self.__padding * 2) > self.rect.w
         else:
@@ -45,15 +46,25 @@ class InputBox(Control):
         pass
 
     def onRender(self, surface, camera: BaseCamera):
+        if not self.isEnabled():
+            skinElement = 'input-disabled'
+        elif self.isHovered():
+            skinElement = 'input-active'
+        elif self.isActive():
+            skinElement = 'input-active'
+        else:
+            skinElement = 'input'
+        gui.renderElement(surface, self.rect, skinElement)
         surface.blit(self.__surface, self.__textRect)
         #  TODO: self.caret.render(surface)
-        pygame.draw.rect(surface, self.__color, self.rect, 2)
 
     def onMouseEnter(self, event):
-        self.__color = self.COLOR_ACTIVE
+        #self.__color = self.COLOR_ACTIVE
+        pass
 
     def onMouseLeave(self, event):
-        self.__color = self.COLOR_INACTIVE
+        #self.__color = self.COLOR_INACTIVE
+        pass
 
     def onKeyDown(self, event):
         if event.key == pygame.K_RETURN:

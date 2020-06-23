@@ -6,5 +6,6 @@
   "maxAttemptsPerServer": 1,
   "volume": 0.5,
   "windowWidth": 800,
-  "windowHeight": 600
+  "windowHeight": 600,
+  "skin": "client/assets/skins/rock"
 }

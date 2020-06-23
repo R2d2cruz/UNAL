@@ -1,5 +1,6 @@
 import json
 import sys
+import time
 
 import zmq
 # noinspection PyUnresolvedReferences
@@ -56,6 +57,7 @@ class Server:
             except Exception as e:
                 print('❌ Server.run', e)
                 self.isRunning = False
+            time.sleep(0.02)
         print('\n🍺 Se ha cerrado el server. Ahora vamos a por una cerveza!')
 
     def createPlayer(self, senderId, playerData):
