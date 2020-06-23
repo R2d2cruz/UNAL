@@ -115,10 +115,8 @@ class Graph:
         path2.append(end)
         return path2
 
-    def randomPath(self, start: str = None, end: str = None) -> list:
-        nodeStart = choice(list(self.nodes.keys())) if start is None else start
-        nodeEnd = choice(list(self.nodes.keys())) if end is None else end
-        return self.findShortestPath2(nodeStart, nodeEnd)
+    def path(self, start: str, end: str) -> list:
+        return self.findShortestPath2(start, end)
 
     @staticmethod
     def areAligned(nodeA, nodeB, nodeC):
