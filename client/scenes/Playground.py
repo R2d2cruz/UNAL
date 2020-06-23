@@ -17,7 +17,7 @@ class Playground(Scene):
         super().__init__(game)
         self.keysPressed = {}
         self.players = {}
-        self.world = World(tiledMap, pygame.Rect(160, 20, 1000, 700))
+        self.world = World(tiledMap, pygame.Rect(160, 0, self.game.surface.get_width() - 160, self.game.surface.get_height()))
 
         name = resourceManager.getRandomCharAnimName()
         self.player = Player(name, name, (0, 0), (0, 24, 34, 32))

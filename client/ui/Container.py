@@ -26,7 +26,7 @@ class Container(Control):
         self.children.remove(control)
 
     def render(self, surface, camera):
-        #gui.renderElement(surface, self.rect, "panel")
+        # gui.renderElement(surface, self.rect, "panel")
         for control in self.children:
             control.render(surface, camera)
 
@@ -108,14 +108,14 @@ class GridContainer(Container):
             for col in range(self.__cols):
                 control = self.__cells[row][col]
                 if control is not None:
-                    control.centerx = (cellWidth * col) + (cellWidth / 2)
-                    control.centery = (cellHeight * row) + (cellHeight / 2)
+                    control.centerx = self.x + (cellWidth * col) + (cellWidth / 2)
+                    control.centery = self.y + (cellHeight * row) + (cellHeight / 2)
                     control.width = innerWidth if control.width == 0 else min(innerWidth, control.width)
                     control.height = innerHeight if control.height == 0 else min(innerHeight, control.height)
                     control.refresh()
 
-class BoxContainer(Container):
 
+class BoxContainer(Container):
     VERTICAL = 'VERTICAL'
     HORIZONTAL = 'HORIZONTAL'
 
@@ -128,7 +128,7 @@ class BoxContainer(Container):
     def __init__(self, boxType: str, x: int = 0, y: int = 0, width: int = 0, height: int = 0):
         super().__init__(x, y, width, height)
         self.__boxType = boxType
-        self.__align = BoxContainer.CENTER
+        self.__direction = BoxContainer.CENTER
 
     def addControl(self, control: Control):
         super().addControl(control)
@@ -140,32 +140,36 @@ class BoxContainer(Container):
 
     def refresh(self):
         n = len(self.children)
+        innerWidth = self.width - self.padding * 2
+        innerHeight = self.height - self.padding * 2
         for i in range(n):
             if self.__boxType == BoxContainer.HORIZONTAL:
                 # noinspection DuplicatedCode
                 if i == 0:
-                    self.children[i].left = self.left
+                    self.children[i].left = self.left + self.padding
                 else:
-                    self.children[i].left = self.children[i-1].right
-                if self.__align == BoxContainer.CENTER:
+                    self.children[i].left = self.children[i - 1].right + 1
+
+                if self.__direction == BoxContainer.CENTER:
                     self.children[i].centery = self.centery
-                elif self.__align == BoxContainer.TOP:
+                elif self.__direction == BoxContainer.TOP:
                     self.children[i].top = self.top
-                elif self.__align == BoxContainer.BOTTOM:
+                elif self.__direction == BoxContainer.BOTTOM:
                     self.children[i].bottom = self.bottom
-                self.children[i].height = min(self.children[i].height, self.height)
+                self.children[i].height = min(self.children[i].height, innerHeight)
 
             elif self.__boxType == BoxContainer.VERTICAL:
                 # noinspection DuplicatedCode
                 if i == 0:
-                    self.children[i].top = self.top
+                    self.children[i].top = self.top + self.padding
                 else:
-                    self.children[i].top = self.children[i-1].bottom
-                if self.__align == BoxContainer.CENTER:
+                    self.children[i].top = self.children[i - 1].bottom + 1
+
+                if self.__direction == BoxContainer.CENTER:
                     self.children[i].centerx = self.centerx
-                elif self.__align == BoxContainer.LEFT:
+                elif self.__direction == BoxContainer.LEFT:
                     self.children[i].left = self.left
-                elif self.__align == BoxContainer.BOTTOM:
+                elif self.__direction == BoxContainer.BOTTOM:
                     self.children[i].right = self.right
-                self.children[i].width = min(self.children[i].width, self.width)
+                self.children[i].width = min(self.children[i].width, innerWidth)
             self.children[i].refresh()

@@ -10,37 +10,11 @@ class MainMenu(Scene):
         self.camera = NullCamera()
         self.font = resourceManager.getFont('minecraft', 36)
         self.index = 0
-        rect = pygame.Rect(0, 0, 450, 80)
-
-        self.anim = AnimatedEntity()
-        self.anim.loadAnimation(resourceManager.getAnimFile(
-            resourceManager.getAnimName(self.index)))
-        self.anim.x, self.anim.y = ((game.config.windowWidth * 3 / 4) - (self.anim.width / 2),
-                                    (game.config.windowHeight / 3) - (self.anim.height / 2))
-        self.anim.currentClip = 'down'
-
-        rect = pygame.Rect(0, 0, 64, 64)
-        rect.center = (game.config.windowWidth * 5 /
-                       8, game.config.windowHeight / 3)
-        self.leftListButton = Button(
-            rect.x, rect.y, rect.w, rect.h, self.font, '<')
-        self.leftListButton.onClick = self.goToLeftList
-
-        rect.centerx = game.config.windowWidth * 7 / 8
-        self.rightListButton = Button(
-            rect.x, rect.y, rect.w, rect.h, self.font, '>')
-        self.rightListButton.onClick = self.goToRightList
-
         self.ui = self.createUI()
         self.done = False
-        self.controls = [
-            self.anim,
-            self.leftListButton,
-            self.rightListButton,
-        ]
 
     def createUI(self):
-        grid1 = GridContainer(0, 0, self.game.surface.get_width() / 3, self.game.surface.get_height())
+        grid1 = GridContainer(0, 0, self.game.surface.get_width() / 2, self.game.surface.get_height())
         grid1.setGrid(2, 1)
 
         buttonPlay = Button(0, 0, 450, 70, self.font, 'Quiero jugar!')
@@ -51,7 +25,7 @@ class MainMenu(Scene):
         buttonQuit.onClick = self.onGoQuit
         grid1.addControl(buttonQuit, (1, 0))
 
-        box1 = BoxContainer(BoxContainer.VERTICAL, self.game.surface.get_width() / 2, 0,
+        box1 = BoxContainer(BoxContainer.VERTICAL, 1 + self.game.surface.get_width() / 2, 0,
                             self.game.surface.get_width() / 2, self.game.surface.get_height())
 
         musicButton = Button(0, 0, 256, 64, self.font, 'Music: ON')
@@ -62,18 +36,31 @@ class MainMenu(Scene):
         soundButton.onClick = self.onSoundButton
         box1.addControl(soundButton)
 
-        label1 = Label(0, 0, 450, 70, self.font, 'Nombre del heroe:', (0, 128, 255))
+        label1 = Label(0, 0, 450, 70, self.font, 'Nombre del heroe:', (255, 255, 255))
         box1.addControl(label1)
 
         inputBox1 = InputBox(0, 0, 450, 70, self.font)
         inputBox1.name = 'playerName'
         inputBox1.onChange = self.onChangeName
-
         box1.addControl(inputBox1)
-        # grid3 = GridContainer()
-        # grid3.setGrid(1, 2)
-        # grid3.addControl(grid1, (0, 0))
-        # grid3.addControl(grid2, (0, 2))
+
+        grid2 = GridContainer(0, 0, 450, 70)
+        grid2.setGrid(1, 3)
+
+        leftListButton = Button(0, 0, 64, 64, self.font, '<')
+        leftListButton.onClick = self.goToLeftList
+        grid2.addControl(leftListButton, (0, 0))
+
+        anim = AnimatedEntity()
+        anim.name = 'selectAnim'
+        anim.currentClip = 'down'
+        self.changeAnim(anim)
+        grid2.addControl(anim, (0, 1))
+
+        rightListButton = Button(0, 0, 64, 64, self.font, '>')
+        rightListButton.onClick = self.goToRightList
+        grid2.addControl(rightListButton, (0, 2))
+        box1.addControl(grid2)
 
         ui = Container(0, 0, self.game.surface.get_width(), self.game.surface.get_height())
         ui.addControl(grid1)
@@ -131,18 +118,14 @@ class MainMenu(Scene):
         self.index -= 1
         if self.index < 0:
             self.index = resourceManager.getAnimCount() - 1
-        self.anim.loadAnimation(resourceManager.getAnimFile(
-            resourceManager.getAnimName(self.index)))
-        self.anim.currentClip = 'down'
+        self.changeAnim()
 
     def goToRightList(self, sender):
         resourceManager.playSound('select')
         self.index += 1
         if self.index > (resourceManager.getAnimCount() - 1):
             self.index = 0
-        self.anim.loadAnimation(resourceManager.getAnimFile(
-            resourceManager.getAnimName(self.index)))
-        self.anim.currentClip = 'down'
+        self.changeAnim()
 
     @staticmethod
     def onChangeName(sender):
@@ -157,3 +140,10 @@ class MainMenu(Scene):
     def onSoundButton(sender: Button):
         enable = "ON" if resourceManager.flipEnableSound() else "OFF"
         sender.text = "Sounds: " + enable
+
+    def changeAnim(self, entity: AnimatedEntity = None):
+        if entity is None:
+            entity = self.ui.getControlByName('selectAnim')
+        if entity is not None:
+            entity.loadAnimation(resourceManager.getAnimFile(resourceManager.getAnimName(self.index)))
+            entity.currentClip = 'down'

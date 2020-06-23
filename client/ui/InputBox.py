@@ -14,7 +14,7 @@ class InputBox(Control):
         self.__textRect = None
         self.__font = font
         self.__color = foreColor
-        self.__padding = 5
+        self.__padding = 10
         self.fixedWidth = True
         self.text = text
         self.maxWidth = 200

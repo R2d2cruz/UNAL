@@ -6,8 +6,8 @@ class Config:
         self.servers = []
         self.maxAttemptsPerServer = 0
         self.volume = 0
-        self.windowWidth = 1280
-        self.windowHeight = 800
+        self.windowWidth = 800
+        self.windowHeight = 600
         self.skin = None
         self.load(fileName)
         if len(self.servers) == 0:
@@ -23,3 +23,5 @@ class Config:
             self.maxAttemptsPerServer = data['maxAttemptsPerServer']
             self.volume = data['volume']
             self.skin = data['skin']
+            self.windowWidth = data['windowWidth']
+            self.windowHeight = data['windowHeight']

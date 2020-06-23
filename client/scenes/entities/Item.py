@@ -10,7 +10,6 @@ class Item(Entity):
     def __init__(self, name: str, rect: pygame.Rect, positionCenter: Vector2D):
         super().__init__()
         self.name = name
-        print(name)
         self.image = resourceManager.loadImage(self.name, rect)
         self.rect = rect
         self.x = positionCenter.x - self.rect.w

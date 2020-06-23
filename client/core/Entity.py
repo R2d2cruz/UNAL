@@ -64,6 +64,60 @@ class Entity(pygame.sprite.Sprite):
     def height(self, height: int):
         self.rect.height = height
 
+    @property
+    def top(self):
+        return self.rect.top
+
+    @top.setter
+    def top(self, top):
+        self.rect.top = top
+        self.refresh()
+
+    @property
+    def left(self):
+        return self.rect.left
+
+    @left.setter
+    def left(self, left):
+        self.rect.left = left
+        self.refresh()
+
+    @property
+    def right(self):
+        return self.rect.right
+
+    @right.setter
+    def right(self, right):
+        self.rect.right = right
+        self.refresh()
+
+    @property
+    def bottom(self):
+        return self.rect.bottom
+
+    @bottom.setter
+    def bottom(self, bottom):
+        self.rect.right = bottom
+        self.refresh()
+
+    @property
+    def centerx(self):
+        return self.rect.centerx
+
+    @centerx.setter
+    def centerx(self, centerx):
+        self.rect.centerx = centerx
+        self.refresh()
+
+    @property
+    def centery(self):
+        return self.rect.centery
+
+    @centery.setter
+    def centery(self, centery):
+        self.rect.centery = centery
+        self.refresh()
+
     def setPos(self, x: float, y: float):
         self.x, self.y = x, y
 
@@ -77,6 +131,9 @@ class Entity(pygame.sprite.Sprite):
         return self.rect
 
     def update(self, deltaTime: float):
+        pass
+
+    def refresh(self):
         pass
 
     def render(self, surface, camera: BaseCamera):
