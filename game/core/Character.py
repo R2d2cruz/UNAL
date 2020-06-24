@@ -33,9 +33,17 @@ class Character(MovingEntity):
         self.animName = animationName
         self.loadAnimation(resourceManager.getAnimFile(self.animName))
         self.__health = 100
-        self.attack = 30
-        self.defense = 20
+        self.__attack = 30
+        self.__defense = 20
         self.type = 'character'
+
+    @property
+    def defense(self):
+        return self.__defense
+
+    @property
+    def attackPower(self):
+        return self.__attack
 
     def updateNameRect(self):
         self.__nameRect.x = self.x - self.__nameRect.w / 2

@@ -10,6 +10,18 @@ class CharacterWrapper:
         self._entity.setPos(position.x, position.y)
         self._path = None
 
+    def x(self):
+        return self._entity.getCollisionRect().centerx
+
+    def y(self):
+        return self._entity.getCollisionRect().centery
+
+    def rect(self):
+        return self._entity.getCollisionRect()
+
+    def health(self):
+        return self._entity.health
+
     def sendMessage(self, receiver: int, msg: str, extraInfo: dict, delay: float = 0):
         hermes.messageDispatch(delay, self._entity.id, receiver, msg, extraInfo)
 
