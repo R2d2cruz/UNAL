@@ -57,8 +57,7 @@ class CharacterWrapper:
     def goPosition(self, position: Vector2D):
         if self._steeringOn:
             self.setSteeringOff()
-        self._entity.steering.followPathEnabled = True
-        self._entity.steering.followPathTarget = self._path(self._path(self._entity, position))
+        self._path(self._entity, position)
         self._steeringOn = True
 
     def wander(self, weightWander: float = 0.5):
@@ -74,3 +73,4 @@ class CharacterWrapper:
         self._entity.steering.followPathEnabled = False
         self._entity.steering.followPathTarget = None
         self._entity.steering.wanderEnabled = False
+        self._steeringOn = False

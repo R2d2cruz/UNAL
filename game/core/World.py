@@ -32,7 +32,7 @@ class World:
     def update(self, deltaTime: float):
         for entity in entityManager.allEntities:
             if entity.script is not None:
-                entity.wrapper.setPath(self.followPath)
+                entity.wrapper.setPath(self.followPositionPath)
                 entity.script.onUpdate(entity.wrapper, collisionManager.getCloseNeighbors(entity, self.cellSpace))
             entity.update(deltaTime)
             if issubclass(type(entity), MovingEntity):
@@ -53,7 +53,7 @@ class World:
         while True:
             rect.x = int(random() * self.rect.w)
             rect.y = int(random() * self.rect.h)
-            if not collisionManager.checkCollition(rect, self.cellSpace):
+            if not collisionManager.checkCollition(rect, self.cellSpace, self.rect):
                 return rect
 
     def locateInValidRandomPos(self, entity: Entity):

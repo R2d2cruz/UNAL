@@ -28,11 +28,10 @@ def sideColl(bodyA: MovingEntity, bodyB: MovingEntity):
 
 class _CollisionManager:
     @staticmethod
-    def inBoundaries(rect, entity: Entity):
-        coll = entity.getCollisionRect()
-        if coll.left < rect.left or coll.right > rect.right:
+    def inBoundaries(bounds, coll):
+        if coll.left < bounds.left or coll.right > bounds.right:
             return False
-        if coll.top < rect.top or coll.bottom > rect.bottom:
+        if coll.top < bounds.top or coll.bottom > bounds.bottom:
             return False
         return True
 
@@ -40,7 +39,7 @@ class _CollisionManager:
     def update(cellSpace: SpacePartition, worldRect):
         for entityA in entityManager.movingEntities:
             entityA.tag = False
-            if not _CollisionManager.inBoundaries(worldRect, entityA):
+            if not _CollisionManager.inBoundaries(worldRect, entityA.getCollisionRect()):
                 # side = sideColl(entityA, worldRect)
                 side = [True, True]
                 entityA.stop(side[0], side[1])
@@ -56,16 +55,17 @@ class _CollisionManager:
                             elif entityA.type == "item":
                                 entityA.effect(entityB)
                             else:
-                                side = sideColl(entityA, entityB)
-                                # side = [True, True]
+                                # side = sideColl(entityA, entityB)
+                                side = [True, True]
                                 entityA.stop(side[0], side[1])
 
     @staticmethod
-    def checkCollition(queryRect, cellSpace) -> bool:
-        neighbors = cellSpace.calculateNeighbors(queryRect)
-        for neighbor in neighbors:
-            if queryRect.colliderect(neighbor.getCollisionRect()):
-                return True
+    def checkCollition(queryRect, cellSpace, worldRect) -> bool:
+        if _CollisionManager.inBoundaries(worldRect, queryRect):
+            neighbors = cellSpace.calculateNeighbors(queryRect)
+            for neighbor in neighbors:
+                if queryRect.colliderect(neighbor.getCollisionRect()):
+                    return True
         return False
 
     @staticmethod
@@ -82,7 +82,6 @@ class _CollisionManager:
             if queryRect.colliderect(entity.getSelectionRect()):
                 if validation(entity):
                     entities.append(entity)
-                    entity.selected = True
         return entities
 
     def getCloseNeighbors(self, entity: Entity, cellSpace, validation=None) -> list:

@@ -19,6 +19,7 @@ class Entity(pygame.sprite.Sprite):
         self.cellIndex = None
         self.selected = False
         self.wrapper = None
+        self.data = {}
 
     def __repr__(self):
         return f'[{self.id}:{self.name}:{self.type}]'
