@@ -21,7 +21,6 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="6f659020-7adf-4bc9-9be9-8756714b3afd" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/game/core/CharacterWrapper.py" beforeDir="false" afterPath="$PROJECT_DIR$/game/core/CharacterWrapper.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -218,7 +217,7 @@
       <workItem from="1593003389659" duration="3625000" />
       <workItem from="1593014879006" duration="304000" />
       <workItem from="1593017352514" duration="6613000" />
-      <workItem from="1593025947499" duration="368000" />
+      <workItem from="1593025947499" duration="688000" />
     </task>
     <servers />
   </component>

@@ -10,15 +10,19 @@ class CharacterWrapper:
         self._entity.setPos(position.x, position.y)
         self._path = None
 
+    @property
     def x(self):
         return self._entity.getCollisionRect().centerx
 
+    @property
     def y(self):
         return self._entity.getCollisionRect().centery
 
+    @property
     def rect(self):
         return self._entity.getCollisionRect()
 
+    @property
     def health(self):
         return self._entity.health
 
