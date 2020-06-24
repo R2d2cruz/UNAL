@@ -61,7 +61,7 @@ class GUI:
             rect.height - skin['top-right'].get_height() - skin['bottom-right'].get_height()
         )
         bottomRightPos = (
-        rect.right - skin['bottom-right'].get_width(), rect.bottom - skin['bottom-right'].get_height())
+            rect.right - skin['bottom-right'].get_width(), rect.bottom - skin['bottom-right'].get_height())
         surface.blit(skin['top-left'], rect.topleft)
         surface.blit(skin['top-right'], (rect.right - skin['top-right'].get_width(), rect.top))
         surface.blit(skin['bottom-left'], (rect.left, rect.bottom - skin['bottom-left'].get_height()))

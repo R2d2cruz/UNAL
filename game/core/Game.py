@@ -77,12 +77,9 @@ class Game:
         self.player = player
 
     def loadSettings(self):
-        try:
-            with open('saves/player.save', 'r') as infile:
-                data = json.load(infile)
-                self.player.name = data.get('name')
-        except Exception:
-            pass
+        with open('saves/player.save', 'r') as infile:
+            data = json.load(infile)
+            self.player.name = data.get('name')
 
     def saveSettings(self):
         with open('saves/player.save', 'w') as outfile:

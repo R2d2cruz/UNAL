@@ -5,7 +5,7 @@ from game.core.Telegram import Telegram
 
 class ScriptCharacter(Script):
 
-    def onInit(self, character: Character) -> Character:
+    def onInit(self, character: Character):
         character.setName('Arthur')
         character.setPos(64, 64)
         character.steering.wanderEnabled = True

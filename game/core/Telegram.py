@@ -1,5 +1,5 @@
 class Telegram:
-    def __init__(self, sender: int, receiver: int, msg: str, dispatchTime: float, extraInfo: {}):
+    def __init__(self, sender: int, receiver: int, msg: str, dispatchTime: float, extraInfo: dict):
         self.sender = sender
         self.receiver = receiver
         self.message = msg

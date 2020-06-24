@@ -1,8 +1,9 @@
+import pygame
+
 from .Entity import Entity
 from .EntityManager import entityManager
 from .MovingEntity import MovingEntity
 from .SpacePartition import SpacePartition
-from .Vector2D import Vector2D
 
 
 def sideColl(bodyA: MovingEntity, bodyB: MovingEntity):
@@ -44,30 +45,50 @@ class _CollisionManager:
                 side = [True, True]
                 entityA.stop(side[0], side[1])
             else:
-                neighbors = cellSpace.calculateNeighbors(entityA.getPos(), 75)
+                queryRadius = 75
+                queryRect = pygame.Rect(
+                    entityA.x - queryRadius,
+                    entityA.y - queryRadius,
+                    queryRadius * 2,
+                    queryRadius * 2
+                )
+                neighbors = cellSpace.calculateNeighbors(queryRect)
                 for entityB in neighbors:
                     if entityA != entityB:
                         if entityA.getCollisionRect().colliderect(entityB.getCollisionRect()):
-                            entityA.tag = True
-                            entityB.tag = True
-                            if entityB.flag == "item":
+                            if entityB.type == "item":
                                 entityB.effect(entityA)
-                            elif entityA.flag == "item":
+                            elif entityA.type == "item":
                                 entityA.effect(entityB)
                             else:
                                 side = sideColl(entityA, entityB)
                                 # side = [True, True]
                                 entityA.stop(side[0], side[1])
-                        else:
-                            entityB.tag = False
 
     @staticmethod
-    def checkCollition(rect, cellSpace) -> bool:
-        neighbors = cellSpace.calculateNeighbors(Vector2D(rect.x, rect.y), 75)
+    def checkCollition(queryRect, cellSpace) -> bool:
+        neighbors = cellSpace.calculateNeighbors(queryRect)
         for neighbor in neighbors:
-            if rect.colliderect(neighbor.getCollisionRect()):
+            if queryRect.colliderect(neighbor.getCollisionRect()):
                 return True
         return False
+
+    @staticmethod
+    def queryObjects(queryRect, cellSpace, validation=None) -> list:
+        entities = []
+        if validation is None:
+            def validation(x): return x
+        rect = queryRect.copy()
+        rect.width = max(queryRect.width, cellSpace.cellWidth * 1.2)
+        rect.height = max(queryRect.height, cellSpace.cellHeight * 1.2)
+        rect.center = queryRect.center
+        neighbors = cellSpace.calculateNeighbors(rect)
+        for entity in neighbors:
+            if queryRect.colliderect(entity.getSelectionRect()):
+                if validation(entity):
+                    entities.append(entity)
+                    entity.selected = True
+        return entities
 
 
 collisionManager = _CollisionManager()

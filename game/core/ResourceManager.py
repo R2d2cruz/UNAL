@@ -64,8 +64,8 @@ class _ResourceManager:
         else:
             return image
 
-    def getAnimName(self, name: str) -> str:
-        return self.__namesAnimList[name]
+    def getAnimName(self, index: int) -> str:
+        return self.__namesAnimList[index]
 
     def getAnimCount(self):
         return len(self.__namesAnimList)
