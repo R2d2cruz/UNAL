@@ -33,7 +33,7 @@ class World:
         for entity in entityManager.allEntities:
             if entity.script is not None:
                 entity.wrapper.setPath(self.followPath)
-                entity.script.onUpdate(entity.wrapper)
+                entity.script.onUpdate(entity.wrapper, collisionManager.getCloseNeighbors(entity, self.cellSpace))
             entity.update(deltaTime)
             if issubclass(type(entity), MovingEntity):
                 self.cellSpace.updateEntity(entity)

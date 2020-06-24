@@ -45,13 +45,8 @@ class _CollisionManager:
                 side = [True, True]
                 entityA.stop(side[0], side[1])
             else:
-                queryRadius = 75
-                queryRect = pygame.Rect(
-                    entityA.x - queryRadius,
-                    entityA.y - queryRadius,
-                    queryRadius * 2,
-                    queryRadius * 2
-                )
+                queryRect = pygame.Rect(0, 0, cellSpace.cellWidth * 1.2, cellSpace.cellHeight * 1.2)
+                queryRect.center = entityA.getCollisionRect().center
                 neighbors = cellSpace.calculateNeighbors(queryRect)
                 for entityB in neighbors:
                     if entityA != entityB:
@@ -77,7 +72,7 @@ class _CollisionManager:
     def queryObjects(queryRect, cellSpace, validation=None) -> list:
         entities = []
         if validation is None:
-            def validation(x): return x
+            def validation(x) -> bool: return True
         rect = queryRect.copy()
         rect.width = max(queryRect.width, cellSpace.cellWidth * 1.2)
         rect.height = max(queryRect.height, cellSpace.cellHeight * 1.2)
@@ -89,6 +84,10 @@ class _CollisionManager:
                     entities.append(entity)
                     entity.selected = True
         return entities
+
+    def getCloseNeighbors(self, entity: Entity, cellSpace, validation=None) -> list:
+        entities = self.queryObjects(entity.getCollisionRect(), cellSpace, validation=validation)
+        return [x.getMe for x in entities]
 
 
 collisionManager = _CollisionManager()

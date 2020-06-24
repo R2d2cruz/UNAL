@@ -9,7 +9,7 @@ class ScriptCharacter(Script):
         character.onInit('Arthur')
         character.wander(0.2)
 
-    def onUpdate(self, character: CharacterWrapper):
+    def onUpdate(self, character: CharacterWrapper, neighbors: list):
         pass
 
     def onMessage(self, character: CharacterWrapper, telegram: Telegram):

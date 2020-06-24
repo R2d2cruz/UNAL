@@ -6,12 +6,10 @@ from .camera.BaseCamera import BaseCamera
 
 
 class Entity(pygame.sprite.Sprite):
-    __nextID = 0
 
     def __init__(self, *groups):
         super().__init__()
         self.__pos = Vector2D(0, 0)
-        self.__id = self.__getNextID()
         self.type = "entity"
         self.image = None
         self.name = None
@@ -23,17 +21,20 @@ class Entity(pygame.sprite.Sprite):
         self.wrapper = None
 
     def __repr__(self):
-        return f'[{self.__id}:{self.name}:{self.type}]'
+        return f'[{self.id}:{self.name}:{self.type}]'
 
-    @staticmethod
-    def __getNextID():
-        newId = Entity.__nextID
-        Entity.__nextID += 1
-        return newId
+    @property
+    def getMe(self):
+        return dict(
+            position=self.getPos(),
+            collisionRect=self.getCollisionRect(),
+            id=self.id,
+            type=self.type
+        )
 
     @property
     def id(self):
-        return self.__id
+        return id(self)
 
     @property
     def x(self):

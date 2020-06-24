@@ -35,6 +35,7 @@ class Character(MovingEntity):
         self.__health = 100
         self.attack = 30
         self.defense = 20
+        self.type = 'character'
 
     def updateNameRect(self):
         self.__nameRect.x = self.x - self.__nameRect.w / 2

@@ -10,9 +10,8 @@ class CharacterWrapper:
         self._entity.setPos(position.x, position.y)
         self._path = None
 
-    @staticmethod
-    def sendMessage(delay: float, sender: int, receiver: int, msg: str, extraInfo: dict):
-        hermes.messageDispatch(delay, sender, receiver, msg, extraInfo)
+    def sendMessage(self, receiver: int, msg: str, extraInfo: dict, delay: float = 0):
+        hermes.messageDispatch(delay, self._entity.id, receiver, msg, extraInfo)
 
     def onInit(self, name: str):
         self._entity.setName(name)

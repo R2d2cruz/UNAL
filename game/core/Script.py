@@ -9,7 +9,7 @@ class Script:
     def onInit(self, character: CharacterWrapper):
         pass
 
-    def onUpdate(self, character: CharacterWrapper):
+    def onUpdate(self, character: CharacterWrapper, neighbors: list):
         pass
 
     def onMessage(self, character: CharacterWrapper, telegram: Telegram):
