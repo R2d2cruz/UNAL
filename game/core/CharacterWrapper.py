@@ -1,13 +1,18 @@
 from game.core import Vector2D
 from game.core.Character import Character
+from game.core.Hermes import hermes
 
 
-class wrapper:
-    def __init__(self, entity: Character):
+class CharacterWrapper:
+    def __init__(self, entity: Character, position: Vector2D):
         self._entity = entity
         self._steeringOn = False
-        self._entity.setPos(128, 128)
+        self._entity.setPos(position.x, position.y)
         self._path = None
+
+    @staticmethod
+    def sendMessage(delay: float, sender: int, receiver: int, msg: str, extraInfo: dict):
+        hermes.messageDispatch(delay, sender, receiver, msg, extraInfo)
 
     def onInit(self, name: str):
         self._entity.setName(name)

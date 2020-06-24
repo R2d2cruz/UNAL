@@ -1,18 +1,16 @@
-from game.core.Character import Character
+from game.core.CharacterWrapper import CharacterWrapper
 from game.core.Script import Script
 from game.core.Telegram import Telegram
 
 
 class ScriptCharacter(Script):
 
-    def onInit(self, character: Character):
-        character.setName('Arthur')
-        character.setPos(64, 64)
-        character.steering.wanderEnabled = True
-        character.steering.weightWander = 0.2
+    def onInit(self, character: CharacterWrapper):
+        character.onInit('Arthur')
+        character.wander(0.2)
 
-    def onUpdate(self, character: Character):
+    def onUpdate(self, character: CharacterWrapper):
         pass
 
-    def onMessage(self, character: Character, telegram: Telegram):
+    def onMessage(self, character: CharacterWrapper, telegram: Telegram):
         pass

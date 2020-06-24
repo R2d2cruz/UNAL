@@ -1,9 +1,10 @@
 import os
+from random import choice
 
 import pygame
 
 from .entities import HealthPotion, Player
-from ..core.characterWrapper import wrapper
+from ..core.CharacterWrapper import CharacterWrapper
 from ..core import (Character, Game, TiledMap, Scene, SimpleCamera,
                     Vector2D, resourceManager, AnimatedEntity, World, collisionManager, entityManager, MovingEntity)
 from ..net.OnlinePlayer import OnlinePlayer
@@ -11,6 +12,7 @@ from ..ui import Button, Text, GridContainer, Container
 
 LEFT = 1
 RIGHT = 3
+
 
 class SelectionBox:
     def __init__(self):
@@ -91,6 +93,8 @@ class Playground(Scene):
         self.selectionBox = SelectionBox()
         self.world = World(tiledMap,
                            pygame.Rect(160, 0, self.game.surface.get_width() - 160, self.game.surface.get_height()))
+        self.spawningPoints = [
+            Vector2D(128, 128), Vector2D(192, 192), Vector2D(64, 64), Vector2D(128, 64), Vector2D(64, 192)]
 
         name = resourceManager.getRandomCharAnimName()
         self.player = Player(name, name, (0, 0), (0, 24, 34, 32))
@@ -325,7 +329,7 @@ class Playground(Scene):
                     character = Character(moduleName, 'Charly', (0, 0), (0, 24, 34, 32))
                     character.script = foo.ScriptCharacter()
                     character.script.name = moduleName
-                    character.wrapper = wrapper(character)
+                    character.wrapper = CharacterWrapper(character, choice(self.spawningPoints))
                     character.script.onInit(character.wrapper)
                     self.world.addEntity(character)
                     print('...👍')

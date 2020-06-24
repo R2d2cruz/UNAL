@@ -21,7 +21,7 @@ def main():
     game = Game(config)
     game.init()
     game.addScene("main", MainMenu(game))
-    game.addScene("play", Playground(game, TiledMap('small')))
+    game.addScene("play", Playground(game, TiledMap('laberinto')))
     game.setScene("main")
     # res.playSong('background1')
     game.run()
