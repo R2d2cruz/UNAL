@@ -1,8 +1,8 @@
-from random import random
+from random import random, choice
 
 import pygame
 
-from . import SpacePartition, TiledMap, entityManager, collisionManager, Entity, MovingEntity, Path, Graph
+from . import SpacePartition, TiledMap, entityManager, collisionManager, Entity, MovingEntity, Path, Graph, Character, Vector2D
 
 
 class World:
@@ -32,7 +32,8 @@ class World:
     def update(self, deltaTime: float):
         for entity in entityManager.allEntities:
             if entity.script is not None:
-                entity.script.onUpdate(entity)
+                entity.wrapper.setPath(self.followPath)
+                entity.script.onUpdate(entity.wrapper)
             entity.update(deltaTime)
             if issubclass(type(entity), MovingEntity):
                 self.cellSpace.updateEntity(entity)
@@ -60,12 +61,20 @@ class World:
         entity.setPos(pos.x, pos.y)
         self.cellSpace.updateEntity(entity)
 
-    def followRandomPath(self, entity):
+    def followRandomPath(self, entity: Character):
+        nodeEnd = choice(list(self.graph.nodes.keys()))
+        self.followPath(entity, nodeEnd)
+
+    def followPath(self, entity: Character, endNode: str):
         node = self.map.pointToCell(entity.x, entity.y)
-        graphPath = self.graph.randomPath(node)
+        graphPath = self.graph.path(node, endNode)
         realPath = Path()
         if len(graphPath) > 0:
             for node in graphPath:
                 realPath.points.append(self.map.cellToPoint(node))
             entity.steering.followPathEnabled = True
             entity.steering.followPathTarget = realPath
+
+    def followPositionPath(self, entity: Character, position: Vector2D):
+        node = self.map.pointToCell(position.x, position.y)
+        self.followPath(entity, node)
