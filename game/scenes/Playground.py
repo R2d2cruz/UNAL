@@ -3,6 +3,7 @@ import os
 import pygame
 
 from .entities import HealthPotion, Player
+from ..core.characterWrapper import wrapper
 from ..core import (Character, Game, TiledMap, Scene, SimpleCamera,
                     Vector2D, resourceManager, AnimatedEntity, World)
 from ..net.OnlinePlayer import OnlinePlayer
@@ -197,7 +198,8 @@ class Playground(Scene):
                     character = Character(moduleName, 'Charly', (0, 0), (0, 24, 34, 32))
                     character.script = foo.ScriptCharacter()
                     character.script.name = moduleName
-                    character.script.onInit(character)
+                    character.wrapper = wrapper(character)
+                    character.script.onInit(character.wrapper)
                     self.world.addEntity(character)
                     print('...👍')
                 except Exception as e:

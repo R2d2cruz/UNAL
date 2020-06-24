@@ -32,7 +32,8 @@ class World:
     def update(self, deltaTime: float):
         for entity in entityManager.allEntities:
             if entity.script is not None:
-                entity.script.onUpdate(entity)
+                entity.wrapper.setPath(self.followPath)
+                entity.script.onUpdate(entity.wrapper)
             entity.update(deltaTime)
             if isinstance(entity, MovingEntity):
                 self.cellSpace.updateEntity(entity)

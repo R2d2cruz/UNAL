@@ -19,6 +19,7 @@ class Entity(pygame.sprite.Sprite):
         self.tag = None
         self.script = None
         self.cellIndex = None
+        self.wrapper = None
 
     @staticmethod
     def __getNextID():
