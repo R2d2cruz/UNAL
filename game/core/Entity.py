@@ -12,14 +12,18 @@ class Entity(pygame.sprite.Sprite):
         super().__init__()
         self.__pos = Vector2D(0, 0)
         self.__id = self.__getNextID()
+        self.type = "entity"
         self.image = None
         self.name = None
         self.rect = pygame.Rect(0, 0, 0, 0)
-        self.flag = ""
         self.tag = None
         self.script = None
         self.cellIndex = None
+        self.selected = False
         self.wrapper = None
+
+    def __repr__(self):
+        return f'[{self.__id}:{self.name}:{self.type}]'
 
     @staticmethod
     def __getNextID():
@@ -131,6 +135,9 @@ class Entity(pygame.sprite.Sprite):
     def getOldCollisionRect(self) -> pygame.Rect:
         return self.rect
 
+    def getSelectionRect(self) -> pygame.Rect:
+        return self.rect
+
     def update(self, deltaTime: float):
         pass
 
@@ -143,6 +150,8 @@ class Entity(pygame.sprite.Sprite):
         if self.tag:
             color = (255, 0, 0)
             pygame.draw.rect(surface, color, camera.apply(self.getCollisionRect()), 4)
+        if self.selected:
+            pygame.draw.rect(surface, (0, 255, 0), camera.apply(self.rect), 4)
         # else:
         #     color = (0, 0, 0)
         #     pygame.draw.rect(surface, color, camera.apply(self.getCollisionRect()), 1)

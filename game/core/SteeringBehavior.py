@@ -34,7 +34,7 @@ class SteeringBehavior:
 
         self.arriveEnabled = False
         self.arriveTarget = None
-        self.arriveSlowRadius = 100.0
+        self.arriveSlowRadius = 10.0
         self.weightArrive = 1.0
 
         self.pursuitEnabled = False
@@ -70,11 +70,18 @@ class SteeringBehavior:
     def arrive(self, target) -> Vector2D:
         agent = getVector2D(self.agent)
         vector = target - agent
-        distance = vector.length()
+        distanceToTarget = vector.length()
+
+        if distanceToTarget < 5:
+            self.followPathEnabled = False
+            self.followPathTarget = None
+            self.agent.velocity.setZero()
+            return Vector2D(0, 0)
+
         vector = normalize(vector) * self.agent.maxSpeed
         # if distance < self.arriveSlowRadius:
         #     vector *= (distance / self.arriveSlowRadius)
-        ramp = min(distance / self.arriveSlowRadius, 1.0)
+        ramp = min(distanceToTarget / self.arriveSlowRadius, 1.0)
         # return vector - self.agent.velocity
         return (vector * ramp) - self.agent.velocity
 
@@ -109,8 +116,8 @@ class SteeringBehavior:
         # calcular fuerza de desplacamiento
         displacement = Vector2D(0, -WANDER_RADIUS)
         # cambiar la direccioncambiando el angulo
-        l = displacement.length()
-        displacement = Vector2D(math.cos(self.wanderAngle), math.sin(self.wanderAngle)) * l
+        lon = displacement.length()
+        displacement = Vector2D(math.cos(self.wanderAngle), math.sin(self.wanderAngle)) * lon
         # cambiar el wanderAngle un poquito para la siguiente iteracion
         self.wanderAngle += random.random() * ANGLE_CHANGE - ANGLE_CHANGE * .5
         # calcular la fuerza

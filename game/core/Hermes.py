@@ -14,7 +14,7 @@ class _Hermes:
     def setDeltaTime(self, deltaTime: float):
         self.__deltaTime = deltaTime
 
-    def messageDispatch(self, delay: float, sender: int, receiver: int, msg: str, extraInfo: dict = {}):
+    def messageDispatch(self, delay: float, sender: int, receiver: int, msg: str, extraInfo: dict = None):
         telegram = Telegram(sender, receiver, msg, 0, extraInfo)
         receiver = entityManager.getEntityById(receiver)
         if delay <= 0:

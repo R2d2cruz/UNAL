@@ -40,6 +40,14 @@ class SimpleCamera(BaseCamera):
         elif type(pos) == tuple or type(pos) == list:
             return int(pos[0] + self.__view.centerx), int(pos[1] + self.__view.centery)
 
+    def unapply(self, pos):
+        if type(pos) == pygame.Rect:
+            return pos.move(-self.__view.centerx, -self.__view.centery)
+        elif type(pos) == Vector2D:
+            return int(pos.x - self.__view.centerx), int(pos.y - self.__view.centery)
+        elif type(pos) == tuple or type(pos) == list:
+            return int(pos[0] - self.__view.centerx), int(pos[1] - self.__view.centery)
+
     def update(self, deltaTime: float):
         if self.__target is not None:
             # calcular  la posicion topLeft de la camara

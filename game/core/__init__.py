@@ -14,5 +14,5 @@ from .Scene import *
 from .SpacePartition import *
 from .TiledMap import *
 from .Vector2D import *
-from .camera import *
 from .World import World
+from .camera import *

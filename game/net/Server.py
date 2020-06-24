@@ -3,6 +3,7 @@ import sys
 import time
 
 import zmq
+
 # noinspection PyUnresolvedReferences
 from .Player import Player
 
@@ -48,7 +49,8 @@ class Server:
             try:
                 message = json.loads(self.socket.recv_json())
                 senderId = message.get('id')
-                if senderId is not None: senderId = int(senderId)
+                if senderId is not None:
+                    senderId = int(senderId)
                 data = message.get('data')
                 # print('📨 mensaje: ', message, data)
                 self.commands.get(message.get('command'))(senderId, data)

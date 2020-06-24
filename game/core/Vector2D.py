@@ -72,9 +72,9 @@ def truncate(vector: Vector2D, maxLength: float) -> Vector2D:
 
 
 def normalize(vector: Vector2D) -> Vector2D:
-    l = vector.length()
-    if l > EPSILON:
-        return (vector / l)
+    lon = vector.length()
+    if lon > EPSILON:
+        return vector / lon
     return Vector2D(vector.x, vector.y)
 
 

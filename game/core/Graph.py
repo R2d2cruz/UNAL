@@ -41,30 +41,30 @@ class Graph:
     #             prevNode = node
 
     @staticmethod
-    def getGraph(map: TiledMap, useAllDirections: bool = False):
+    def getGraph(tiledMap: TiledMap, useAllDirections: bool = False):
         graph = {}
         getNeighbors = Graph.getNeighbors8 if useAllDirections else Graph.getNeighbors4
-        for row in range(0, map.rows):
-            for col in range(0, map.cols):
-                tile = map.tileset.getTileInfo(map.cells[row][col])
+        for row in range(0, tiledMap.rows):
+            for col in range(0, tiledMap.cols):
+                tile = tiledMap.tileset.getTileInfo(tiledMap.cells[row][col])
                 if tile.walkable:
-                    graph[str(col) + ',' + str(row)] = getNeighbors(map, col, row)
+                    graph[str(col) + ',' + str(row)] = getNeighbors(tiledMap, col, row)
 
-        def countNeighbors(nodeKey: str):
-            return -len(graph[nodeKey])
+        def countNeighbors(key: str):
+            return -len(graph[key])
 
         for nodeKey in graph:
             graph[nodeKey] = sorted(graph[nodeKey], key=countNeighbors)
         return graph
 
     @staticmethod
-    def getNeighbors8(map: TiledMap, col: int, row: int) -> list:
+    def getNeighbors8(tiledMap: TiledMap, col: int, row: int) -> list:
         nodes = []
         for y in range(row - 1, row + 2):
-            if 0 <= y < map.rows:
+            if 0 <= y < tiledMap.rows:
                 for x in range(col - 1, col + 2):
-                    if 0 <= x < map.cols:
-                        if Graph.areContinuous(map, col, row, x, y):
+                    if 0 <= x < tiledMap.cols:
+                        if Graph.areContinuous(tiledMap, col, row, x, y):
                             nodes.append(str(x) + ',' + str(y))
         return nodes
 

@@ -30,13 +30,15 @@ class Client:
                     self.connected = True
                     print('👍 Conexión exitosa. Id de cliente: ' + str(self.id))
                     return True
-                except zmq.Again as e:
+                except zmq.Again:
                     print('👎 Conexión fallida. Cerrando socket...')
                     self.disconnect()
                 except Exception as e:
                     print('❌ Client.connect', e)
                     self.disconnect()
-        print("😞 No se pudo conectar. Por favor verifique que la configuración en config.json sea correcta y vuelva a intentar.")
+        print(
+            "😞 No se pudo conectar. Por favor verifique que la configuración en config.json sea correcta y vuelva a "
+            "intentar.")
         return False
 
     def __send(self, message: object):
