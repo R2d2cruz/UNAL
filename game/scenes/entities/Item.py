@@ -45,6 +45,7 @@ class HealthPotion(Item):
         self.healPower = healPower
         self.effect = self.recoveryHealth
         self.isOn = True
+        self.type = "item"
 
     def recoveryHealth(self, player: Character):
         if self.isOn:

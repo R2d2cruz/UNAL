@@ -1,9 +1,12 @@
+from .Character import Character
+
+
 class Script:
     def __init__(self):
         self.name = None
 
-    def onInit(self, worlRect):
+    def onInit(self, character: Character):
         pass
 
-    def onUdpdate(self, neighbors):
+    def onUpdate(self, neighbors: list):
         pass

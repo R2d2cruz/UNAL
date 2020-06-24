@@ -15,6 +15,7 @@ class Wall(Entity):
         self.width = width
         self.height = height
         self.image = resourceManager.loadImage("ts1", (96, 64, width, height))
+        self.type = "wall"
 
 
 class TiledMap:
@@ -34,10 +35,13 @@ class TiledMap:
 
     def loadMap(self, fileName: str):
         self.cells = []
-        tileSetName = None
         with open(fileName) as json_file:
             data = json.load(json_file)
             tileSetName = data.get("tileset")
+            if tileSetName is not None:
+                self.tileset = Tileset.loadTileset(tileSetName)
+            else:
+                print('❌ Error cargando mapa', fileName, ': tileset sin especificar')
             self.rows = data.get("rows")
             self.cols = data.get("cols")
             cells = data.get("cells")
@@ -46,14 +50,11 @@ class TiledMap:
                 for col in row:
                     newRow.append(col)
                 if self.cols != len(newRow):
-                    print('❌ Error cargando mapa', fileName, ': número de columnas no coincide ', self.cols, '<>', len(newRow))
+                    print('❌ Error cargando mapa', fileName, ': número de columnas no coincide ', self.cols, '<>',
+                          len(newRow))
                 self.cells.append(newRow)
         if self.rows != len(self.cells):
             print('❌ Error cargando mapa', fileName, ': número de filas no coincide', self.rows, '<>', len(self.cells))
-        if tileSetName is not None:
-            self.tileset = Tileset.loadTileset(tileSetName)
-        else:
-            print('❌ Error cargando mapa', fileName, ': tileset sin especificar')
         self.width = self.cols * self.tileset.tileWidth
         self.height = self.rows * self.tileset.tileHeight
 

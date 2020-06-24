@@ -85,7 +85,8 @@ class MainMenu(Scene):
     def render(self, surface: pygame.Surface):
         surface.fill((30, 30, 30))
         self.ui.render(surface, self.camera)
-        # TODO: si el cliente está conectado mostrar a que servidor esta conectado, sino entonces indicar que no esta conectado
+        # TODO: si el cliente está conectado mostrar a que servidor esta conectado, sino entonces indicar que no esta
+        #  conectado
 
     def onEnterScene(self):
         if (self.game.player is not None) and (self.game.player.name is None):
@@ -102,8 +103,8 @@ class MainMenu(Scene):
         self.game.saveSettings()
         if not self.game.client.connected:
             if not self.game.client.connect(self.game.player):
-                # TODO: en vez de finaizar aqui simplemente se muestra un mensaje en pantalla indicandole al usuario que no se pudo conectar
-                # TODO: un boton en la pantalla permite salir, esta linea va allá
+                # TODO: en vez de finaizar aqui simplemente se muestra un mensaje en pantalla indicandole al usuario
+                #  que no se pudo conectar un boton en la pantalla permite salir, esta linea va allá
                 resourceManager.playSound('error')
                 pass
         if self.game.client.connected:
@@ -111,6 +112,9 @@ class MainMenu(Scene):
             self.game.setScene('play')
 
     def onGoQuit(self, sender):
+        resourceManager.playSound('select')
+        # demorar aqui un poco, tal vez mostrar una animacion o algo mientras sale
+        pygame.time.delay(100)
         self.game.quit()
 
     def goToLeftList(self, sender):
@@ -134,11 +138,13 @@ class MainMenu(Scene):
     @staticmethod
     def onMusicButton(sender: Button):
         enable = "ON" if resourceManager.flipEnableMusic() else "OFF"
+        resourceManager.playSound('select')
         sender.text = "Music: " + enable
 
     @staticmethod
     def onSoundButton(sender: Button):
         enable = "ON" if resourceManager.flipEnableSound() else "OFF"
+        resourceManager.playSound('select')
         sender.text = "Sounds: " + enable
 
     def changeAnim(self, entity: AnimatedEntity = None):

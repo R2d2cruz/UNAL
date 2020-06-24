@@ -12,31 +12,34 @@ class Cell:
 
 
 class SpacePartition:
-    def __init__(self, width: int, height: int, cellsX: int, cellsY: int):
+    def __init__(self, width: int, height: int, cellWidth: int, cellHeight: int):
         self.__spaceWidth = width
         self.__spaceHeight = height
-        self.__numCellsX = cellsX
-        self.__numCellsY = cellsY
-        self.__cellSizeX = width / cellsX
-        self.__cellSizeY = height / cellsY
+        self.__cellWidth = cellWidth
+        self.__cellHeight = cellHeight
+        self.__numCellsX = width // cellWidth
+        self.__numCellsY = height // cellHeight
         self.__cells = []
         self.__numCells = 0
         for y in range(0, self.__numCellsY):
             for x in range(0, self.__numCellsX):
-                left = x * self.__cellSizeX
-                top = y * self.__cellSizeY
+                left = x * self.__cellWidth
+                top = y * self.__cellHeight
                 self.__cells.append(Cell(
-                    pygame.Rect(left, top, self.__cellSizeX, self.__cellSizeY)
+                    pygame.Rect(left, top, self.__cellWidth, self.__cellHeight)
                 ))
         self.__numCells = len(self.__cells)
 
-    def calculateNeighbors(self, targetPos: Vector2D, queryRadius: float) -> list:
-        queryRect = pygame.Rect(
-            targetPos.x - queryRadius,
-            targetPos.y - queryRadius,
-            queryRadius * 2,
-            queryRadius * 2
-        )
+    @property
+    def cellWidth(self):
+        return self.__cellWidth
+
+    @property
+    def cellHeight(self):
+        return self.__cellHeight
+
+    # def calculateNeighbors(self, targetPos: Vector2D, queryRadius: float) -> list:
+    def calculateNeighbors(self, queryRect) -> list:
         neighbors = []
         for cell in self.__cells:
             if len(cell.members) and queryRect.colliderect(cell.rect):
@@ -58,6 +61,7 @@ class SpacePartition:
         index = self.posToIndex(entity.getPos())
         if 0 <= index < self.__numCells:
             self.__cells[index].members.append(entity)
+            entity.cellIndex = index
         else:
             print('❌ Entity can not be registered', entity.id, entity.name, entity.getPos())
         return index
@@ -113,9 +117,9 @@ class SpacePartition:
             for entity in cell.members:
                 entity.tag = value
 
-    def tagNeighborhood(self, entity: Entity, queryRadius: float):
+    def tagNeighborhood(self, entity: Entity):
         self.tagAll(False)
-        neighbors = self.calculateNeighbors(entity.getPos(), queryRadius)
+        neighbors = self.calculateNeighbors(entity.getCollisionRect())
         if entity in neighbors:
             neighbors.remove(entity)
         for entity in neighbors:

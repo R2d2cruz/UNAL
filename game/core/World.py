@@ -13,7 +13,7 @@ class World:
         self.map = tiledMap
         self.graph = Graph()
         self.graph.nodes = Graph.getGraph(tiledMap, True)
-        self.cellSpace = SpacePartition(self.rect.w, self.rect.h, int(self.rect.w / 100), int(self.rect.h / 100))
+        self.cellSpace = SpacePartition(self.rect.w, self.rect.h, 100, 100)
         self.worldSurface = pygame.Surface((view.width, view.height))
         self.cellSpace.registerEntities(tiledMap.getWalls())
         # entityManager.registerEntities(tiledMap.objects)
@@ -34,7 +34,7 @@ class World:
             if entity.script is not None:
                 entity.script.onUpdate(entity)
             entity.update(deltaTime)
-            if isinstance(entity, MovingEntity):
+            if issubclass(type(entity), MovingEntity):
                 self.cellSpace.updateEntity(entity)
 
         collisionManager.update(self.cellSpace, self.rect)
@@ -45,6 +45,7 @@ class World:
         for entity in entityManager.allEntities:
             entity.render(self.worldSurface, camera)
         # self.graph.render(self.worldSurface, camera)
+        # self.cellSpace.render(self.worldSurface, camera)
         surface.blit(self.worldSurface, self.view)
 
     def getValidRandomPos(self, rect: pygame.Rect):
@@ -57,6 +58,7 @@ class World:
     def locateInValidRandomPos(self, entity: Entity):
         pos = self.getValidRandomPos(entity.getCollisionRect())
         entity.setPos(pos.x, pos.y)
+        self.cellSpace.updateEntity(entity)
 
     def followRandomPath(self, entity):
         node = self.map.pointToCell(entity.x, entity.y)
