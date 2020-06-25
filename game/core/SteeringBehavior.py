@@ -11,6 +11,7 @@ WANDER_DIST = 10.0
 # cambio de angulo
 ANGLE_CHANGE = 1
 
+DEFAULT_WEIGHT = 1.0
 
 def randomClamped():
     return random.random() - random.random()
@@ -18,47 +19,88 @@ def randomClamped():
 
 class SteeringBehavior:
     def __init__(self, agent):
-        self.wanderAngle = random.random() * math.pi * 2
         self.agent = agent
 
+        self.wanderAngle = random.random() * math.pi * 2
         self.wanderEnabled = False
-        self.weightWander = 1.0
+        self.weightWander = DEFAULT_WEIGHT
 
         self.seekEnabled = False
         self.seekTarget = None
-        self.weightSeek = 1.0
+        self.weightSeek = DEFAULT_WEIGHT
 
         self.fleeEnabled = False
         self.fleeTarget = None
-        self.weightFlee = 1.0
+        self.weightFlee = DEFAULT_WEIGHT
 
         self.arriveEnabled = False
         self.arriveTarget = None
         self.arriveSlowRadius = 10.0
-        self.weightArrive = 1.0
+        self.weightArrive = DEFAULT_WEIGHT
 
         self.pursuitEnabled = False
         self.pursuitTarget = None
-        self.weightPursuit = 1.0
+        self.weightPursuit = DEFAULT_WEIGHT
 
         self.offsetPursuitEnabled = False
         self.offsetPursuitTarget = None
         self.offsetPursuitDistance = None
-        self.weightOffsetPursuit = 1.0
+        self.weightOffsetPursuit = DEFAULT_WEIGHT
 
         self.interposeEnabled = False
         self.interposeTargetA = None
         self.interposeTargetB = None
-        self.weightInterpose = 1.0
+        self.weightInterpose = DEFAULT_WEIGHT
 
         self.hideEnabled = False
         self.hideTarget = None
         self.hideObtacles = None
-        self.weightHide = 1.0
+        self.weightHide = DEFAULT_WEIGHT
 
         self.followPathEnabled = False
         self.followPathTarget = None
-        self.weightFollowPath = 1.0
+        self.weightFollowPath = DEFAULT_WEIGHT
+
+    def resetAll(self):
+        self.wanderAngle = random.random() * math.pi * 2
+        self.wanderEnabled = False
+        self.weightWander = DEFAULT_WEIGHT
+
+        self.seekEnabled = False
+        self.seekTarget = None
+        self.weightSeek = DEFAULT_WEIGHT
+
+        self.fleeEnabled = False
+        self.fleeTarget = None
+        self.weightFlee = DEFAULT_WEIGHT
+
+        self.arriveEnabled = False
+        self.arriveTarget = None
+        self.arriveSlowRadius = 10.0
+        self.weightArrive = DEFAULT_WEIGHT
+
+        self.followPathEnabled = False
+        self.followPathTarget = None
+        self.weightFollowPath = DEFAULT_WEIGHT
+
+        # self.pursuitEnabled = False
+        # self.pursuitTarget = None
+        # self.weightPursuit = DEFAULT_WEIGHT
+        #
+        # self.offsetPursuitEnabled = False
+        # self.offsetPursuitTarget = None
+        # self.offsetPursuitDistance = None
+        # self.weightOffsetPursuit = DEFAULT_WEIGHT
+        #
+        # self.interposeEnabled = False
+        # self.interposeTargetA = None
+        # self.interposeTargetB = None
+        # self.weightInterpose = DEFAULT_WEIGHT
+        #
+        # self.hideEnabled = False
+        # self.hideTarget = None
+        # self.hideObtacles = None
+        # self.weightHide = DEFAULT_WEIGHT
 
     # retorna un vector para mover la entidad hacia la posicion dada
     def seek(self, target) -> Vector2D:

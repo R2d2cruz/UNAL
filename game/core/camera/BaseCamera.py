@@ -6,10 +6,10 @@ class BaseCamera:
         pass
 
     def apply(self, pos):
-        return pos.x, pos.y
+        return pos
 
     def unapply(self, pos):
-        return -pos.x, -pos.y
+        return pos
 
     def update(self, deltaTime: float):
         pass

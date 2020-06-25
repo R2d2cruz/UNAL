@@ -14,7 +14,7 @@ class SimpleCamera(BaseCamera):
         self.boundRight = -self.__worldRect.width
         self.boundTop = 0
         self.boundBottom = -self.__worldRect.height
-        self.fixToView = True
+        self.fixToView = False
         self.__calculateBounds()
 
     def __calculateBounds(self):

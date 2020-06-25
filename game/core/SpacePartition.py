@@ -85,7 +85,7 @@ class SpacePartition:
             index = numCells
         return index
 
-    def updateEntity(self, entity: Entity):
+    def updateEntity(self, entity: MovingEntity):
         if entity.cellIndex is None:
             oldIndex = self.posToIndex(entity.getOldPos())
         else:

@@ -50,16 +50,20 @@ class World:
         # self.cellSpace.render(self.worldSurface, camera)
         surface.blit(self.worldSurface, self.view)
 
-    def getValidRandomPos(self, rect: pygame.Rect):
+    def getValidRandomPos(self, entity: Entity) -> Vector2D:
+        # se necesita el entity porque el collision rect se calcula diferente segun el tipo
+        posX = entity.x
+        posY = entity.y
         while True:
-            rect.x = int(random() * self.rect.w)
-            rect.y = int(random() * self.rect.h)
-            if not collisionManager.checkCollition(rect, self.cellSpace, self.rect):
-                return rect
+            entity.setPos(int(random() * self.rect.w), int(random() * self.rect.h))
+            if not collisionManager.checkCollition(entity.getCollisionRect(), self.cellSpace, self.rect):
+                newPos = Vector2D(entity.x, entity.y)
+                entity.setPos(posX, posY)
+                return newPos
 
     def locateInValidRandomPos(self, entity: Entity):
-        pos = self.getValidRandomPos(entity.getCollisionRect())
-        entity.setPos(pos.x, pos.y)
+        newPos = self.getValidRandomPos(entity)
+        entity.setPos(newPos.x, newPos.y)
         self.cellSpace.updateEntity(entity)
 
     def followRandomPath(self, entity: Character):
