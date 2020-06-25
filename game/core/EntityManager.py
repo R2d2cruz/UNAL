@@ -10,10 +10,20 @@ class _EntityManager:
         self.movingEntities = set()
         self.entities = set()
         self.walls = set()
+        self.other = {}
+        self.__worldId = None
 
     @property
     def allEntities(self):
         return self.__entityMap.values()
+
+    @property
+    def worldId(self):
+        return self.__worldId
+
+    @worldId.setter
+    def worldId(self, _id):
+        self.__worldId = _id
 
     def registerEntities(self, entities: list):
         for entity in entities:
@@ -30,6 +40,8 @@ class _EntityManager:
             elif isinstance(entity, pygame.Rect):
                 # self.__entityMap[entity.id] = entity
                 self.walls.add(entity)
+            else:
+                self.other[entity.id] = entity
 
     def unregisterEntity(self, entity: Entity):
         del self.__entityMap[entity.id]
@@ -41,7 +53,8 @@ class _EntityManager:
             self.walls.remove(entity)
 
     def getEntityById(self, _id: int):
-        return self.__entityMap.get(_id)
+        entity = self.__entityMap.get(_id)
+        return entity if entity is not None else self.other.get(_id)
 
 
 entityManager = _EntityManager()

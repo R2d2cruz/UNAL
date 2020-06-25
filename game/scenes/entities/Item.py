@@ -1,7 +1,7 @@
 import pygame
 
 from ...core import (Character, Entity, Telegram, Vector2D, hermes,
-                     resourceManager)
+                     resourceManager, entityManager)
 
 MAXYINTERVAL = 6
 
@@ -49,10 +49,9 @@ class HealthPotion(Item):
 
     def recoveryHealth(self, player: Character):
         if self.isOn:
-            hermes.messageDispatch(0, self.id, player.id, "heal", {"medicine": self.healPower})
+            print(player.health)
+            if player.heal(self.healPower):
+                print('healed')
+                hermes.messageDispatch(0, self.id, entityManager.worldId, 'deleteMe')
+            # hermes.messageDispatch(0, self.id, player.id, "heal", {"medicine": self.healPower})
         return True
-
-    def onMessage(self, telegram: Telegram):
-        if telegram.message == "youHealMe":
-            # eliminar este item
-            self.isOn = False

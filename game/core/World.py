@@ -4,6 +4,7 @@ import pygame
 
 from . import MovingEntity, Character, collisionManager, Entity, entityManager, Graph, Path, SpacePartition, TiledMap, \
     Vector2D
+from .Telegram import Telegram
 
 
 class World:
@@ -14,12 +15,19 @@ class World:
         self.map = tiledMap
         self.graph = Graph()
         self.graph.nodes = Graph.getGraph(tiledMap, True)
+        self.script = None
         self.cellSpace = SpacePartition(self.rect.w, self.rect.h, 100, 100)
         self.worldSurface = pygame.Surface((view.width, view.height))
         self.cellSpace.registerEntities(tiledMap.getWalls())
         self.cellSpace.registerEntities(tiledMap.objects)
         entityManager.registerEntities(tiledMap.objects)
+        entityManager.registerEntity(self)
+        entityManager.worldId = self.id
         # entityManager.registerEntities(tiledMap.getWalls())
+
+    @property
+    def id(self):
+        return id(self)
         
     def addEntity(self, entity, isSolid: bool = True):
         if isSolid:
@@ -65,7 +73,8 @@ class World:
     def locateInValidRandomPos(self, entity: Entity):
         newPos = self.getValidRandomPos(entity)
         entity.setPos(newPos.x, newPos.y)
-        self.cellSpace.updateEntity(entity)
+        if isinstance(entity, MovingEntity):
+            self.cellSpace.updateEntity(entity)
 
     def followRandomPath(self, entity: Character):
         nodeEnd = choice(list(self.graph.nodes.keys()))
@@ -84,3 +93,9 @@ class World:
     def followPositionPath(self, entity: Character, position: Vector2D):
         node = self.map.pointToCell(position.x, position.y)
         self.followPath(entity, node)
+
+    def onMessage(self, telegram: Telegram):
+        if telegram.message == 'deleteMe':
+            entity = entityManager.getEntityById(telegram.sender)
+            self.cellSpace.unregisterEntity(entity)
+            entityManager.unregisterEntity(entity)
