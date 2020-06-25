@@ -234,7 +234,7 @@ class Playground(Scene):
 
     def onQuit(self, sender):
         # tal vez preguntar al usuario si esta seguro
-        # se guarda el juego? se cierra y libera todo? o se mantiene en memoria?
+        # se guarda el juego? se cierra y libera? o se mantiene en memoria?
         self.game.setScene("main")
 
     def loadWorld(self, mapName: str):
