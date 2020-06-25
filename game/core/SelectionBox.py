@@ -68,6 +68,6 @@ class SelectionBox:
         self.visible = False
         for entity in self.__entities:
             entity.selected = False
-        self.__entities = collisionManager.queryObjects(rect, world.cellSpace)
+        self.__entities = world.cellSpace.queryObjects(rect)
         for entity in self.__entities:
             entity.selected = True
