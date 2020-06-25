@@ -2,7 +2,15 @@ from random import random, choice
 
 import pygame
 
-from . import SpacePartition, TiledMap, entityManager, collisionManager, Entity, MovingEntity, Path, Graph, Character, Vector2D
+from .Character import Character
+from .CollisionManager import collisionManager
+from .Entity import Entity
+from .EntityManager import entityManager
+from .Graph import Graph
+from .Path import Path
+from .SpacePartition import SpacePartition
+from .TiledMap import TiledMap
+from .Vector2D import Vector2D
 
 
 class World:

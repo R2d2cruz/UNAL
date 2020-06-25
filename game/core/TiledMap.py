@@ -5,17 +5,18 @@ import pygame
 from .Entity import Entity
 from .ResourceManager import resourceManager
 from .Tileset import Tileset
+from .misc import Colors
 
 
 class Wall(Entity):
     def __init__(self, x: int, y: int, width: int, height: int, *groups):
         super().__init__(*groups)
+        self.type = "wall"
+        self.image = None
         self.x = x
         self.y = y
         self.width = width
         self.height = height
-        self.image = resourceManager.loadImage("ts1", (96, 64, width, height))
-        self.type = "wall"
 
 
 class TiledMap:

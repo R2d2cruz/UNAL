@@ -81,22 +81,22 @@ class MovingEntity(AnimatedEntity):
 
     # def render(self, surface, camera):
     #     super().render(surface, camera)
-    #     pygame.draw.circle(surface, (0, 0, 0), camera.apply([self.x, self.y]), 100, 2)
-    #     pygame.draw.circle(surface, (0, 0, 0), camera.apply([self.x, self.y]), 16, 2)
+    #     pygame.draw.circle(surface, Colors.BLACK, camera.apply([self.x, self.y]), 100, 2)
+    #     pygame.draw.circle(surface, Colors.BLACK, camera.apply([self.x, self.y]), 16, 2)
     #     label = self.font.render(f" F {self.__steeringForce.length():.4f}", True, (255, 255, 255))
     #     surface.blit(label, camera.apply([self.x + 20, self.y]))
-    #     pygame.draw.line(surface, (255, 0, 0), camera.apply([self.x, self.y]),
+    #     pygame.draw.line(surface, Colors.RED, camera.apply([self.x, self.y]),
     #                      camera.apply([self.x + self.__steeringForce.x * 3000,
     #                      self.y + self.__steeringForce.y * 3000]), 2)
 
     #     label = self.font.render(f" a {self.__acceleration.length():.4f}", True, (255, 255, 255))
     #     surface.blit(label, camera.apply([self.x + 20, self.y + 18]))
-    #     pygame.draw.line(surface, (0, 255, 0), camera.apply([self.x, self.y + 10]), camera.apply(
+    #     pygame.draw.line(surface, Colors.GREEN, camera.apply([self.x, self.y + 10]), camera.apply(
     #         [self.x + self.__acceleration.x * 3000, self.y + self.__acceleration.y * 3000 + 10]), 2)
 
     #     label = self.font.render(f" v {self.__velocity.length():.4f}", True, (255, 255, 255))
     #     surface.blit(label, camera.apply([self.x + 20, self.y + 36]))
-    #     pygame.draw.line(surface, (0, 0, 255), camera.apply([self.x, self.y + 20]),
+    #     pygame.draw.line(surface, Colors.BLUE, camera.apply([self.x, self.y + 20]),
     #                      camera.apply([self.x + self.__velocity.x * 300, self.y + self.__velocity.y * 300 + 20]), 2)
 
     #     label = self.font.render(f"dX {self.__step.length():.4f}", True, (255, 200, 200))

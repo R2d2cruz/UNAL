@@ -1,8 +1,10 @@
 import pygame
 
 from .Entity import Entity
+from .MovingEntity import MovingEntity
 from .Vector2D import Vector2D
 from .camera.BaseCamera import BaseCamera
+from .misc import Colors
 
 
 class Cell:
