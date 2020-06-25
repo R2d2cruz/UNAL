@@ -2,15 +2,8 @@ from random import random, choice
 
 import pygame
 
-from .Character import Character
-from .CollisionManager import collisionManager
-from .Entity import Entity
-from .EntityManager import entityManager
-from .Graph import Graph
-from .Path import Path
-from .SpacePartition import SpacePartition
-from .TiledMap import TiledMap
-from .Vector2D import Vector2D
+from . import MovingEntity, Character, collisionManager, Entity, entityManager, Graph, Path, SpacePartition, TiledMap, \
+    Vector2D
 
 
 class World:
@@ -26,8 +19,8 @@ class World:
         self.cellSpace.registerEntities(tiledMap.getWalls())
         self.cellSpace.registerEntities(tiledMap.objects)
         entityManager.registerEntities(tiledMap.objects)
-        # collisionManager.registerEntities(tiledMap.getWalls())  # las paredes no deberian ser objetos... o si?
-
+        # entityManager.registerEntities(tiledMap.getWalls())
+        
     def addEntity(self, entity, isSolid: bool = True):
         if isSolid:
             self.cellSpace.registerEntity(entity)

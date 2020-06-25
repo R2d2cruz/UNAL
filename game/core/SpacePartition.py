@@ -23,10 +23,12 @@ class SpacePartition:
         self.__numCellsY = (height // cellHeight) + 1
         self.__cells = []
         self.__numCells = 0
+        offsetX = ((cellWidth - (width % cellWidth)) / 2)
+        offsetY = ((cellHeight - (height % cellHeight)) / 2)
         for y in range(0, self.__numCellsY):
             for x in range(0, self.__numCellsX):
-                left = x * self.__cellWidth
-                top = y * self.__cellHeight
+                left = x * self.__cellWidth - offsetX
+                top = y * self.__cellHeight - offsetY
                 self.__cells.append(Cell(
                     pygame.Rect(left, top, self.__cellWidth, self.__cellHeight)
                 ))
@@ -43,8 +45,12 @@ class SpacePartition:
     # def calculateNeighbors(self, targetPos: Vector2D, queryRadius: float) -> list:
     def calculateNeighbors(self, queryRect) -> list:
         neighbors = []
+        # y si la particion del espacio indexa las entidades entodas las
+        # celdas que toca ya no se tendria que arreglar este query rect
+        fixedRect = pygame.Rect((0, 0), (self.cellWidth + queryRect.width / 2, self.cellHeight + queryRect.height / 2))
+        fixedRect.center = queryRect.center
         for cell in self.__cells:
-            if len(cell.members) and queryRect.colliderect(cell.rect):
+            if len(cell.members) and fixedRect.colliderect(cell.rect):
                 neighbors += cell.members
                 cell.tag = True
             else:
@@ -107,11 +113,9 @@ class SpacePartition:
     def render(self, surface, camera: BaseCamera):
         for cell in self.__cells:
             if cell.tag:
-                color = (255, 0, 0)
-                pygame.draw.rect(surface, color, camera.apply(cell.rect), 4)
+                pygame.draw.rect(surface, Colors.RED, camera.apply(cell.rect), 4)
             else:
-                color = (0, 0, 0)
-                pygame.draw.rect(surface, color, camera.apply(cell.rect), 1)
+                pygame.draw.rect(surface, Colors.GRAY, camera.apply(cell.rect), 1)
 
     def tagAll(self, value):
         for cell in self.__cells:
@@ -127,3 +131,14 @@ class SpacePartition:
         for entity in neighbors:
             entity.tag = True
         return neighbors
+
+    def queryObjects(self, queryRect, validation=None) -> list:
+        entities = []
+        if validation is None:
+            def validation(x) -> bool: return True
+        neighbors = self.calculateNeighbors(queryRect)
+        for entity in neighbors:
+            if queryRect.colliderect(entity.getSelectionRect()):
+                if validation(entity):
+                    entities.append(entity)
+        return entities

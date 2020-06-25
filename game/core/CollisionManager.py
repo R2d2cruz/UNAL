@@ -44,9 +44,7 @@ class _CollisionManager:
                 side = [True, True]
                 entityA.stop(side[0], side[1])
             else:
-                queryRect = pygame.Rect(0, 0, cellSpace.cellWidth * 1.2, cellSpace.cellHeight * 1.2)
-                queryRect.center = entityA.getCollisionRect().center
-                neighbors = cellSpace.calculateNeighbors(queryRect)
+                neighbors = cellSpace.calculateNeighbors(entityA.getCollisionRect())
                 for entityB in neighbors:
                     if entityA != entityB and entityB.tangible:
                         if entityA.getCollisionRect().colliderect(entityB.getCollisionRect()):
@@ -61,31 +59,17 @@ class _CollisionManager:
 
     @staticmethod
     def checkCollition(queryRect, cellSpace, worldRect) -> bool:
-        if _CollisionManager.inBoundaries(worldRect, queryRect):
-            neighbors = cellSpace.calculateNeighbors(queryRect)
-            for neighbor in neighbors:
-                if queryRect.colliderect(neighbor.getCollisionRect()):
-                    return True
+        if not _CollisionManager.inBoundaries(worldRect, queryRect):
+            return True
+        neighbors = cellSpace.calculateNeighbors(queryRect)
+        for neighbor in neighbors:
+            if queryRect.colliderect(neighbor.getCollisionRect()):
+                return True
         return False
 
     @staticmethod
-    def queryObjects(queryRect, cellSpace, validation=None) -> list:
-        entities = []
-        if validation is None:
-            def validation(x) -> bool: return True
-        rect = queryRect.copy()
-        rect.width = max(queryRect.width, cellSpace.cellWidth * 1.2)
-        rect.height = max(queryRect.height, cellSpace.cellHeight * 1.2)
-        rect.center = queryRect.center
-        neighbors = cellSpace.calculateNeighbors(rect)
-        for entity in neighbors:
-            if queryRect.colliderect(entity.getSelectionRect()):
-                if validation(entity):
-                    entities.append(entity)
-        return entities
-
-    def getCloseNeighbors(self, entity: Entity, cellSpace, validation=None) -> list:
-        entities = self.queryObjects(entity.getCollisionRect(), cellSpace, validation=validation)
+    def getCloseNeighbors(entity: Entity, cellSpace, validation=None) -> list:
+        entities = cellSpace.queryObjects(entity.getCollisionRect(), validation=validation)
         return [x.getMe for x in entities]
 
 

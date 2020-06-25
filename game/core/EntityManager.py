@@ -28,17 +28,20 @@ class _EntityManager:
                 self.__entityMap[entity.id] = entity
                 self.entities.add(entity)
             elif isinstance(entity, pygame.Rect):
+                # self.__entityMap[entity.id] = entity
                 self.walls.add(entity)
 
     def unregisterEntity(self, entity: Entity):
         del self.__entityMap[entity.id]
+        if isinstance(entity, MovingEntity):
+            self.movingEntities.remove(entity)
+        elif isinstance(entity, Entity):
+            self.entities.remove(entity)
+        elif isinstance(entity, pygame.Rect):
+            self.walls.remove(entity)
 
     def getEntityById(self, _id: int):
         return self.__entityMap.get(_id)
-
-    def removeEntityById(self, _id: int):
-        if self.__entityMap.get(_id) is not None:
-            self.__entityMap.pop(_id)
 
 
 entityManager = _EntityManager()

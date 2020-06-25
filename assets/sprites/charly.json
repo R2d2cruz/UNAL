@@ -3,7 +3,8 @@
   "image": "images/chars/char3.png",
   "default_sprite": "stand_down",
   "width": 34,
-  "height": 56, 
+  "height": 56,
+  "collisionRect": [0, 24, 34, 32],
   "timestep": 100,
   "sprites": {
       "stand_up": [

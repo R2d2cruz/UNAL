@@ -54,6 +54,11 @@ class SimpleCamera(BaseCamera):
             offsetX = -int(self.__target.x + (self.__target.width / 2))
             offsetY = -int(self.__target.y + (self.__target.height / 2))
 
+            if self.__worldRect.width < self.__view.width:
+                offsetX = -self.__worldRect.width/2
+            if self.__worldRect.height < self.__view.height:
+                offsetY = -self.__worldRect.height / 2
+
             # limitar el movimiento de la camara para que el foco no se salga del mapa
             # se mueve la camara a la posicion calculada en el centro de la ventanda
             self.__view.x = max(self.boundLeft, min(self.boundRight, offsetX))

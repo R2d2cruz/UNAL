@@ -29,6 +29,36 @@
       "walkable": false,
       "tile": 21,
       "pos": [2, 2]
+    },
+    {
+      "walkable": false,
+      "animation": "fire",
+      "pos": [0, 0]
+    },
+    {
+      "walkable": false,
+      "animation": "fire",
+      "pos": [5, 0]
+    },
+    {
+      "walkable": false,
+      "animation": "fire",
+      "pos": [13, 13]
+    },
+    {
+      "walkable": false,
+      "animation": "fire",
+      "pos": [14, 13]
+    },
+    {
+      "walkable": false,
+      "animation": "fire",
+      "pos": [18, 13]
+    },
+    {
+      "walkable": false,
+      "animation": "fire",
+      "pos": [13, 19]
     }
   ]
 }
