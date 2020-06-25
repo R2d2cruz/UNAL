@@ -12,7 +12,11 @@
       "walkable": false
     },
     {
-      "id": 41,
+      "id": 21,
+      "walkable": false
+    },
+    {
+      "id": 22,
       "walkable": false
     }
   ]

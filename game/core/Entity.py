@@ -20,6 +20,7 @@ class Entity(pygame.sprite.Sprite):
         self.selected = False
         self.wrapper = None
         self.data = {}
+        self.tangible = True
 
     def __repr__(self):
         return f'[{self.id}:{self.name}:{self.type}]'

@@ -48,15 +48,15 @@ class _CollisionManager:
                 queryRect.center = entityA.getCollisionRect().center
                 neighbors = cellSpace.calculateNeighbors(queryRect)
                 for entityB in neighbors:
-                    if entityA != entityB:
+                    if entityA != entityB and entityB.tangible:
                         if entityA.getCollisionRect().colliderect(entityB.getCollisionRect()):
                             if entityB.type == "item":
                                 entityB.effect(entityA)
                             elif entityA.type == "item":
                                 entityA.effect(entityB)
                             else:
-                                # side = sideColl(entityA, entityB)
-                                side = [True, True]
+                                side = sideColl(entityA, entityB)
+                                # side = [True, True]
                                 entityA.stop(side[0], side[1])
 
     @staticmethod

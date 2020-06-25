@@ -24,6 +24,7 @@ class TiledMap:
         self.name = mapName
         self.tileset = None
         self.cells = []
+        self.objects = []
         self.x = 0
         self.y = 0
         self.width = 0
@@ -53,6 +54,15 @@ class TiledMap:
                     print('❌ Error cargando mapa', fileName, ': número de columnas no coincide ', self.cols, '<>',
                           len(newRow))
                 self.cells.append(newRow)
+            objs = data.get('objects')
+            if objs is not None:
+                for obj in objs:
+                    pos = obj.get('pos')
+                    entity = Entity()
+                    entity.tangible = obj.get('walkable')
+                    entity.image = self.tileset.getTileSurface(obj.get("tile"))
+                    entity.setPos(pos[0] * self.tileset.tileWidth, pos[1] * self.tileset.tileHeight)
+                    self.objects.append(entity)
         if self.rows != len(self.cells):
             print('❌ Error cargando mapa', fileName, ': número de filas no coincide', self.rows, '<>', len(self.cells))
         self.width = self.cols * self.tileset.tileWidth
@@ -71,6 +81,8 @@ class TiledMap:
                         self.y + (self.tileset.tileHeight * row)
                     ))
                 )
+        # for obj in self.objects:
+        #     obj.render(surface, camera)
 
     def pointToCell(self, x, y):
         return str(int(x / self.tileset.tileWidth)) + ',' + str(int(y / self.tileset.tileHeight))

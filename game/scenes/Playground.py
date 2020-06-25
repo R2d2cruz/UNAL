@@ -329,7 +329,9 @@ class Playground(Scene):
                     character = Character(moduleName, 'Charly', (0, 0), (0, 24, 34, 32))
                     character.script = foo.ScriptCharacter()
                     character.script.name = moduleName
-                    character.wrapper = CharacterWrapper(character, choice(self.spawningPoints))
+                    spawn = choice(self.spawningPoints)
+                    character.wrapper = CharacterWrapper(character, spawn)
+                    self.spawningPoints.remove(spawn)
                     character.script.onInit(character.wrapper)
                     self.world.addEntity(character)
                     print('...👍')

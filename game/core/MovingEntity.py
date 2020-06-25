@@ -105,10 +105,10 @@ class MovingEntity(AnimatedEntity):
     def stop(self, x: bool, y: bool):
         # self.__velocity.setZero()
         if x:
-            self.__velocity.x = 0
+            self.__velocity.x -= self.__velocity.x * 1.01
             self.x = self.__oldPos.x
         if y:
-            self.__velocity.y = 0
+            self.__velocity.y -= self.__velocity.y * 1.01
             self.y = self.__oldPos.y
 
     def move(self, vector: Vector2D):

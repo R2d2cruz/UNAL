@@ -16,7 +16,8 @@ class World:
         self.cellSpace = SpacePartition(self.rect.w, self.rect.h, 100, 100)
         self.worldSurface = pygame.Surface((view.width, view.height))
         self.cellSpace.registerEntities(tiledMap.getWalls())
-        # entityManager.registerEntities(tiledMap.objects)
+        self.cellSpace.registerEntities(tiledMap.objects)
+        entityManager.registerEntities(tiledMap.objects)
         # collisionManager.registerEntities(tiledMap.getWalls())  # las paredes no deberian ser objetos... o si?
 
     def addEntity(self, entity, isSolid: bool = True):

@@ -17,8 +17,8 @@ class SpacePartition:
         self.__spaceHeight = height
         self.__cellWidth = cellWidth
         self.__cellHeight = cellHeight
-        self.__numCellsX = width // cellWidth
-        self.__numCellsY = height // cellHeight
+        self.__numCellsX = (width // cellWidth) + 1
+        self.__numCellsY = (height // cellHeight) + 1
         self.__cells = []
         self.__numCells = 0
         for y in range(0, self.__numCellsY):
