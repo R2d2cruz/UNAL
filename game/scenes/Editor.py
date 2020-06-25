@@ -15,7 +15,7 @@ LEFT = 1
 RIGHT = 3
 
 
-class Playground(Scene):
+class Edit(Scene):
 
     def __init__(self, game: Game):
         super().__init__(game)
@@ -36,31 +36,17 @@ class Playground(Scene):
         self.font = resourceManager.getFont('minecraft', 18)
         # self.label = self.font.render('Juego en pausa por problemas conexión. Espere un momento', True, (255, 64, 64))
 
-        grid = GridContainer(0, 0, 160, self.game.surface.get_height())
-        grid.setGrid(10, 1)
-        buttonPath = Button(0, 0, 0, 0, self.font, 'Follow Path')
+        grid = GridContainer(0, self.game.surface.get_height() - 100, self.game.surface.get_height(), self.game.surface.get_height())
+        grid.setGrid(1, 10)
+        
+        buttonPath = Button(0, 0, 64, 64, self.font, 'X')
         buttonPath.onClick = self.onGoPath
         grid.addControl(buttonPath, (0, 0))
 
-        buttonWander1 = Button(0, 0, 0, 0, self.font, 'Start Wander')
-        buttonWander1.onClick = self.onStartWander
-        grid.addControl(buttonWander1, (1, 0))
 
-        buttonWander2 = Button(0, 0, 0, 0, self.font, 'Stop Wander')
-        buttonWander2.onClick = self.onStopWander
-        grid.addControl(buttonWander2, (2, 0))
-
-        buttonText = Button(0, 0, 0, 0, self.font, 'Text')
-        buttonText.onClick = self.onShowText
-        grid.addControl(buttonText, (3, 0))
-
-        buttonRandom = Button(0, 0, 0, 0, self.font, 'Random Pos')
-        buttonRandom.onClick = self.onRandomPos
-        grid.addControl(buttonRandom, (3, 0))
-
-        buttonText = Button(0, 0, 0, 0, self.font, 'Salir')
+        buttonText = Button(0, 0, 0, 0, self.font, 'X')
         buttonText.onClick = self.onQuit
-        grid.addControl(buttonText, (9, 0))
+        grid.addControl(buttonText, (0, 9))
         ui = Container(0, 0, self.game.surface.get_width(), self.game.surface.get_height())
         ui.addControl(grid)
         return ui
@@ -248,7 +234,7 @@ class Playground(Scene):
             Vector2D(64, 192)
         ]
         self.world = World(TiledMap(mapName),
-                           pygame.Rect(160, 0, self.game.surface.get_width() - 160, self.game.surface.get_height()))
+                           pygame.Rect(100, 0, self.game.surface.get_width() - 100, self.game.surface.get_height()))
         self.loadScripts(self.world.rect)
         self.world.addEntity(HealthPotion("freshPotion", (3, 2, 10, 12), Vector2D(160, 288), 20))
         name = resourceManager.getRandomCharAnimName()
@@ -285,3 +271,24 @@ class Playground(Scene):
                 except Exception as e:
                     print('❌ No se pudo cargar script', e)
         print('📜 Fin carga scripts')
+
+
+longtText = (
+    "Ricardo recibió un loro por su cumpleaños; ya era un loro adulto, con una muy mala actitud y vocabulario. Cada "
+    "palabra que decía estaba adornada por alguna palabrota, así como siempre, de muy mal genio. Ricardo trató, "
+    "desde el primer día, de corregir la actitud del loro, diciéndole palabras bondadosas y con mucha educación, "
+    "le ponía música suave y siempre lo trataba con mucho cariño.\n "
+    "Llego un día en que Ricardo perdió la paciencia y gritó al loro, el cual se puso más grosero aún, hasta que en "
+    "un momento de desesperación, Ricardo puso al loro en el congelador.\n "
+    "Por un par de minutos aún pudo escuchar los gritos del loro y el revuelo que causaba en el compartimento, "
+    "hasta que de pronto, todo fue silencio.\n "
+    "Luego de un rato, Ricardo arrepentido y temeroso de haber matado al loro, rápidamente abrió la puerta del "
+    "congelador.\n "
+    "El loro salió y con mucha calma dio un paso al hombro de Ricardo y dijo:\n"
+    "- \"Siento mucho haberte ofendido con mi lenguaje y actitud, te pido me disculpes y te prometo que en el futuro "
+    "vigilaré mucho mi comportamiento\".\n "
+    "Ricardo estaba muy sorprendido del tremendo cambio en la actitud del loro y estaba a punto de preguntarle qué es "
+    "lo que lo había hecho cambiar de esa manera, cuando el loro continuó:\n "
+    "- ¿te puedo preguntar una cosa?...\n"
+    "- Si.. como no!!, -contestó Ricardo\n"
+    "- ¿Qué fue lo que hizo el pollo?")

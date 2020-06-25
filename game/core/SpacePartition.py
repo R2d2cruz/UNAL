@@ -34,6 +34,15 @@ class SpacePartition:
                 ))
         self.__numCells = len(self.__cells)
 
+    def clear(self):
+        self.emptyCells()
+        self.__cells.clear()
+        self.__numCells = 0
+
+    def emptyCells(self):
+        for cell in self.__cells:
+            cell.members.clear()
+
     @property
     def cellWidth(self):
         return self.__cellWidth
@@ -57,10 +66,6 @@ class SpacePartition:
                 cell.tag = False
         return neighbors
 
-    def emptyCells(self):
-        for cell in self.__cells:
-            cell.members.clear()
-
     def registerEntities(self, entities: list):
         for entity in entities:
             self.registerEntity(entity)
@@ -71,7 +76,7 @@ class SpacePartition:
             self.__cells[index].members.append(entity)
             entity.cellIndex = index
         else:
-            print('❌ Entity can not be registered', entity.id, entity.name, entity.getPos())
+            print('❌ No se pudo registrar la entidad', entity)
         return index
 
     def unregisterEntity(self, entity: Entity):
@@ -80,7 +85,7 @@ class SpacePartition:
             if entity in self.__cells[index].members:
                 self.__cells[index].members.remove(entity)
         else:
-            print('❌ Entity can not be unregistered', entity.id, entity.name, entity.getPos())
+            print('❌ No se pudo desregistrar la entidad', entity)
 
     def posToIndex(self, pos: Vector2D) -> int:
         index = int(

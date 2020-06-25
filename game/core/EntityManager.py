@@ -13,6 +13,14 @@ class _EntityManager:
         self.other = {}
         self.__worldId = None
 
+    def clear(self):
+        self.__entityMap.clear()
+        self.movingEntities.clear()
+        self.entities.clear()
+        self.walls.clear()
+        self.other.clear()
+        self.__worldId = None
+
     @property
     def allEntities(self):
         return self.__entityMap.values()

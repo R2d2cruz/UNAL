@@ -15,15 +15,19 @@ class MainMenu(Scene):
 
     def createUI(self):
         grid1 = GridContainer(0, 0, self.game.surface.get_width() / 2, self.game.surface.get_height())
-        grid1.setGrid(2, 1)
+        grid1.setGrid(3, 1)
 
         buttonPlay = Button(0, 0, 450, 70, self.font, 'Quiero jugar!')
         buttonPlay.onClick = self.onGoPlay
         grid1.addControl(buttonPlay, (0, 0))
 
+        buttonEdit = Button(0, 0, 450, 70, self.font, 'Editar mapa')
+        buttonEdit.onClick = self.onEdit
+        grid1.addControl(buttonEdit, (1, 0))
+
         buttonQuit = Button(0, 0, 450, 70, self.font, 'Tengo miedo!, me salgo')
         buttonQuit.onClick = self.onGoQuit
-        grid1.addControl(buttonQuit, (1, 0))
+        grid1.addControl(buttonQuit, (2, 0))
 
         box1 = BoxContainer(BoxContainer.VERTICAL, 1 + self.game.surface.get_width() / 2, 0,
                             self.game.surface.get_width() / 2, self.game.surface.get_height())
@@ -93,6 +97,10 @@ class MainMenu(Scene):
             self.game.loadSettings()
         control = self.ui.getControlByName('playerName')
         control.text = self.game.player.name
+
+    def onEdit(self, sender):
+        resourceManager.playSound('title')
+        self.game.setScene('edit')
 
     def onGoPlay(self, sender):
         # TODO: evaluar si se escribió un nombre valido y arrojar un error en pantalla si no
