@@ -2,7 +2,8 @@ from random import random, choice
 
 import pygame
 
-from . import SpacePartition, TiledMap, entityManager, collisionManager, Entity, MovingEntity, Path, Graph, Character, Vector2D
+from . import MovingEntity, Character, collisionManager, Entity, entityManager, Graph, Path, SpacePartition, TiledMap, \
+    Vector2D
 
 
 class World:
@@ -18,8 +19,8 @@ class World:
         self.cellSpace.registerEntities(tiledMap.getWalls())
         self.cellSpace.registerEntities(tiledMap.objects)
         entityManager.registerEntities(tiledMap.objects)
-        # collisionManager.registerEntities(tiledMap.getWalls())  # las paredes no deberian ser objetos... o si?
-
+        # entityManager.registerEntities(tiledMap.getWalls())
+        
     def addEntity(self, entity, isSolid: bool = True):
         if isSolid:
             self.cellSpace.registerEntity(entity)
@@ -50,16 +51,20 @@ class World:
         # self.cellSpace.render(self.worldSurface, camera)
         surface.blit(self.worldSurface, self.view)
 
-    def getValidRandomPos(self, rect: pygame.Rect):
+    def getValidRandomPos(self, entity: Entity) -> Vector2D:
+        # se necesita el entity porque el collision rect se calcula diferente segun el tipo
+        posX = entity.x
+        posY = entity.y
         while True:
-            rect.x = int(random() * self.rect.w)
-            rect.y = int(random() * self.rect.h)
-            if not collisionManager.checkCollition(rect, self.cellSpace, self.rect):
-                return rect
+            entity.setPos(int(random() * self.rect.w), int(random() * self.rect.h))
+            if not collisionManager.checkCollition(entity.getCollisionRect(), self.cellSpace, self.rect):
+                newPos = Vector2D(entity.x, entity.y)
+                entity.setPos(posX, posY)
+                return newPos
 
     def locateInValidRandomPos(self, entity: Entity):
-        pos = self.getValidRandomPos(entity.getCollisionRect())
-        entity.setPos(pos.x, pos.y)
+        newPos = self.getValidRandomPos(entity)
+        entity.setPos(newPos.x, newPos.y)
         self.cellSpace.updateEntity(entity)
 
     def followRandomPath(self, entity: Character):

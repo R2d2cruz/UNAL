@@ -66,11 +66,5 @@ class CharacterWrapper:
         self._steeringOn = True
 
     def setSteeringOff(self):
-        self._entity.steering.seekEnabled = False
-        self._entity.steering.seekTarget = None
-        self._entity.steering.arriveEnabled = False
-        self._entity.steering.arriveTarget = None
-        self._entity.steering.followPathEnabled = False
-        self._entity.steering.followPathTarget = None
-        self._entity.steering.wanderEnabled = False
+        self._entity.steering.resetAll()
         self._steeringOn = False

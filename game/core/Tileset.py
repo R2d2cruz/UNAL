@@ -2,7 +2,7 @@ import json
 
 import pygame
 
-from game.core import resourceManager
+from . import resourceManager
 
 
 class Tile:

@@ -2,20 +2,28 @@ import json
 
 import pygame
 
+from .AnimatedEntity import AnimatedEntity
 from .Entity import Entity
 from .ResourceManager import resourceManager
 from .Tileset import Tileset
+from .misc import Colors
 
 
 class Wall(Entity):
     def __init__(self, x: int, y: int, width: int, height: int, *groups):
         super().__init__(*groups)
+        self.type = "wall"
+        self.image = None
         self.x = x
         self.y = y
         self.width = width
         self.height = height
-        self.image = resourceManager.loadImage("ts1", (96, 64, width, height))
-        self.type = "wall"
+
+    def render(self, surface, camera):
+        if self.tag:
+            pygame.draw.rect(surface, Colors.RED, camera.apply(self.getCollisionRect()), 4)
+        else:
+            pygame.draw.rect(surface, Colors.BLUE, camera.apply(self.rect), 1)
 
 
 class TiledMap:
@@ -58,10 +66,17 @@ class TiledMap:
             if objs is not None:
                 for obj in objs:
                     pos = obj.get('pos')
-                    entity = Entity()
-                    entity.tangible = obj.get('walkable')
-                    entity.image = self.tileset.getTileSurface(obj.get("tile"))
+                    anim = obj.get('animation')
+                    if anim is None:
+                        entity = Entity()
+                        entity.image = self.tileset.getTileSurface(obj.get("tile"))
+                    else:
+                        entity = AnimatedEntity()
+                        entity.loadAnimation(resourceManager.getAnimFile(anim))
+                    entity.tangible = not obj.get('walkable')
                     entity.setPos(pos[0] * self.tileset.tileWidth, pos[1] * self.tileset.tileHeight)
+                    entity.width = self.tileset.tileWidth
+                    entity.height = self.tileset.tileHeight
                     self.objects.append(entity)
         if self.rows != len(self.cells):
             print('❌ Error cargando mapa', fileName, ': número de filas no coincide', self.rows, '<>', len(self.cells))

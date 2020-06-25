@@ -1,5 +1,4 @@
 from collections import deque
-from random import choice
 
 import pygame
 

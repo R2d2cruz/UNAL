@@ -68,7 +68,7 @@ class Character(MovingEntity):
             self.steering.followPathTarget.render(surface, camera)
 
     def renderHealthBar(self, surface, camera):
-        if self.health != maxHealth:
+        if self.health != maxHealth or self.selected:
             barWidth = 40
             healthValue = self.health / maxHealth
             healthColor = (int(255 * (1 - healthValue)), int(255 * healthValue), 0)

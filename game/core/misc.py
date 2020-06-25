@@ -1,6 +1,14 @@
 import pygame
 
 
+class Colors:
+    RED = (255, 0, 0)
+    GREEN = (0, 255, 0)
+    BLUE = (0, 0, 255)
+    BLACK = (0, 0, 0)
+    GRAY = (128, 128, 128)
+
+
 def blitMultiLineText(surface, text, rect, font, color=pygame.Color('black')):
     words = [word.split(' ') for word in text.splitlines()]  # 2D array where each row is a list of words.
     space = font.size(' ')[0]  # The width of a space.

@@ -3,6 +3,7 @@ import pygame
 from .Telegram import Telegram
 from .Vector2D import Vector2D
 from .camera.BaseCamera import BaseCamera
+from .misc import Colors
 
 
 class Entity(pygame.sprite.Sprite):
@@ -14,7 +15,7 @@ class Entity(pygame.sprite.Sprite):
         self.image = None
         self.name = None
         self.rect = pygame.Rect(0, 0, 0, 0)
-        self.tag = None
+        self.tag = False
         self.script = None
         self.cellIndex = None
         self.selected = False
@@ -132,6 +133,11 @@ class Entity(pygame.sprite.Sprite):
     def getPos(self):
         return self.__pos
 
+    # se agrega esta funcion para evitar un error, sin embargo no 
+    # pertenece a esta clase y deberia ser eliminada en el futuro
+    def getOldPos(self):
+        return self.__pos
+
     def getCollisionRect(self) -> pygame.Rect:
         return self.rect
 
@@ -149,15 +155,13 @@ class Entity(pygame.sprite.Sprite):
 
     def render(self, surface, camera: BaseCamera):
         surface.blit(self.image, camera.apply(self.rect))
-        # pygame.draw.rect(surface, (0, 0, 255), camera.apply(self.rect), 1)
-        if self.tag:
-            color = (255, 0, 0)
-            pygame.draw.rect(surface, color, camera.apply(self.getCollisionRect()), 4)
+        # pygame.draw.rect(surface, Colors.BLACK, camera.apply(self.getCollisionRect()), 1)
+        # if self.tag:
+        #     pygame.draw.rect(surface, Colors.RED, camera.apply(self.getCollisionRect()), 4)
         if self.selected:
-            pygame.draw.rect(surface, (0, 255, 0), camera.apply(self.rect), 4)
-        # else:
-        #     color = (0, 0, 0)
-        #     pygame.draw.rect(surface, color, camera.apply(self.getCollisionRect()), 1)
+            pygame.draw.rect(surface, Colors.GREEN, camera.apply(self.rect), 4)
+        # # else:
+        #     pygame.draw.rect(surface, Colors.BLACK, camera.apply(self.getCollisionRect()), 1)
 
     def dispose(self):
         pass
