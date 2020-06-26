@@ -71,6 +71,14 @@ class GridContainer(Container):
         self.__cols = 0
         self.__numControls = 0
 
+    @property
+    def rows(self):
+        return self.__rows
+
+    @property
+    def cols(self):
+        return self.__cols
+
     def setGrid(self, rows: int, cols: int):
         if rows > 0 and cols > 0:
             self.__rows = rows

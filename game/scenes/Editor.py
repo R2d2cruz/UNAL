@@ -5,7 +5,7 @@ from ..core import (Game, TiledMap, Scene, SimpleCamera,
                     Vector2D, resourceManager, World, Colors)
 from ..core.SelectionBox import SelectionBox
 from ..net.OnlinePlayer import OnlinePlayer
-from ..ui import Button, GridContainer, Container, BoxContainer
+from ..ui import Button, GridContainer, Container, BoxContainer, Image
 
 
 class Editor(Scene):
@@ -31,6 +31,12 @@ class Editor(Scene):
         # self.cross = self.world.view.copy()
         self.cross.center = self.world.view.center
 
+        control = self.ui.getControlByName('toolBar')
+        for i in range(control.rows * control.cols):
+            image = Image(0, 0, 0, 0)
+            image.image = self.world.map.tileset.getTileSurface(i)
+            control.addControl(image, (i // control.cols, i % control.cols))
+
     def createUI(self):
         self.font = resourceManager.getFont('minecraft', 18)
         # self.label = self.font.render('Juego en pausa por problemas conexión. Espere un momento', True, (255, 64, 64))
@@ -47,8 +53,9 @@ class Editor(Scene):
         ui = Container(0, 0, self.game.surface.get_width(), self.game.surface.get_height())
         ui.addControl(menu)
 
-        tools = GridContainer(0, 52, 120, self.game.surface.get_height() - 52)
-        tools.setGrid(1, 16)
+        tools = GridContainer(0, 52, 160, self.game.surface.get_height() - 52)
+        tools.name = 'toolBar'
+        tools.setGrid(20, 4)
         ui.addControl(tools)
         return ui
 
@@ -136,7 +143,7 @@ class Editor(Scene):
         self.game.setScene("main")
 
     def loadWorld(self, mapName: str):
-        worldRect = pygame.Rect(120, 52, self.game.surface.get_width() - 120, self.game.surface.get_height() - 52)
+        worldRect = pygame.Rect(160, 52, self.game.surface.get_width() - 160, self.game.surface.get_height() - 52)
         self.world = World(TiledMap(mapName), worldRect)
         self.world.addEntity(HealthPotion("freshPotion", (3, 2, 10, 12), Vector2D(160, 288), 20))
         self.camera = SimpleCamera(
