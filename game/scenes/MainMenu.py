@@ -71,6 +71,7 @@ class MainMenu(Scene):
         ui = Container(0, 0, self.game.surface.get_width(), self.game.surface.get_height())
         ui.addControl(grid1)
         ui.addControl(box1)
+
         # ui.addControl(grid3)
         return ui
 

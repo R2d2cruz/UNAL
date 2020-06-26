@@ -231,6 +231,7 @@ class Playground(Scene):
     def onQuit(self, sender):
         # tal vez preguntar al usuario si esta seguro
         # se guarda el juego? se cierra y libera? o se mantiene en memoria?
+        self.world.clear()
         self.game.setScene("main")
 
     def loadWorld(self, mapName: str):
@@ -246,22 +247,21 @@ class Playground(Scene):
         self.loadScripts(self.world.rect)
         self.world.addEntity(HealthPotion("freshPotion", (3, 2, 10, 12), Vector2D(160, 288), 20))
         self.player = Player(self.playerName, self.playerName, (0, 0), (0, 24, 34, 32))
-        self.world.locateInValidRandomPos(self.player)
         self.world.addEntity(self.player)
+        self.world.locateInValidRandomPos(self.player)
         self.camera = SimpleCamera(
             self.world.view.width, self.world.view.height,
             self.world.rect.width, self.world.rect.height, False)
         self.camera.follow(self.player)
 
     def loadScripts(self, worlRect):
-        print('📜 Inicio carga scripts')
+        print('📜 Cargando scripts...')
         import importlib.util
         for script in os.listdir('./scripts/characters'):
             if script.endswith(".py"):
                 fileName = './scripts/characters/' + script
                 moduleName = os.path.splitext(os.path.basename(script))[0].capitalize()
                 try:
-                    print('📜 Cargando script ', moduleName)
                     spec = importlib.util.spec_from_file_location(
                         moduleName, fileName)
                     foo = importlib.util.module_from_spec(spec)
@@ -274,7 +274,6 @@ class Playground(Scene):
                     self.spawningPoints.remove(spawn)
                     character.script.onInit(character.wrapper)
                     self.world.addEntity(character)
-                    print('... script ', moduleName, ' cargado! 👍')
+                    print('📜 script ', moduleName, '... Cargado! 👍')
                 except Exception as e:
-                    print('❌ No se pudo cargar script', e)
-        print('📜 Fin carga scripts')
+                    print('❌ No se pudo cargar script', moduleName, e)

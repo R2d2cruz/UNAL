@@ -5,7 +5,7 @@ from ..core import (Game, TiledMap, Scene, SimpleCamera,
                     Vector2D, resourceManager, World, Colors)
 from ..core.SelectionBox import SelectionBox
 from ..net.OnlinePlayer import OnlinePlayer
-from ..ui import Button, GridContainer, Container
+from ..ui import Button, GridContainer, Container, BoxContainer
 
 
 class Editor(Scene):
@@ -19,7 +19,7 @@ class Editor(Scene):
         self.camera = None
         self.spawningPoints = []
         self.paused = False
-        self.cross = pygame.Rect(0, 0, 32, 32)
+        self.cross = pygame.Rect(0, 0, 0, 0)
         self.font = None
         self.ui = None
         self.vectorMov = Vector2D()
@@ -35,18 +35,21 @@ class Editor(Scene):
         self.font = resourceManager.getFont('minecraft', 18)
         # self.label = self.font.render('Juego en pausa por problemas conexión. Espere un momento', True, (255, 64, 64))
 
-        grid = GridContainer(0, 0, self.game.surface.get_width(), 52)
-        grid.setGrid(1, 16)
+        menu = BoxContainer(BoxContainer.HORIZONTAL, 0, 0, self.game.surface.get_width(), 52)
 
-        buttonPath = Button(0, 0, 36, 36, self.font, '?')
+        buttonPath = Button(0, 0, 80, 36, self.font, 'Tileset')
         # buttonPath.onClick = self.onGoPath
-        grid.addControl(buttonPath, (0, 0))
+        menu.addControl(buttonPath)
 
-        buttonText = Button(0, 0, 36, 36, self.font, 'X')
+        buttonText = Button(0, 0, 60, 36, self.font, 'Salir')
         buttonText.onClick = self.onQuit
-        grid.addControl(buttonText, (0, 15))
+        menu.addControl(buttonText)
         ui = Container(0, 0, self.game.surface.get_width(), self.game.surface.get_height())
-        ui.addControl(grid)
+        ui.addControl(menu)
+
+        tools = GridContainer(0, 52, 120, self.game.surface.get_height() - 52)
+        tools.setGrid(1, 16)
+        ui.addControl(tools)
         return ui
 
     def onKeyDown(self, event):
@@ -126,17 +129,17 @@ class Editor(Scene):
         surface.fill(Colors.BLACK)
         self.world.render(surface, self.camera)
         self.selectionBox.render(surface)
-        # self.camera.render(surface)
         self.ui.render(surface, self.camera)
+        pygame.draw.rect(surface, (255, 0, 0), self.camera.apply(self.cross), 2)
 
     def onQuit(self, sender):
         self.game.setScene("main")
 
     def loadWorld(self, mapName: str):
-        worldRect = pygame.Rect(0, 52, self.game.surface.get_width(), self.game.surface.get_height() - 52)
+        worldRect = pygame.Rect(120, 52, self.game.surface.get_width() - 120, self.game.surface.get_height() - 52)
         self.world = World(TiledMap(mapName), worldRect)
         self.world.addEntity(HealthPotion("freshPotion", (3, 2, 10, 12), Vector2D(160, 288), 20))
         self.camera = SimpleCamera(
             self.world.view.width, self.world.view.height,
-            self.world.rect.width, self.world.rect.height, True)
+            self.world.rect.width, self.world.rect.height, False)
         self.camera.follow(self.cross)
