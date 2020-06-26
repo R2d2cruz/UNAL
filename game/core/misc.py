@@ -6,7 +6,8 @@ class Colors:
     GREEN = (0, 255, 0)
     BLUE = (0, 0, 255)
     BLACK = (0, 0, 0)
-    GRAY = (128, 128, 128)
+    GRAY = (96, 96, 96)
+    SILVER = (128, 128, 128)
 
 
 def blitMultiLineText(surface, text, rect, font, color=pygame.Color('black')):

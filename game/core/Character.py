@@ -107,7 +107,7 @@ class Character(MovingEntity):
         self.__health -= damage
 
     def heal(self, medicine):
-        if self.health <= maxHealth:
+        if self.health < maxHealth:
             if self.health + medicine < maxHealth:
                 self.__health += medicine
             else:

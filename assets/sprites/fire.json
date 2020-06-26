@@ -4,7 +4,6 @@
   "default_sprite": "on",
   "width": 34,
   "height": 56,
-  "collisionRect": [0, 24, 34, 32],
   "timestep": 100,
   "sprites": {
       "on": [

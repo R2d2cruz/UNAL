@@ -23,16 +23,17 @@ class Path:
         return Vector2D(point[0], point[1])
 
     def render(self, surface, camera):
-        color = (0, 0, 255)
+        nodeColor = (64, 64, 64)
+        currentColor = (64, 64, 64)
         prevPoint = None
         for point in self.points:
-            pygame.draw.circle(surface, color, camera.apply(point), 5, 3)
+            pygame.draw.circle(surface, nodeColor, camera.apply(point), 5, 3)
             if prevPoint is not None:
-                pygame.draw.line(surface, color, camera.apply(point), camera.apply(prevPoint), 2)
+                pygame.draw.line(surface, nodeColor, camera.apply(point), camera.apply(prevPoint), 2)
             prevPoint = point
         point = self.points[self.__currentPointIndex]
         if point is not None:
-            pygame.draw.circle(surface, (255, 0, 0), camera.apply(point), 5, 3)
+            pygame.draw.circle(surface, currentColor, camera.apply(point), 5, 3)
 
     # def renderNode(self, surface, camera, cords, color):
     #     cords[0] = int(cords[0]) * self.tileWidth + self.tileWidth / 2 

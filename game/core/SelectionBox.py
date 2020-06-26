@@ -61,10 +61,14 @@ class SelectionBox:
             else:
                 pygame.draw.circle(surface, (0, 255, 0), self.__pointA, 4, 2)
 
+    def getSelectionPoint(self, point, world: World, camera: SimpleCamera):
+        point = camera.unapply(point)
+        point.x -= world.view.x
+        point.y -= world.view.y
+        return point
+
     def selectEntities(self, world: World, camera: SimpleCamera):
-        rect = camera.unapply(self.getRect())
-        rect.x -= world.view.x
-        rect.y -= world.view.y
+        rect = self.getSelectionPoint(self.getRect(), world, camera)
         self.visible = False
         for entity in self.__entities:
             entity.selected = False

@@ -49,9 +49,8 @@ class HealthPotion(Item):
 
     def recoveryHealth(self, player: Character):
         if self.isOn:
-            print(player.health)
             if player.heal(self.healPower):
-                print('healed')
+                print('Entity healed')
                 hermes.messageDispatch(0, self.id, entityManager.worldId, 'deleteMe')
             # hermes.messageDispatch(0, self.id, player.id, "heal", {"medicine": self.healPower})
         return True

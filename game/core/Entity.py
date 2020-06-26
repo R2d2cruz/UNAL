@@ -24,7 +24,7 @@ class Entity(pygame.sprite.Sprite):
         self.tangible = True
 
     def __repr__(self):
-        return f'[{self.id}:{self.name}:{self.type}]'
+        return f'[{self.id}: {self.name}: {self.type}: {self.__pos}]'
 
     @property
     def getMe(self):
