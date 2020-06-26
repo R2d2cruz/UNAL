@@ -14,7 +14,7 @@ class World:
         self.player = None
         self.map = tiledMap
         self.graph = Graph()
-        self.graph.nodes = Graph.getGraph(tiledMap, False)
+        self.graph.nodes = Graph.getGraph(tiledMap, True)
         self.script = None
         self.cellSpace = SpacePartition(self.rect.w, self.rect.h, 100, 100)
         self.worldSurface = pygame.Surface((view.width, view.height))
