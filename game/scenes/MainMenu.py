@@ -1,3 +1,5 @@
+import json
+
 import pygame
 
 from ..core import AnimatedEntity, Game, NullCamera, Scene, resourceManager
@@ -15,15 +17,19 @@ class MainMenu(Scene):
 
     def createUI(self):
         grid1 = GridContainer(0, 0, self.game.surface.get_width() / 2, self.game.surface.get_height())
-        grid1.setGrid(2, 1)
+        grid1.setGrid(3, 1)
 
         buttonPlay = Button(0, 0, 450, 70, self.font, 'Quiero jugar!')
         buttonPlay.onClick = self.onGoPlay
         grid1.addControl(buttonPlay, (0, 0))
 
+        buttonEdit = Button(0, 0, 450, 70, self.font, 'Editar mapa')
+        buttonEdit.onClick = self.onEdit
+        grid1.addControl(buttonEdit, (1, 0))
+
         buttonQuit = Button(0, 0, 450, 70, self.font, 'Tengo miedo!, me salgo')
         buttonQuit.onClick = self.onGoQuit
-        grid1.addControl(buttonQuit, (1, 0))
+        grid1.addControl(buttonQuit, (2, 0))
 
         box1 = BoxContainer(BoxContainer.VERTICAL, 1 + self.game.surface.get_width() / 2, 0,
                             self.game.surface.get_width() / 2, self.game.surface.get_height())
@@ -65,22 +71,17 @@ class MainMenu(Scene):
         ui = Container(0, 0, self.game.surface.get_width(), self.game.surface.get_height())
         ui.addControl(grid1)
         ui.addControl(box1)
+
         # ui.addControl(grid3)
         return ui
 
-    def handleEvent(self, event):
-        self.ui.handleEvent(event)
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_ESCAPE:
-                # TODO: preguntarle al usuario si esta seguro de salir
-                self.game.quit()
-                return
+    def onKeyUp(self, event):
+        if event.key == pygame.K_ESCAPE:
+            # TODO: preguntarle al usuario si esta seguro de salir
+            self.game.quit()
 
     def handleMessage(self, message):
         pass
-
-    # def update(self, deltaTime: float):
-    #     self.ui.update(deltaTime)
 
     def render(self, surface: pygame.Surface):
         surface.fill((30, 30, 30))
@@ -88,28 +89,35 @@ class MainMenu(Scene):
         # TODO: si el cliente está conectado mostrar a que servidor esta conectado, sino entonces indicar que no esta
         #  conectado
 
-    def onEnterScene(self):
-        if (self.game.player is not None) and (self.game.player.name is None):
-            self.game.loadSettings()
-        control = self.ui.getControlByName('playerName')
-        control.text = self.game.player.name
+    def onEnterScene(self, data: dict = None):
+        self.loadSettings()
+
+    def onEdit(self, sender):
+        resourceManager.playSound('title')
+        self.game.setScene('edit', dict(
+            # game=self.game,
+            mapName=self.game.config.map
+        ))
 
     def onGoPlay(self, sender):
-        # TODO: evaluar si se escribió un nombre valido y arrojar un error en pantalla si no
         control = self.ui.getControlByName('playerName')
-        self.game.player.setName(control.text)
-        self.game.player.loadAnimation(
-            resourceManager.getAnimFile(resourceManager.getAnimName(self.index)))
-        self.game.saveSettings()
         if not self.game.client.connected:
-            if not self.game.client.connect(self.game.player):
+            if not self.game.client.connect(control.text):
                 # TODO: en vez de finaizar aqui simplemente se muestra un mensaje en pantalla indicandole al usuario
                 #  que no se pudo conectar un boton en la pantalla permite salir, esta linea va allá
                 resourceManager.playSound('error')
                 pass
         if self.game.client.connected:
+            # TODO: evaluar si se escribió un nombre valido y arrojar un error en pantalla si no
+            animName = resourceManager.getAnimName(self.index)
+            self.saveSettings()
             resourceManager.playSound('title')
-            self.game.setScene('play')
+            self.game.setScene('play', dict(
+                playerName=control.text,
+                game=self.game,
+                animName=animName,
+                mapName=self.game.config.map
+            ))
 
     def onGoQuit(self, sender):
         resourceManager.playSound('select')
@@ -153,3 +161,17 @@ class MainMenu(Scene):
         if entity is not None:
             entity.loadAnimation(resourceManager.getAnimFile(resourceManager.getAnimName(self.index)))
             entity.currentClip = 'down'
+
+    def loadSettings(self):
+        with open('saves/player.save', 'r') as infile:
+            data = json.load(infile)
+            playerName = data.get('name')
+            if playerName is None:
+                playerName = resourceManager.getRandomCharAnimName()
+            control = self.ui.getControlByName('playerName')
+            control.text = playerName
+
+    def saveSettings(self):
+        control = self.ui.getControlByName('playerName')
+        with open('saves/player.save', 'w') as outfile:
+            json.dump(dict(name=control.text), outfile)

@@ -5,7 +5,7 @@ from ..Vector2D import Vector2D
 
 
 class SimpleCamera(BaseCamera):
-    def __init__(self, viewWidth, viewHeight, worldWidth, worldHeight):
+    def __init__(self, viewWidth, viewHeight, worldWidth, worldHeight, fixedToView):
         super().__init__()
         self.__worldRect = pygame.Rect(0, 0, worldWidth, worldHeight)
         self.__view = pygame.Rect(0, 0, viewWidth, viewHeight)
@@ -14,7 +14,7 @@ class SimpleCamera(BaseCamera):
         self.boundRight = -self.__worldRect.width
         self.boundTop = 0
         self.boundBottom = -self.__worldRect.height
-        self.fixToView = False
+        self.fixToView = fixedToView
         self.__calculateBounds()
 
     def __calculateBounds(self):

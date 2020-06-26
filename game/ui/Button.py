@@ -19,8 +19,9 @@ class Button(Control):
         self.backColor = (123, 123, 123)
 
     def refresh(self):
-        self.__textRect.x = 2 + self.rect.x + (self.rect.w - self.__surface.get_width()) / 2
-        self.__textRect.y = 2 + self.rect.y + (self.rect.h - self.__surface.get_height()) / 2
+        if self.text is not None:
+            self.__textRect.x = 2 + self.rect.x + (self.rect.w - self.__surface.get_width()) / 2
+            self.__textRect.y = 2 + self.rect.y + (self.rect.h - self.__surface.get_height()) / 2
 
     @property
     def text(self):

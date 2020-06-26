@@ -1,0 +1,14 @@
+{
+  "image": "images/tilesets/items.png",
+  "tileWidth": 12,
+  "tileHeight": 8,
+  "tileInnerRect" : [2, 2, 24, 24],
+  "tiles": [
+    {
+      "id": 1,
+      "walkable": false,
+      "name": "zanahoria"
+    }
+  ]
+}
+
