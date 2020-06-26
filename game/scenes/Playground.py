@@ -4,6 +4,7 @@ from random import choice
 import pygame
 
 from .entities import HealthPotion, Player
+from .entities.Item import Book
 from ..core.SelectionBox import SelectionBox
 from ..core.CharacterWrapper import CharacterWrapper
 from ..core import (Character, Game, TiledMap, Scene, SimpleCamera,
@@ -248,7 +249,8 @@ class Playground(Scene):
         self.world = World(TiledMap(mapName),
                            pygame.Rect(160, 0, self.game.surface.get_width() - 160, self.game.surface.get_height()))
         self.loadScripts(self.world.rect)
-        self.world.addEntity(HealthPotion("freshPotion", (3, 2, 10, 12), Vector2D(160, 288), 20))
+        self.world.addEntity(HealthPotion("freshPotion", Vector2D(160, 288), 20))
+        self.world.addEntity(Book("book", Vector2D(900, 900), dict(tittle='NN', text='', especial=None)))
         name = resourceManager.getRandomCharAnimName()
         self.player = Player(name, name, (0, 0), (0, 24, 34, 32))
         self.world.locateInValidRandomPos(self.player)

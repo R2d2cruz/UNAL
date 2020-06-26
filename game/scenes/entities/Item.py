@@ -33,14 +33,35 @@ class Item(Entity):
     def onMessage(self, telegram: Telegram):
         pass
 
-    def effect(self, player) -> bool:
+    def effect(self, player: Character) -> bool:
         pass
+
+
+class Book(Item):
+    def __init__(self, name: str, position: Vector2D, data: dict, rect: tuple = (12, 12, 32, 40)):
+        super().__init__(name, pygame.Rect(rect), position)
+        if data is None:
+            data = dict(
+                tittle=name,
+                text='',
+                especial=None
+            )
+        self.isOn = True
+        self.effect = self.collect
+        self.data = data
+        self.type = "item"
+
+    def collect(self, entity: Character):
+        if self.isOn:
+            print('collected')
+            entity.collectBook(self.data)
+            hermes.messageDispatch(0, self.id, entityManager.worldId, 'deleteMe')
 
 
 # 16 8 40 48
 
 class HealthPotion(Item):
-    def __init__(self, name: str, rect: tuple, position: Vector2D, healPower: int):
+    def __init__(self, name: str, position: Vector2D, healPower: int, rect: tuple = (3, 2, 10, 12)):
         super().__init__(name, pygame.Rect(rect), position)
         self.healPower = healPower
         self.effect = self.recoveryHealth
@@ -49,7 +70,6 @@ class HealthPotion(Item):
 
     def recoveryHealth(self, player: Character):
         if self.isOn:
-            print(player.health)
             if player.heal(self.healPower):
                 print('healed')
                 hermes.messageDispatch(0, self.id, entityManager.worldId, 'deleteMe')

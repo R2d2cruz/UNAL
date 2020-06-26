@@ -36,6 +36,7 @@ class Character(MovingEntity):
         self.__attack = 30
         self.__defense = 20
         self.type = 'character'
+        self.__bocks = {}
 
     @property
     def defense(self):
@@ -103,11 +104,22 @@ class Character(MovingEntity):
     def health(self, health):
         self.__health = health
 
+    def collectBook(self, book: dict):
+        name: str = book.get('tittle')
+        if name in self.__bocks.keys():
+            self.__bocks[name]['index'] += 1
+            self.__bocks[name]['data'] = book
+        else:
+            self.__bocks[name] = dict(
+                index=0,
+                data=book
+            )
+
     def damage(self, damage=5):
         self.__health -= damage
 
     def heal(self, medicine):
-        if self.health <= maxHealth:
+        if self.health < maxHealth:
             if self.health + medicine < maxHealth:
                 self.__health += medicine
             else:
