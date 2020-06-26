@@ -4,15 +4,12 @@ from random import choice
 import pygame
 
 from .entities import HealthPotion, Player
-from ..core.SelectionBox import SelectionBox
-from ..core.CharacterWrapper import CharacterWrapper
 from ..core import (Character, Game, TiledMap, Scene, SimpleCamera,
-                    Vector2D, resourceManager, AnimatedEntity, World, MovingEntity, Colors)
+                    Vector2D, resourceManager, World, MovingEntity, Colors)
+from ..core.CharacterWrapper import CharacterWrapper
+from ..core.SelectionBox import SelectionBox
 from ..net.OnlinePlayer import OnlinePlayer
 from ..ui import Button, Text, GridContainer, Container
-
-LEFT = 1
-RIGHT = 3
 
 
 class Playground(Scene):
@@ -26,11 +23,17 @@ class Playground(Scene):
         self.camera = None
         self.spawningPoints = []
         self.paused = False
+        self.playerName = None
         self.player = None
         self.font = None
-        self.loadWorld(game.config.map)
-        game.setPlayer(self.player)
-        self.ui = self.createUI()
+
+    def onEnterScene(self, data: dict = None):
+        if self.ui is None:
+            self.ui = self.createUI()
+        self.playerName = data.get('playerName')
+        self.loadWorld(data.get('mapName'))
+        self.player.loadAnimation(resourceManager.getAnimFile(data.get('animName')))
+        self.game.client.sendPlayerStatus(self.player)
 
     def createUI(self):
         self.font = resourceManager.getFont('minecraft', 18)
@@ -65,27 +68,14 @@ class Playground(Scene):
         ui.addControl(grid)
         return ui
 
-    def handleEvent(self, event):
-        self.ui.handleEvent(event)
-        if event.type == pygame.MOUSEBUTTONDOWN:
-            if event.button == RIGHT:
-                self.onRightMouseDown(event)
-            else:
-                self.onLeftMouseDown(event)
-        elif event.type == pygame.MOUSEBUTTONUP:
-            if event.button == RIGHT:
-                self.onRightMouseUp(event)
-            else:
-                self.onLeftMouseUp(event)
-        elif event.type == pygame.MOUSEMOTION:
-            if self.selectionBox.visible:
-                self.selectionBox.setPointB(event.pos)
-        elif event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_ESCAPE:
-                self.onQuit(None)
-            else:
-                self.keysPressed[event.key] = True
-        elif event.type == pygame.KEYUP:
+    def onKeyDown(self, event):
+        self.keysPressed[event.key] = True
+        self.evalMove()
+
+    def onKeyUp(self, event):
+        if event.key == pygame.K_ESCAPE:
+            self.onQuit(None)
+        else:
             self.keysPressed[event.key] = False
         self.evalMove()
 
@@ -102,8 +92,8 @@ class Playground(Scene):
                 if isinstance(entity, OnlinePlayer):
                     resourceManager.playSound('error')
                 else:
-                    #entity.steering.arriveEnabled = True
-                    #entity.steering.arriveTarget = target
+                    # entity.steering.arriveEnabled = True
+                    # entity.steering.arriveTarget = target
                     entity.steering.wanderEnabled = 0.0
                     self.world.followPositionPath(entity, target)
 
@@ -118,6 +108,10 @@ class Playground(Scene):
             # resourceManager.playSound('select')
             self.selectionBox.setPointB(event.pos)
             self.selectionBox.selectEntities(self.world, self.camera)
+
+    def onMouseMove(self, event):
+        if self.selectionBox.visible:
+            self.selectionBox.setPointB(event.pos)
 
     def evalMove(self):
         vectorMov = Vector2D()
@@ -247,17 +241,16 @@ class Playground(Scene):
             Vector2D(128, 64),
             Vector2D(64, 192)
         ]
-        self.world = World(TiledMap(mapName),
-                           pygame.Rect(160, 0, self.game.surface.get_width() - 160, self.game.surface.get_height()))
+        worldRect = pygame.Rect(100, 0, self.game.surface.get_width() - 100, self.game.surface.get_height())
+        self.world = World(TiledMap(mapName), worldRect)
         self.loadScripts(self.world.rect)
         self.world.addEntity(HealthPotion("freshPotion", (3, 2, 10, 12), Vector2D(160, 288), 20))
-        name = resourceManager.getRandomCharAnimName()
-        self.player = Player(name, name, (0, 0), (0, 24, 34, 32))
+        self.player = Player(self.playerName, self.playerName, (0, 0), (0, 24, 34, 32))
         self.world.locateInValidRandomPos(self.player)
         self.world.addEntity(self.player)
         self.camera = SimpleCamera(
             self.world.view.width, self.world.view.height,
-            self.world.rect.width, self.world.rect.height)
+            self.world.rect.width, self.world.rect.height, False)
         self.camera.follow(self.player)
 
     def loadScripts(self, worlRect):

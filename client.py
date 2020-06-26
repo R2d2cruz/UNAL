@@ -3,7 +3,7 @@ import sys
 
 from constants import anims, fonts, imgs, maps, sounds, tilesets
 from game.core import Config, Game, resourceManager, TiledMap
-from game.scenes import MainMenu, Playground
+from game.scenes import MainMenu, Playground, Editor
 from game.ui.gui import gui
 
 
@@ -22,7 +22,7 @@ def main():
     game.init()
     game.addScene("main", MainMenu(game))
     game.addScene("play", Playground(game))
-    game.addScene("edit", Playground(game))
+    game.addScene("edit", Editor(game))
     game.setScene("main")
     # res.playSong('background1')
     game.run()

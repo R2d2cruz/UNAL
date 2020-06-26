@@ -1,21 +1,14 @@
-import os
-from random import choice
-
 import pygame
 
-from .entities import HealthPotion, Player
+from .entities import HealthPotion
+from ..core import (Game, TiledMap, Scene, SimpleCamera,
+                    Vector2D, resourceManager, World, Colors)
 from ..core.SelectionBox import SelectionBox
-from ..core.CharacterWrapper import CharacterWrapper
-from ..core import (Character, Game, TiledMap, Scene, SimpleCamera,
-                    Vector2D, resourceManager, AnimatedEntity, World, MovingEntity, Colors)
 from ..net.OnlinePlayer import OnlinePlayer
-from ..ui import Button, Text, GridContainer, Container
-
-LEFT = 1
-RIGHT = 3
+from ..ui import Button, GridContainer, Container
 
 
-class Edit(Scene):
+class Editor(Scene):
 
     def __init__(self, game: Game):
         super().__init__(game)
@@ -26,53 +19,45 @@ class Edit(Scene):
         self.camera = None
         self.spawningPoints = []
         self.paused = False
-        self.player = None
+        self.cross = pygame.Rect(0, 0, 32, 32)
         self.font = None
-        self.loadWorld(game.config.map)
-        game.setPlayer(self.player)
-        self.ui = self.createUI()
+        self.ui = None
+        self.vectorMov = Vector2D()
+
+    def onEnterScene(self, data: dict = None):
+        if self.ui is None:
+            self.ui = self.createUI()
+        self.loadWorld(data.get('mapName'))
+        # self.cross = self.world.view.copy()
+        self.cross.center = self.world.view.center
 
     def createUI(self):
         self.font = resourceManager.getFont('minecraft', 18)
         # self.label = self.font.render('Juego en pausa por problemas conexión. Espere un momento', True, (255, 64, 64))
 
-        grid = GridContainer(0, self.game.surface.get_height() - 100, self.game.surface.get_height(), self.game.surface.get_height())
-        grid.setGrid(1, 10)
-        
-        buttonPath = Button(0, 0, 64, 64, self.font, 'X')
-        buttonPath.onClick = self.onGoPath
+        grid = GridContainer(0, 0, self.game.surface.get_width(), 52)
+        grid.setGrid(1, 16)
+
+        buttonPath = Button(0, 0, 36, 36, self.font, '?')
+        # buttonPath.onClick = self.onGoPath
         grid.addControl(buttonPath, (0, 0))
 
-
-        buttonText = Button(0, 0, 0, 0, self.font, 'X')
+        buttonText = Button(0, 0, 36, 36, self.font, 'X')
         buttonText.onClick = self.onQuit
-        grid.addControl(buttonText, (0, 9))
+        grid.addControl(buttonText, (0, 15))
         ui = Container(0, 0, self.game.surface.get_width(), self.game.surface.get_height())
         ui.addControl(grid)
         return ui
 
-    def handleEvent(self, event):
-        self.ui.handleEvent(event)
-        if event.type == pygame.MOUSEBUTTONDOWN:
-            if event.button == RIGHT:
-                self.onRightMouseDown(event)
-            else:
-                self.onLeftMouseDown(event)
-        elif event.type == pygame.MOUSEBUTTONUP:
-            if event.button == RIGHT:
-                self.onRightMouseUp(event)
-            else:
-                self.onLeftMouseUp(event)
-        elif event.type == pygame.MOUSEMOTION:
-            if self.selectionBox.visible:
-                self.selectionBox.setPointB(event.pos)
-        elif event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_ESCAPE:
-                self.onQuit(None)
-            else:
-                self.keysPressed[event.key] = True
-        elif event.type == pygame.KEYUP:
-            self.keysPressed[event.key] = False
+    def onKeyDown(self, event):
+        if event.key == pygame.K_ESCAPE:
+            self.onQuit(None)
+        else:
+            self.keysPressed[event.key] = True
+        self.evalMove()
+
+    def onKeyUp(self, event):
+        self.keysPressed[event.key] = False
         self.evalMove()
 
     def onRightMouseDown(self, event):
@@ -88,8 +73,8 @@ class Edit(Scene):
                 if isinstance(entity, OnlinePlayer):
                     resourceManager.playSound('error')
                 else:
-                    #entity.steering.arriveEnabled = True
-                    #entity.steering.arriveTarget = target
+                    # entity.steering.arriveEnabled = True
+                    # entity.steering.arriveTarget = target
                     entity.steering.wanderEnabled = 0.0
                     self.world.followPositionPath(entity, target)
 
@@ -105,190 +90,53 @@ class Edit(Scene):
             self.selectionBox.setPointB(event.pos)
             self.selectionBox.selectEntities(self.world, self.camera)
 
+    def onMouseMove(self, event):
+        if self.selectionBox.visible:
+            self.selectionBox.setPointB(event.pos)
+
     def evalMove(self):
-        vectorMov = Vector2D()
+        self.vectorMov.setZero()
         if self.keysPressed.get(pygame.K_RIGHT):
-            vectorMov.x += 1
+            self.vectorMov.x = 1
         if self.keysPressed.get(pygame.K_LEFT):
-            vectorMov.x -= 1
+            self.vectorMov.x = -1
         if self.keysPressed.get(pygame.K_DOWN):
-            vectorMov.y += 1
+            self.vectorMov.y = 1
         if self.keysPressed.get(pygame.K_UP):
-            vectorMov.y -= 1
-        self.player.velocity = vectorMov
+            self.vectorMov.y = -1
 
     def handleMessage(self, message):
-        if message.type == 'diconnected':
-            self.paused = True
+        pass
 
     def update(self, deltaTime: float):
-        if not self.paused:
-            self.updateOtherPlayers(deltaTime)
-            self.world.update(deltaTime)
+        step = 32
+        halfX = (self.world.view.width - self.cross.width) / 2
+        halfY = (self.world.view.height - self.cross.height) / 2
 
-            if self.player.hasChanged:
-                self.player.hasChanged = False
-                self.game.client.sendPlayerStatus(self.player)
+        offsetX = self.cross.x + max(min(self.vectorMov.x * deltaTime, step), -step)
+        self.cross.x = min(self.world.rect.width - halfX, max(halfX, offsetX))
 
-            self.camera.update(deltaTime)
+        offsetY = self.cross.y + max(min(self.vectorMov.y * deltaTime, step), -step)
+        self.cross.y = min(self.world.rect.height - halfY, max(halfY, offsetY))
+
+        self.world.update(deltaTime)
+        self.camera.update(deltaTime)
 
     def render(self, surface: pygame.Surface):
         surface.fill(Colors.BLACK)
         self.world.render(surface, self.camera)
-        # self.camera.render(surface)
-
-        # mostrar un mensaje para idicar que el juego esta pausado y la razon
-        # if self.paused:
-        #    surface.blit(self.label, (160, 80))
-
-        # pintar el nodo mas cercano del player
-        # node = self.map.pointToCell(self.player.x, self.player.y)
-        # point = self.map.cellToPoint(node)
-        # pygame.draw.circle(surface, (0, 255, 0), self.camera.apply(point), 5, 3)
-
-        # pintar los vecinos mas cercanos y la grida
-        # queryRadius = 75
-        # queryRect = pygame.Rect(
-        #     self.player.x - queryRadius,
-        #     self.player.y - queryRadius,
-        #     queryRadius * 2,
-        #     queryRadius * 2
-        # )
-        # self.world.cellSpace.tagNeighborhood(self.player)
-        # pygame.draw.rect(surface, (255, 255, 0), self.camera.apply(queryRect), 4)
         self.selectionBox.render(surface)
+        # self.camera.render(surface)
         self.ui.render(surface, self.camera)
 
-    def updateOtherPlayers(self, deltaTime: float):
-        # que deberia ocurrir si durante el juego se desconecta?
-        playersData = self.game.client.getStatus()
-        if playersData is not None:
-            playerKeys = self.players.keys()
-            for playerKey in playersData.keys():
-                if playerKey in playerKeys:
-                    self.players[playerKey].setData(playersData.get(playerKey))
-                else:
-                    self.players[playerKey] = OnlinePlayer(playersData.get(playerKey))
-                    self.world.addEntity(self.players[playerKey])
-
-            # remover los que no se actualizaron
-            toDelete = set(self.players.keys()).difference(playersData.keys())
-            for playerKey in toDelete:
-                self.world.removeEntity(self.players[playerKey])
-                del self.players[playerKey]
-
-    def onGoPath(self, sender):
-        resourceManager.playSound('select')
-        if self.player.steering.followPathEnabled:
-            for entity in self.selectionBox.entities:
-                if issubclass(type(entity), MovingEntity):
-                    entity.steering.followPathEnabled = False
-                    entity.steering.followPathTarget = None
-                    entity.steering.weightWander = 1.0
-        else:
-            for entity in self.selectionBox.entities:
-                if issubclass(type(entity), MovingEntity):
-                    entity.steering.wanderEnabled = 0.0
-                    self.world.followRandomPath(entity)
-
-    def onStartWander(self, sender):
-        resourceManager.playSound('select')
-        for entity in self.selectionBox.entities:
-            if issubclass(type(entity), MovingEntity):
-                entity.steering.wanderEnabled = True
-
-    def onStopWander(self, sender):
-        resourceManager.playSound('select')
-        for entity in self.selectionBox.entities:
-            if issubclass(type(entity), MovingEntity):
-                entity.steering.wanderEnabled = False
-
-    def onRandomPos(self, sender):
-        resourceManager.playSound('select')
-        for entity in self.selectionBox.entities:
-            if issubclass(type(entity), MovingEntity):
-                self.world.locateInValidRandomPos(entity)
-
-    def onShowText(self, sender):
-        resourceManager.playSound('select')
-        if sender.tag is None:
-            bubble = Text(100, 100, 800, 400, self.font, longtText)
-            sender.tag = bubble.id
-            self.ui.addControl(bubble)
-        else:
-            bubble = self.ui.getControlById(sender.tag)
-            self.ui.removeControl(bubble)
-            sender.tag = None
-
     def onQuit(self, sender):
-        # tal vez preguntar al usuario si esta seguro
-        # se guarda el juego? se cierra y libera? o se mantiene en memoria?
         self.game.setScene("main")
 
     def loadWorld(self, mapName: str):
-        self.spawningPoints = [
-            Vector2D(128, 128),
-            Vector2D(192, 192),
-            Vector2D(64, 64),
-            Vector2D(128, 64),
-            Vector2D(64, 192)
-        ]
-        self.world = World(TiledMap(mapName),
-                           pygame.Rect(100, 0, self.game.surface.get_width() - 100, self.game.surface.get_height()))
-        self.loadScripts(self.world.rect)
+        worldRect = pygame.Rect(0, 52, self.game.surface.get_width(), self.game.surface.get_height() - 52)
+        self.world = World(TiledMap(mapName), worldRect)
         self.world.addEntity(HealthPotion("freshPotion", (3, 2, 10, 12), Vector2D(160, 288), 20))
-        name = resourceManager.getRandomCharAnimName()
-        self.player = Player(name, name, (0, 0), (0, 24, 34, 32))
-        self.world.locateInValidRandomPos(self.player)
-        self.world.addEntity(self.player)
         self.camera = SimpleCamera(
             self.world.view.width, self.world.view.height,
-            self.world.rect.width, self.world.rect.height)
-        self.camera.follow(self.player)
-
-    def loadScripts(self, worlRect):
-        print('📜 Inicio carga scripts')
-        import importlib.util
-        for script in os.listdir('./scripts/characters'):
-            if script.endswith(".py"):
-                fileName = './scripts/characters/' + script
-                moduleName = os.path.splitext(os.path.basename(script))[0].capitalize()
-                try:
-                    print('📜 Cargando script ', moduleName)
-                    spec = importlib.util.spec_from_file_location(
-                        moduleName, fileName)
-                    foo = importlib.util.module_from_spec(spec)
-                    spec.loader.exec_module(foo)
-                    character = Character(moduleName, 'Charly', (0, 0), (0, 24, 34, 32))
-                    character.script = foo.ScriptCharacter()
-                    character.script.name = moduleName
-                    spawn = choice(self.spawningPoints)
-                    character.wrapper = CharacterWrapper(character, spawn)
-                    self.spawningPoints.remove(spawn)
-                    character.script.onInit(character.wrapper)
-                    self.world.addEntity(character)
-                    print('... script ', moduleName, ' cargado! 👍')
-                except Exception as e:
-                    print('❌ No se pudo cargar script', e)
-        print('📜 Fin carga scripts')
-
-
-longtText = (
-    "Ricardo recibió un loro por su cumpleaños; ya era un loro adulto, con una muy mala actitud y vocabulario. Cada "
-    "palabra que decía estaba adornada por alguna palabrota, así como siempre, de muy mal genio. Ricardo trató, "
-    "desde el primer día, de corregir la actitud del loro, diciéndole palabras bondadosas y con mucha educación, "
-    "le ponía música suave y siempre lo trataba con mucho cariño.\n "
-    "Llego un día en que Ricardo perdió la paciencia y gritó al loro, el cual se puso más grosero aún, hasta que en "
-    "un momento de desesperación, Ricardo puso al loro en el congelador.\n "
-    "Por un par de minutos aún pudo escuchar los gritos del loro y el revuelo que causaba en el compartimento, "
-    "hasta que de pronto, todo fue silencio.\n "
-    "Luego de un rato, Ricardo arrepentido y temeroso de haber matado al loro, rápidamente abrió la puerta del "
-    "congelador.\n "
-    "El loro salió y con mucha calma dio un paso al hombro de Ricardo y dijo:\n"
-    "- \"Siento mucho haberte ofendido con mi lenguaje y actitud, te pido me disculpes y te prometo que en el futuro "
-    "vigilaré mucho mi comportamiento\".\n "
-    "Ricardo estaba muy sorprendido del tremendo cambio en la actitud del loro y estaba a punto de preguntarle qué es "
-    "lo que lo había hecho cambiar de esa manera, cuando el loro continuó:\n "
-    "- ¿te puedo preguntar una cosa?...\n"
-    "- Si.. como no!!, -contestó Ricardo\n"
-    "- ¿Qué fue lo que hizo el pollo?")
+            self.world.rect.width, self.world.rect.height, True)
+        self.camera.follow(self.cross)

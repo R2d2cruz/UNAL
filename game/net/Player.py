@@ -23,6 +23,7 @@ class Player:
         self.x = data.get("x")
         self.y = data.get("y")
         self.movement = data.get("a")
+        self.animName = data.get("A")
 
     def toDict(self):
         return dict(

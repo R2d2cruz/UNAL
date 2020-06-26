@@ -18,7 +18,6 @@ class Game:
         self.surface = None
         self.clock = None
         self.currentScene = None
-        self.player = None
         self.client = Client(self.config)
         pygame.init()
         pygame.mixer.init()
@@ -63,24 +62,12 @@ class Game:
         pygame.quit()
         sys.exit()
 
-    def setScene(self, name: str):
+    def setScene(self, name: str, data: dict = None):
         if self.currentScene is not None:
             self.currentScene.onExitScene()
         self.currentScene = self.scenes.get(name)
         if self.currentScene is not None:
-            self.currentScene.onEnterScene()
+            self.currentScene.onEnterScene(data)
 
     def addScene(self, name: str, scene: Scene):
         self.scenes[name] = scene
-
-    def setPlayer(self, player):
-        self.player = player
-
-    def loadSettings(self):
-        with open('saves/player.save', 'r') as infile:
-            data = json.load(infile)
-            self.player.name = data.get('name')
-
-    def saveSettings(self):
-        with open('saves/player.save', 'w') as outfile:
-            json.dump(dict(name=self.player.name), outfile)
