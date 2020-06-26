@@ -39,5 +39,9 @@ class _Hermes:
         else:
             print('Enviando mensaje a entidad nula. ID:', telegram.receiver, telegram.message)
 
+    @property
+    def worldId(self):
+        return entityManager.worldId
+
 
 hermes = _Hermes()

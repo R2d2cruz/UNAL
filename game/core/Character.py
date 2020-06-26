@@ -1,5 +1,6 @@
 import pygame
 
+from . import Vector2D
 from .Hermes import hermes
 from .MovingEntity import MovingEntity
 from .ResourceManager import resourceManager
@@ -36,7 +37,7 @@ class Character(MovingEntity):
         self.__attack = 30
         self.__defense = 20
         self.type = 'character'
-        self.__bocks = {}
+        self.__books = {}
 
     @property
     def defense(self):
@@ -104,16 +105,42 @@ class Character(MovingEntity):
     def health(self, health):
         self.__health = health
 
+    @property
+    def booksTittles(self) -> list:
+        return list(self.__books.keys())
+
     def collectBook(self, book: dict):
         name: str = book.get('tittle')
-        if name in self.__bocks.keys():
-            self.__bocks[name]['index'] += 1
-            self.__bocks[name]['data'] = book
+        if name in self.__books.keys():
+            self.__books[name]['index'] += 1
+            self.__books[name]['data'] = book
         else:
-            self.__bocks[name] = dict(
+            self.__books[name] = dict(
                 index=0,
                 data=book
             )
+
+    def deleteBook(self, bookName: str):
+        book: dict = self.__books.get(bookName)
+        if book.get('index') <= 1:
+            del self.__books[bookName]
+        else:
+            self.__books['index'] -= 1
+
+    def dropBook(self, index: int = -1):
+        try:
+            bookName: str = self.booksTittles[index]
+            book: dict = self.__books.get(bookName)
+            position = list(self.getCollisionRect().midbottom)
+            position[1] += 50
+            hermes.messageDispatch(0, self.id, hermes.worldId, 'createBook', dict(
+                tittle="book",
+                book=book,
+                position=position
+            ))
+            self.deleteBook(bookName)
+        except IndexError:
+            pass
 
     def damage(self, damage=5):
         self.__health -= damage

@@ -1,7 +1,7 @@
 import pygame
 
-from ...core import (Character, Entity, Telegram, Vector2D, hermes,
-                     resourceManager, entityManager)
+from ...core import (Entity, Telegram, Vector2D, hermes,
+                     resourceManager)
 
 MAXYINTERVAL = 6
 
@@ -33,7 +33,7 @@ class Item(Entity):
     def onMessage(self, telegram: Telegram):
         pass
 
-    def effect(self, player: Character) -> bool:
+    def effect(self, player: Entity) -> bool:
         pass
 
 
@@ -51,11 +51,11 @@ class Book(Item):
         self.data = data
         self.type = "item"
 
-    def collect(self, entity: Character):
+    def collect(self, entity):
         if self.isOn:
             print('collected')
             entity.collectBook(self.data)
-            hermes.messageDispatch(0, self.id, entityManager.worldId, 'deleteMe')
+            hermes.messageDispatch(0, self.id, hermes.worldId, 'deleteMe')
 
 
 # 16 8 40 48
@@ -68,10 +68,10 @@ class HealthPotion(Item):
         self.isOn = True
         self.type = "item"
 
-    def recoveryHealth(self, player: Character):
+    def recoveryHealth(self, player):
         if self.isOn:
             if player.heal(self.healPower):
                 print('healed')
-                hermes.messageDispatch(0, self.id, entityManager.worldId, 'deleteMe')
+                hermes.messageDispatch(0, self.id, hermes.worldId, 'deleteMe')
             # hermes.messageDispatch(0, self.id, player.id, "heal", {"medicine": self.healPower})
         return True

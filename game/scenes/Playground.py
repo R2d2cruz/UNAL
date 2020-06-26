@@ -84,6 +84,8 @@ class Playground(Scene):
         elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
                 self.onQuit(None)
+            elif event.key == pygame.K_f:
+                self.player.dropBook()
             else:
                 self.keysPressed[event.key] = True
         elif event.type == pygame.KEYUP:
@@ -249,8 +251,8 @@ class Playground(Scene):
         self.world = World(TiledMap(mapName),
                            pygame.Rect(160, 0, self.game.surface.get_width() - 160, self.game.surface.get_height()))
         self.loadScripts(self.world.rect)
-        self.world.addEntity(HealthPotion("freshPotion", Vector2D(160, 288), 20))
-        self.world.addEntity(Book("book", Vector2D(900, 900), dict(tittle='NN', text='', especial=None)))
+        self.world.addEntity(HealthPotion('freshPotion', Vector2D(160, 288), 20))
+        self.world.addEntity(Book('book', Vector2D(900, 900), dict(tittle='NN', text='', especial=None)))
         name = resourceManager.getRandomCharAnimName()
         self.player = Player(name, name, (0, 0), (0, 24, 34, 32))
         self.world.locateInValidRandomPos(self.player)
@@ -259,6 +261,7 @@ class Playground(Scene):
             self.world.view.width, self.world.view.height,
             self.world.rect.width, self.world.rect.height)
         self.camera.follow(self.player)
+        self.world.createBook = self.createBook
 
     def loadScripts(self, worlRect):
         print('📜 Inicio carga scripts')
@@ -285,6 +288,10 @@ class Playground(Scene):
                 except Exception as e:
                     print('❌ No se pudo cargar script', e)
         print('📜 Fin carga scripts')
+
+    @staticmethod
+    def createBook(name: str, position: Vector2D, data: dict, rect: tuple = (12, 12, 32, 40)):
+        return Book(name, position, data, rect)
 
 
 longtText = (
