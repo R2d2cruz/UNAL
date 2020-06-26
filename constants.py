@@ -15,7 +15,8 @@ imgs = {
     "logo": "images/unallogo.jpg",
     "roof": "images/roof.png",
     "strawberryPotion": "images/lo mismo pero con sabor fresa.png",
-    "ts1": "images/tilesets/nature.png"
+    "ts1": "images/tilesets/nature.png",
+    "book": "images/librito.png"
 }
 
 maps = {

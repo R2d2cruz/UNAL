@@ -35,6 +35,9 @@ class World:
     @property
     def id(self):
         return id(self)
+
+    def createBook(self, name: str, position: Vector2D, data: dict, rect: tuple = (12, 12, 32, 40)) -> Entity:
+        pass
         
     def addEntity(self, entity, isSolid: bool = True):
         if isSolid:
@@ -106,3 +109,7 @@ class World:
             entity = entityManager.getEntityById(telegram.sender)
             self.cellSpace.unregisterEntity(entity)
             entityManager.unregisterEntity(entity)
+        elif telegram.message == 'createBook':
+            position = telegram.extraInfo.get('position')
+            self.addEntity(self.createBook(telegram.extraInfo.get('tittle'), Vector2D(position[0], position[1]),
+                                           telegram.extraInfo.get('book')))

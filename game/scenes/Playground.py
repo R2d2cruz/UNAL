@@ -4,6 +4,9 @@ from random import choice
 import pygame
 
 from .entities import HealthPotion, Player
+from .entities.Item import Book
+from ..core.SelectionBox import SelectionBox
+from ..core.CharacterWrapper import CharacterWrapper
 from ..core import (Character, Game, TiledMap, Scene, SimpleCamera,
                     Vector2D, resourceManager, World, MovingEntity, Colors)
 from ..core.CharacterWrapper import CharacterWrapper
@@ -75,6 +78,8 @@ class Playground(Scene):
     def onKeyUp(self, event):
         if event.key == pygame.K_ESCAPE:
             self.onQuit(None)
+        elif event.key == pygame.K_f:
+            self.player.dropBook()
         else:
             self.keysPressed[event.key] = False
         self.evalMove()
@@ -245,7 +250,8 @@ class Playground(Scene):
         worldRect = pygame.Rect(100, 0, self.game.surface.get_width() - 100, self.game.surface.get_height())
         self.world = World(TiledMap(mapName), worldRect)
         self.loadScripts(self.world.rect)
-        self.world.addEntity(HealthPotion("freshPotion", (3, 2, 10, 12), Vector2D(160, 288), 20))
+        self.world.addEntity(HealthPotion('freshPotion', Vector2D(160, 288), 20))
+        self.world.addEntity(Book('book', Vector2D(900, 900), dict(tittle='NN', text='', especial=None)))
         self.player = Player(self.playerName, self.playerName, (0, 0), (0, 24, 34, 32))
         self.world.addEntity(self.player)
         self.world.locateInValidRandomPos(self.player)
@@ -253,6 +259,7 @@ class Playground(Scene):
             self.world.view.width, self.world.view.height,
             self.world.rect.width, self.world.rect.height, False)
         self.camera.follow(self.player)
+        self.world.createBook = self.createBook
 
     def loadScripts(self, worlRect):
         print('📜 Cargando scripts...')
@@ -277,3 +284,7 @@ class Playground(Scene):
                     print('📜 script ', moduleName, '... Cargado! 👍')
                 except Exception as e:
                     print('❌ No se pudo cargar script', moduleName, e)
+
+    @staticmethod
+    def createBook(name: str, position: Vector2D, data: dict, rect: tuple = (12, 12, 32, 40)):
+        return Book(name, position, data, rect)
