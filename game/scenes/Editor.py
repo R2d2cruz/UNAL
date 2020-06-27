@@ -140,6 +140,7 @@ class Editor(Scene):
         pygame.draw.rect(surface, (255, 0, 0), self.camera.apply(self.cross), 2)
 
     def onQuit(self, sender):
+        self.world.clear()
         self.game.setScene("main")
 
     def loadWorld(self, mapName: str):

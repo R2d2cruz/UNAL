@@ -31,8 +31,8 @@ class Character(MovingEntity):
         self.__health = 100
         self.__attack = 30
         self.__defense = 20
-        self.type = 'character'
         self.__books = {}
+        self.type = 'character'
 
     @property
     def defense(self):

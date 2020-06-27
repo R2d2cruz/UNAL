@@ -18,12 +18,13 @@ class World:
         self.script = None
         self.cellSpace = SpacePartition(self.rect.w, self.rect.h, 100, 100)
         self.worldSurface = pygame.Surface((view.width, view.height))
+
         self.cellSpace.registerEntities(tiledMap.getWalls())
+        # entityManager.registerEntities(tiledMap.getWalls())
         self.cellSpace.registerEntities(tiledMap.objects)
         entityManager.registerEntities(tiledMap.objects)
         entityManager.registerEntity(self)
         entityManager.worldId = self.id
-        # entityManager.registerEntities(tiledMap.getWalls())
 
     def clear(self):
         # self.map.clear()
@@ -107,8 +108,11 @@ class World:
     def onMessage(self, telegram: Telegram):
         if telegram.message == 'deleteMe':
             entity = entityManager.getEntityById(telegram.sender)
-            self.cellSpace.unregisterEntity(entity)
-            entityManager.unregisterEntity(entity)
+            if entity is not None:  # esto no deberia ocurrir
+                self.cellSpace.unregisterEntity(entity)
+                entityManager.unregisterEntity(entity)
+            else:
+                print('Se intentó eliminar entidad inexistente ', telegram.sender)
         elif telegram.message == 'createBook':
             position = telegram.extraInfo.get('position')
             self.addEntity(self.createBook(telegram.extraInfo.get('tittle'), Vector2D(position[0], position[1]),

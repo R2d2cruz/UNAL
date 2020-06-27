@@ -132,8 +132,7 @@ class _ResourceManager:
         if animationName is None:  # esto no deberia ocurrir, arreglar!!
             animationName = resourceManager.getRandomCharAnimName()
         self.loadAnimation(character, animationName)
-        character.data["health"] = 20
-        character.data["xp"] = 0
+        character.health = 20
         return character
 
     def loadAnimation(self, entity, animName: str):
@@ -144,11 +143,11 @@ class _ResourceManager:
             sprites = data.get("sprites")
             for key in sprites:
                 entity.clips[key] = sprites[key]
-        entity.width = data.get("width")
-        entity.height = data.get("height")
-        entity.timeStep = data.get("timestep")
-        entity.currentClip = data.get("default_sprite")
-        entity.getNextFrame()
+            entity.width = data.get("width")
+            entity.height = data.get("height")
+            entity.timeStep = data.get("timeStep")
+            entity.currentClip = data.get("defaultSprite")
+            entity.getNextFrame()
 
 
 resourceManager = _ResourceManager()

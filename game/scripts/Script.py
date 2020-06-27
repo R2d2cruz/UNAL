@@ -1,4 +1,4 @@
-from . import Telegram
+from game.core import Telegram
 from .CharacterWrapper import CharacterWrapper
 
 

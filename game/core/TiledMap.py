@@ -6,6 +6,7 @@ from .AnimatedEntity import AnimatedEntity
 from .Entity import Entity
 from .ResourceManager import resourceManager
 from .Tileset import Tileset
+from .camera import SimpleCamera
 from .misc import Colors
 
 
@@ -86,9 +87,26 @@ class TiledMap:
     def getRect(self):
         return pygame.Rect(self.x, self.y, self.width, self.height)
 
-    def render(self, surface, camera):
-        for row in range(self.rows):
-            for col in range(self.cols):
+    def render(self, surface, camera: SimpleCamera):
+        tileView = camera.view.copy()
+        tileView.center = camera.target.centerx, camera.target.centery
+        initRow, endRow = self.getVisibleRows(
+            camera.fixToView,
+            tileView.height,
+            self.tileset.tileHeight,
+            self.rows,
+            tileView.top
+        )
+        initCol, endCol = self.getVisibleRows(
+            camera.fixToView,
+            tileView.width,
+            self.tileset.tileWidth,
+            self.cols,
+            tileView.left
+        )
+
+        for row in range(initRow, endRow):
+            for col in range(initCol, endCol):
                 surface.blit(
                     self.tileset.getTileSurface(self.cells[row][col]),
                     camera.apply((
@@ -96,6 +114,7 @@ class TiledMap:
                         self.y + (self.tileset.tileHeight * row)
                     ))
                 )
+        # pygame.draw.rect(surface, Colors.BLUE, camera.apply(v), 4)
         # for obj in self.objects:
         #     obj.render(surface, camera)
 
@@ -118,3 +137,24 @@ class TiledMap:
                     obj = Wall(x, y, self.tileset.tileWidth, self.tileset.tileHeight)
                     walls.append(obj)
         return walls
+
+    @staticmethod
+    def getVisibleRows(fixToView: bool, viewSize: int, cellSize: int, maxCells: int, initPos: int):
+        numCells = (viewSize // cellSize) + 2
+        initCell = (initPos // cellSize)
+        if fixToView:
+            endCell = initCell + numCells
+            if endCell >= maxCells:
+                initCell = maxCells - numCells
+            if initCell < 0:
+                endCell = numCells
+        else:
+            if initCell < -numCells // 2:
+                endCell = numCells // 2
+            else:
+                endCell = initCell + numCells
+            endSpill = endCell - maxCells
+            if endSpill > numCells // 2:
+                initCell = endCell - endSpill - numCells // 2
+
+        return max(0, initCell), min(maxCells, endCell)

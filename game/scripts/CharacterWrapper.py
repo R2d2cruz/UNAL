@@ -1,6 +1,4 @@
-from game.core import Vector2D
-from game.core.Character import Character
-from game.core.Hermes import hermes
+from game.core import Vector2D, Character, hermes
 
 
 class CharacterWrapper:

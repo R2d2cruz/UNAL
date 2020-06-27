@@ -1,5 +1,5 @@
-from game.core.CharacterWrapper import CharacterWrapper
-from game.core.Script import Script
+from game.scripts.CharacterWrapper import CharacterWrapper
+from game.scripts.Script import Script
 from game.core.Telegram import Telegram
 
 

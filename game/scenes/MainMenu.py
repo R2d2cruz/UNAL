@@ -159,7 +159,7 @@ class MainMenu(Scene):
         if entity is None:
             entity = self.ui.getControlByName('selectAnim')
         if entity is not None:
-            entity.loadAnimation(resourceManager.getAnimFile(resourceManager.getAnimName(self.index)))
+            resourceManager.loadAnimation(entity, resourceManager.getAnimName(self.index))
             entity.currentClip = 'down'
 
     def loadSettings(self):

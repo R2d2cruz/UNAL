@@ -155,7 +155,7 @@ class Entity(pygame.sprite.Sprite):
 
     def render(self, surface, camera: BaseCamera):
         surface.blit(self.image, camera.apply(self.rect))
-        # pygame.draw.rect(surface, Colors.BLACK, camera.apply(self.getCollisionRect()), 1)
+        # pygame.draw.rect(surface, Colors.GREEN, camera.apply(self.getCollisionRect()), 1)
         # if self.tag:
         #     pygame.draw.rect(surface, Colors.RED, camera.apply(self.getCollisionRect()), 4)
         if self.selected:

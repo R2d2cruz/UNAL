@@ -5,12 +5,12 @@ import pygame
 
 from .entities import HealthPotion
 from .entities.Item import Book
-from ..core import (Character, Game, TiledMap, Scene, SimpleCamera,
-                    Vector2D, resourceManager, World, MovingEntity, Colors, AnimatedEntity)
-from ..core.CharacterWrapper import CharacterWrapper
+from ..core import (Game, TiledMap, Scene, SimpleCamera,
+                    Vector2D, resourceManager, World, MovingEntity, Colors)
+from game.scripts.CharacterWrapper import CharacterWrapper
 from ..core.SelectionBox import SelectionBox
 from ..net.OnlinePlayer import OnlinePlayer
-from ..ui import Button, Text, GridContainer, Container
+from ..ui import Button, GridContainer, Container
 
 
 class Playground(Scene):
@@ -116,13 +116,13 @@ class Playground(Scene):
     def evalMove(self):
         vectorMov = Vector2D()
         if self.keysPressed.get(pygame.K_RIGHT):
-            vectorMov.x += 1
+            vectorMov.x = 1
         if self.keysPressed.get(pygame.K_LEFT):
-            vectorMov.x -= 1
+            vectorMov.x = -1
         if self.keysPressed.get(pygame.K_DOWN):
-            vectorMov.y += 1
+            vectorMov.y = 1
         if self.keysPressed.get(pygame.K_UP):
-            vectorMov.y -= 1
+            vectorMov.y = -1
         self.player.velocity = vectorMov
 
     def handleMessage(self, message):
@@ -141,7 +141,7 @@ class Playground(Scene):
             self.camera.update(deltaTime)
 
     def render(self, surface: pygame.Surface):
-        surface.fill(Colors.BLACK)
+        surface.fill(Colors.GRAY)
         self.world.render(surface, self.camera)
         # self.camera.render(surface)
 
@@ -242,7 +242,13 @@ class Playground(Scene):
             Vector2D(128, 64),
             Vector2D(64, 192)
         ]
-        worldRect = pygame.Rect(100, 0, self.game.surface.get_width() - 100, self.game.surface.get_height())
+        v = 50
+        worldRect = pygame.Rect(
+            160 + v,
+            0 + v,
+            self.game.surface.get_width() - 100 - v * 4,
+            self.game.surface.get_height() - v * 4
+        )
         self.world = World(TiledMap(mapName), worldRect)
         self.loadScripts(self.world.rect)
         self.world.addEntity(HealthPotion('freshPotion', Vector2D(160, 288), 20))
@@ -252,7 +258,7 @@ class Playground(Scene):
         self.world.locateInValidRandomPos(self.player)
         self.camera = SimpleCamera(
             self.world.view.width, self.world.view.height,
-            self.world.rect.width, self.world.rect.height, False)
+            self.world.rect.width, self.world.rect.height, True)
         self.camera.follow(self.player)
         self.world.createBook = self.createBook
 
