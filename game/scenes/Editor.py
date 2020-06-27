@@ -145,7 +145,7 @@ class Editor(Scene):
     def loadWorld(self, mapName: str):
         worldRect = pygame.Rect(160, 52, self.game.surface.get_width() - 160, self.game.surface.get_height() - 52)
         self.world = World(TiledMap(mapName), worldRect)
-        self.world.addEntity(HealthPotion("freshPotion", (3, 2, 10, 12), Vector2D(160, 288), 20))
+        self.world.addEntity(HealthPotion("freshPotion", Vector2D(160, 288), 20, (0, 0, 10, 12)))
         self.camera = SimpleCamera(
             self.world.view.width, self.world.view.height,
             self.world.rect.width, self.world.rect.height, False)

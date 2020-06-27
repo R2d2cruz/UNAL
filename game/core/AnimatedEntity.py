@@ -1,9 +1,6 @@
-import json
-
 import pygame
 
 from .Entity import Entity
-from .ResourceManager import resourceManager
 
 
 class AnimatedEntity(Entity):
@@ -21,19 +18,6 @@ class AnimatedEntity(Entity):
 
     def handleEvent(self, event):
         pass
-
-    def loadAnimation(self, fileName: str):
-        with open(fileName) as json_file:
-            data = json.load(json_file)
-            self.sheet = resourceManager.loadImageByPath(resourceManager.fixPath(data.get("image")))
-            sprites = data.get("sprites")
-            for key in sprites:
-                self.clips[key] = sprites[key]
-        self.width = data.get("width")
-        self.height = data.get("height")
-        self.timeStep = data.get("timestep")
-        self.currentClip = data.get("default_sprite")
-        self.getNextFrame()
 
     def getFrame(self, frameSet):
         self.frame += 1

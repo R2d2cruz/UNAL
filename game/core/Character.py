@@ -1,9 +1,7 @@
 import pygame
 
-from . import Vector2D
 from .Hermes import hermes
 from .MovingEntity import MovingEntity
-from .ResourceManager import resourceManager
 from .Telegram import Telegram
 from .camera.BaseCamera import BaseCamera
 from .misc import getText
@@ -23,16 +21,13 @@ maxHealth = 100
 
 
 class Character(MovingEntity):
-    def __init__(self, name: str, animationName: str, position, collisionRect, *groups):
+    def __init__(self, position, collisionRect, *groups):
         super().__init__(position, collisionRect, *groups)
         self.currentClip = None
         self.__color = (0, 0, 0)
         self.__nameSurface = None
         self.__nameRect = None
         self.name = None
-        self.setName(name)
-        self.animName = animationName
-        self.loadAnimation(resourceManager.getAnimFile(self.animName))
         self.__health = 100
         self.__attack = 30
         self.__defense = 20
@@ -89,9 +84,8 @@ class Character(MovingEntity):
     def setName(self, name: str):
         if name is not None or name != '':
             self.name = name
-            font = resourceManager.getFont('minecraft', 14)
             self.__nameSurface, self.__nameRect = getText(
-                self.name, font, self.__color)
+                self.name, self.font, self.__color)
         else:
             self.__nameSurface = None
             self.__nameRect = None

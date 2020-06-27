@@ -7,11 +7,11 @@ MAXYINTERVAL = 6
 
 
 class Item(Entity):
-    def __init__(self, name: str, rect: pygame.Rect, positionCenter: Vector2D):
+    def __init__(self, name: str, positionCenter: Vector2D, rect: tuple):
         super().__init__()
         self.name = name
-        self.image = resourceManager.loadImage(self.name, rect)
-        self.rect = rect
+        self.rect = pygame.Rect(rect)
+        self.image = resourceManager.loadImage(self.name, self.rect)
         self.x = positionCenter.x - self.rect.w
         self.y = positionCenter.y - self.rect.h
         self.direction = -1
@@ -39,7 +39,7 @@ class Item(Entity):
 
 class Book(Item):
     def __init__(self, name: str, position: Vector2D, data: dict, rect: tuple = (12, 12, 32, 40)):
-        super().__init__(name, pygame.Rect(rect), position)
+        super().__init__(name, position, rect)
         if data is None:
             data = dict(
                 tittle=name,
@@ -62,7 +62,7 @@ class Book(Item):
 
 class HealthPotion(Item):
     def __init__(self, name: str, position: Vector2D, healPower: int, rect: tuple = (3, 2, 10, 12)):
-        super().__init__(name, pygame.Rect(rect), position)
+        super().__init__(name, position, rect)
         self.healPower = healPower
         self.effect = self.recoveryHealth
         self.isOn = True

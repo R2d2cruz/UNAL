@@ -1,5 +1,3 @@
-import pygame
-
 from .Entity import Entity
 from .EntityManager import entityManager
 from .MovingEntity import MovingEntity

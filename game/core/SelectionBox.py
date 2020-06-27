@@ -1,6 +1,6 @@
 import pygame
 
-from . import World, SimpleCamera, collisionManager
+from . import World, SimpleCamera
 
 
 class SelectionBox:

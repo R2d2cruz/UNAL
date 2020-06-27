@@ -3,12 +3,10 @@ from random import choice
 
 import pygame
 
-from .entities import HealthPotion, Player
+from .entities import HealthPotion
 from .entities.Item import Book
-from ..core.SelectionBox import SelectionBox
-from ..core.CharacterWrapper import CharacterWrapper
 from ..core import (Character, Game, TiledMap, Scene, SimpleCamera,
-                    Vector2D, resourceManager, World, MovingEntity, Colors)
+                    Vector2D, resourceManager, World, MovingEntity, Colors, AnimatedEntity)
 from ..core.CharacterWrapper import CharacterWrapper
 from ..core.SelectionBox import SelectionBox
 from ..net.OnlinePlayer import OnlinePlayer
@@ -26,16 +24,13 @@ class Playground(Scene):
         self.camera = None
         self.spawningPoints = []
         self.paused = False
-        self.playerName = None
         self.player = None
         self.font = None
 
     def onEnterScene(self, data: dict = None):
         if self.ui is None:
             self.ui = self.createUI()
-        self.playerName = data.get('playerName')
-        self.loadWorld(data.get('mapName'))
-        self.player.loadAnimation(resourceManager.getAnimFile(data.get('animName')))
+        self.loadWorld(data.get('mapName'), data.get('playerName'), data.get('animName'))
         self.game.client.sendPlayerStatus(self.player)
 
     def createUI(self):
@@ -56,9 +51,9 @@ class Playground(Scene):
         buttonWander2.onClick = self.onStopWander
         grid.addControl(buttonWander2, (2, 0))
 
-        buttonText = Button(0, 0, 0, 0, self.font, 'Text')
-        buttonText.onClick = self.onShowText
-        grid.addControl(buttonText, (3, 0))
+        # buttonText = Button(0, 0, 0, 0, self.font, 'Text')
+        # buttonText.onClick = self.onShowText
+        # grid.addControl(buttonText, (3, 0))
 
         buttonRandom = Button(0, 0, 0, 0, self.font, 'Random Pos')
         buttonRandom.onClick = self.onRandomPos
@@ -222,16 +217,16 @@ class Playground(Scene):
             if issubclass(type(entity), MovingEntity):
                 self.world.locateInValidRandomPos(entity)
 
-    def onShowText(self, sender):
-        resourceManager.playSound('select')
-        if sender.tag is None:
-            bubble = Text(100, 100, 800, 400, self.font, longtText)
-            sender.tag = bubble.id
-            self.ui.addControl(bubble)
-        else:
-            bubble = self.ui.getControlById(sender.tag)
-            self.ui.removeControl(bubble)
-            sender.tag = None
+    # def onShowText(self, sender):
+    #     resourceManager.playSound('select')
+    #     if sender.tag is None:
+    #         bubble = Text(100, 100, 800, 400, self.font, longtText)
+    #         sender.tag = bubble.id
+    #         self.ui.addControl(bubble)
+    #     else:
+    #         bubble = self.ui.getControlById(sender.tag)
+    #         self.ui.removeControl(bubble)
+    #         sender.tag = None
 
     def onQuit(self, sender):
         # tal vez preguntar al usuario si esta seguro
@@ -239,7 +234,7 @@ class Playground(Scene):
         self.world.clear()
         self.game.setScene("main")
 
-    def loadWorld(self, mapName: str):
+    def loadWorld(self, mapName: str, playerName: str, animName: str):
         self.spawningPoints = [
             Vector2D(128, 128),
             Vector2D(192, 192),
@@ -252,7 +247,7 @@ class Playground(Scene):
         self.loadScripts(self.world.rect)
         self.world.addEntity(HealthPotion('freshPotion', Vector2D(160, 288), 20))
         self.world.addEntity(Book('book', Vector2D(900, 900), dict(tittle='NN', text='', especial=None)))
-        self.player = Player(self.playerName, self.playerName, (0, 0), (0, 24, 34, 32))
+        self.player = resourceManager.loadCharacter(playerName, animName)
         self.world.addEntity(self.player)
         self.world.locateInValidRandomPos(self.player)
         self.camera = SimpleCamera(
@@ -273,7 +268,7 @@ class Playground(Scene):
                         moduleName, fileName)
                     foo = importlib.util.module_from_spec(spec)
                     spec.loader.exec_module(foo)
-                    character = Character(moduleName, 'Charly', (0, 0), (0, 24, 34, 32))
+                    character = resourceManager.loadCharacter(moduleName, 'Charly')
                     character.script = foo.ScriptCharacter()
                     character.script.name = moduleName
                     spawn = choice(self.spawningPoints)

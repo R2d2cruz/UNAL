@@ -72,7 +72,7 @@ class TiledMap:
                         entity.image = self.tileset.getTileSurface(obj.get("tile"))
                     else:
                         entity = AnimatedEntity()
-                        entity.loadAnimation(resourceManager.getAnimFile(anim))
+                        resourceManager.loadAnimation(entity, anim)
                     entity.tangible = not obj.get('walkable')
                     entity.setPos(pos[0] * self.tileset.tileWidth, pos[1] * self.tileset.tileHeight)
                     entity.width = self.tileset.tileWidth

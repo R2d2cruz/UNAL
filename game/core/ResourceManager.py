@@ -1,6 +1,9 @@
+import json
 from random import choice
 
 import pygame
+
+from game.core import Character, Entity
 
 
 class _ResourceManager:
@@ -118,6 +121,34 @@ class _ResourceManager:
     #     __currentlySong = nextSong
     #     pygame.mixer.music.load(nextSong)
     #     pygame.mixer.music.play()
+
+    def loadItem(self, characterName: str) -> Entity:
+        pass
+
+    def loadCharacter(self, characterName: str, animationName: str = None) -> Character:
+        character = Character((0, 0), (6, 28, 26, 30))
+        character.font = resourceManager.getFont('minecraft', 14)
+        character.setName(characterName)
+        if animationName is None:  # esto no deberia ocurrir, arreglar!!
+            animationName = resourceManager.getRandomCharAnimName()
+        self.loadAnimation(character, animationName)
+        character.data["health"] = 20
+        character.data["xp"] = 0
+        return character
+
+    def loadAnimation(self, entity, animName: str):
+        fileName = self.getAnimFile(animName)
+        with open(fileName) as json_file:
+            data = json.load(json_file)
+            entity.sheet = self.loadImageByPath(self.fixPath(data.get("image")))
+            sprites = data.get("sprites")
+            for key in sprites:
+                entity.clips[key] = sprites[key]
+        entity.width = data.get("width")
+        entity.height = data.get("height")
+        entity.timeStep = data.get("timestep")
+        entity.currentClip = data.get("default_sprite")
+        entity.getNextFrame()
 
 
 resourceManager = _ResourceManager()
