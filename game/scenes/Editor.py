@@ -6,6 +6,7 @@ from ..core import (Game, TiledMap, Scene, SimpleCamera,
 from ..core.SelectionBox import SelectionBox
 from ..net.OnlinePlayer import OnlinePlayer
 from ..ui import Button, GridContainer, Container, BoxContainer, Image
+from ..ui.ScrollBar import ScrollBar
 
 
 class Editor(Scene):
@@ -32,10 +33,11 @@ class Editor(Scene):
         self.cross.center = self.world.view.center
 
         control = self.ui.getControlByName('toolBar')
-        for i in range(control.rows * control.cols):
-            image = Image(0, 0, 0, 0)
-            image.image = self.world.map.tileset.getTileSurface(i)
-            control.addControl(image, (i // control.cols, i % control.cols))
+        if control is not None:
+            for i in range(control.rows * control.cols):
+                image = Image(0, 0, 0, 0)
+                image.image = self.world.map.tileset.getTileSurface(i)
+                control.addControl(image, (i // control.cols, i % control.cols))
 
     def createUI(self):
         self.font = resourceManager.getFont('minecraft', 18)
@@ -43,9 +45,13 @@ class Editor(Scene):
 
         menu = BoxContainer(BoxContainer.HORIZONTAL, 0, 0, self.game.surface.get_width(), 52)
 
-        buttonPath = Button(0, 0, 80, 36, self.font, 'Tileset')
+        buttonTerrain = Button(0, 0, 80, 36, self.font, 'Terreno')
         # buttonPath.onClick = self.onGoPath
-        menu.addControl(buttonPath)
+        menu.addControl(buttonTerrain)
+
+        buttonTileset = Button(0, 0, 80, 36, self.font, 'Tileset')
+        # buttonPath.onClick = self.onGoPath
+        menu.addControl(buttonTileset)
 
         buttonText = Button(0, 0, 60, 36, self.font, 'Salir')
         buttonText.onClick = self.onQuit
@@ -56,7 +62,10 @@ class Editor(Scene):
         tools = GridContainer(0, 52, 160, self.game.surface.get_height() - 52)
         tools.name = 'toolBar'
         tools.setGrid(20, 4)
+
+        scroll1 = ScrollBar(100, 5, 500, 30, self.font)
         ui.addControl(tools)
+        ui.addControl(scroll1)
         return ui
 
     def onKeyDown(self, event):
@@ -115,9 +124,6 @@ class Editor(Scene):
         if self.keysPressed.get(pygame.K_UP):
             self.vectorMov.y = -1
 
-    def handleMessage(self, message):
-        pass
-
     def update(self, deltaTime: float):
         step = 32
         halfX = (self.world.view.width - self.cross.width) / 2
@@ -139,12 +145,12 @@ class Editor(Scene):
         self.ui.render(surface, self.camera)
         pygame.draw.rect(surface, (255, 0, 0), self.camera.apply(self.cross), 2)
 
-    def onQuit(self, sender):
+    def onQuit(self, event, sender):
         self.world.clear()
         self.game.setScene("main")
 
     def loadWorld(self, mapName: str):
-        worldRect = pygame.Rect(160, 52, self.game.surface.get_width() - 160, self.game.surface.get_height() - 52)
+        worldRect = pygame.Rect(160, 52, self.game.windowWidth - 160, self.game.windowHeight - 52)
         self.world = World(TiledMap(mapName), worldRect)
         self.world.addEntity(HealthPotion("freshPotion", Vector2D(160, 288), 20, (0, 0, 10, 12)))
         self.camera = SimpleCamera(

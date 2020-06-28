@@ -39,7 +39,7 @@ class World:
 
     def createBook(self, name: str, position: Vector2D, data: dict, rect: tuple = (12, 12, 32, 40)) -> Entity:
         pass
-        
+
     def addEntity(self, entity, isSolid: bool = True):
         if isSolid:
             self.cellSpace.registerEntity(entity)

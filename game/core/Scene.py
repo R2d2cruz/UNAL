@@ -32,8 +32,19 @@ class Scene:
     def onExitScene(self):
         pass
 
-    def handleEvent(self, event):
-        self.ui.handleEvent(event)
+    def handleKeyEvent(self, event) -> bool:
+        if self.ui.handleKeyEvent(event):
+            return True
+        print(event.key)
+        if event.type == pygame.KEYDOWN:
+            self.onKeyDown(event)
+        elif event.type == pygame.KEYUP:
+            self.onKeyUp(event)
+        return True
+
+    def handleMouseEvent(self, event) -> bool:
+        if self.ui.handleMouseEvent(event):
+            return True
         if event.type == pygame.MOUSEBUTTONDOWN:
             if event.button == RIGHT:
                 self.onRightMouseDown(event)
@@ -46,10 +57,7 @@ class Scene:
                 self.onLeftMouseUp(event)
         elif event.type == pygame.MOUSEMOTION:
             self.onMouseMove(event)
-        elif event.type == pygame.KEYDOWN:
-            self.onKeyDown(event)
-        elif event.type == pygame.KEYUP:
-            self.onKeyUp(event)
+        return True
 
     def onKeyDown(self, event):
         pass
@@ -70,9 +78,6 @@ class Scene:
         pass
 
     def onMouseMove(self, event):
-        pass
-
-    def handleMessage(self, message):
         pass
 
     def update(self, deltaTime: float):

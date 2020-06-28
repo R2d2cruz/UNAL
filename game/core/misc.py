@@ -31,7 +31,7 @@ def blitMultiLineText(surface, text, rect, font, color=pygame.Color('black')):
 
 def getText(text, font, col):
     surface = font.render(text, True, col)
-    return surface, pygame.Rect(0, 0, surface.get_width(), surface.get_height())
+    return surface, surface.get_rect()
 
 
 def getFirst(itemList: list, itemFilter):

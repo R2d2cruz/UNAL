@@ -2,7 +2,7 @@ import signal
 import sys
 
 from constants import anims, fonts, imgs, maps, sounds, tilesets
-from game.core import Config, Game, resourceManager, TiledMap
+from game.core import Config, Game, resourceManager
 from game.scenes import MainMenu, Playground, Editor
 from game.ui.gui import gui
 

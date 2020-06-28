@@ -3,11 +3,11 @@ from random import choice
 
 import pygame
 
+from game.scripts.CharacterWrapper import CharacterWrapper
 from .entities import HealthPotion
 from .entities.Item import Book
 from ..core import (Game, TiledMap, Scene, SimpleCamera,
                     Vector2D, resourceManager, World, MovingEntity, Colors)
-from game.scripts.CharacterWrapper import CharacterWrapper
 from ..core.SelectionBox import SelectionBox
 from ..net.OnlinePlayer import OnlinePlayer
 from ..ui import Button, GridContainer, Container
@@ -62,7 +62,7 @@ class Playground(Scene):
         buttonText = Button(0, 0, 0, 0, self.font, 'Salir')
         buttonText.onClick = self.onQuit
         grid.addControl(buttonText, (9, 0))
-        ui = Container(0, 0, self.game.surface.get_width(), self.game.surface.get_height())
+        ui = Container(0, 0, self.game.windowWidth, self.game.windowHeight)
         ui.addControl(grid)
         return ui
 
@@ -125,10 +125,6 @@ class Playground(Scene):
             vectorMov.y = -1
         self.player.velocity = vectorMov
 
-    def handleMessage(self, message):
-        if message.type == 'diconnected':
-            self.paused = True
-
     def update(self, deltaTime: float):
         if not self.paused:
             self.updateOtherPlayers(deltaTime)
@@ -185,7 +181,7 @@ class Playground(Scene):
                 self.world.removeEntity(self.players[playerKey])
                 del self.players[playerKey]
 
-    def onGoPath(self, sender):
+    def onGoPath(self, event, sender):
         resourceManager.playSound('select')
         if self.player.steering.followPathEnabled:
             for entity in self.selectionBox.entities:
@@ -199,25 +195,25 @@ class Playground(Scene):
                     entity.steering.wanderEnabled = 0.0
                     self.world.followRandomPath(entity)
 
-    def onStartWander(self, sender):
+    def onStartWander(self, event, sender):
         resourceManager.playSound('select')
         for entity in self.selectionBox.entities:
             if issubclass(type(entity), MovingEntity):
                 entity.steering.wanderEnabled = True
 
-    def onStopWander(self, sender):
+    def onStopWander(self, event, sender):
         resourceManager.playSound('select')
         for entity in self.selectionBox.entities:
             if issubclass(type(entity), MovingEntity):
                 entity.steering.wanderEnabled = False
 
-    def onRandomPos(self, sender):
+    def onRandomPos(self, event, sender):
         resourceManager.playSound('select')
         for entity in self.selectionBox.entities:
             if issubclass(type(entity), MovingEntity):
                 self.world.locateInValidRandomPos(entity)
 
-    # def onShowText(self, sender):
+    # def onShowText(self, event, sender):
     #     resourceManager.playSound('select')
     #     if sender.tag is None:
     #         bubble = Text(100, 100, 800, 400, self.font, longtText)
@@ -228,7 +224,7 @@ class Playground(Scene):
     #         self.ui.removeControl(bubble)
     #         sender.tag = None
 
-    def onQuit(self, sender):
+    def onQuit(self, event, sender):
         # tal vez preguntar al usuario si esta seguro
         # se guarda el juego? se cierra y libera? o se mantiene en memoria?
         self.world.clear()
@@ -244,13 +240,13 @@ class Playground(Scene):
         ]
         v = 50
         worldRect = pygame.Rect(
-            160 + v,
-            0 + v,
-            self.game.surface.get_width() - 100 - v * 4,
-            self.game.surface.get_height() - v * 4
+            160,
+            0,
+            self.game.windowWidth - 100,
+            self.game.windowHeight
         )
         self.world = World(TiledMap(mapName), worldRect)
-        self.loadScripts(self.world.rect)
+        self.loadScripts()
         self.world.addEntity(HealthPotion('freshPotion', Vector2D(160, 288), 20))
         self.world.addEntity(Book('book', Vector2D(900, 900), dict(tittle='NN', text='', especial=None)))
         self.player = resourceManager.loadCharacter(playerName, animName)
@@ -262,7 +258,7 @@ class Playground(Scene):
         self.camera.follow(self.player)
         self.world.createBook = self.createBook
 
-    def loadScripts(self, worlRect):
+    def loadScripts(self):
         print('📜 Cargando scripts...')
         import importlib.util
         for script in os.listdir('./scripts/characters'):

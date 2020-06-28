@@ -13,6 +13,7 @@ ANGLE_CHANGE = 1
 
 DEFAULT_WEIGHT = 1.0
 
+
 def randomClamped():
     return random.random() - random.random()
 

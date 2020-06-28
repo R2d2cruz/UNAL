@@ -16,12 +16,12 @@ class AnimatedEntity(Entity):
         self.width = 0
         self.height = 0
 
-    def handleEvent(self, event):
+    def handleEvent(self, event) -> bool:
         pass
 
     def getFrame(self, frameSet):
         self.frame += 1
-        if self.frame > (len(frameSet) - 1):
+        if self.frame >= len(frameSet):
             self.frame = 0
         return frameSet[self.frame]
 

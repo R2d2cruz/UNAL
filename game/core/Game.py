@@ -8,6 +8,16 @@ from .Hermes import hermes
 from .ResourceManager import resourceManager
 from .Scene import Scene
 
+mouseEvents = [
+    pygame.MOUSEBUTTONDOWN,
+    pygame.MOUSEMOTION,
+    pygame.MOUSEBUTTONUP
+]
+keyEvents = [
+    pygame.KEYUP,
+    pygame.KEYDOWN
+]
+
 
 class Game:
     def __init__(self, config: Config):
@@ -15,6 +25,8 @@ class Game:
         self.config: Config = config
         self.isRunning = False
         self.surface = None
+        self.windowWidth = self.config.windowWidth
+        self.windowHeight = self.config.windowHeight
         self.clock = None
         self.currentScene = None
         self.client = Client(self.config)
@@ -23,18 +35,22 @@ class Game:
 
     def init(self):
         pygame.display.set_icon(resourceManager.loadImage("logo"))
-        self.surface = pygame.display.set_mode((self.config.windowWidth, self.config.windowHeight))
+        self.surface = pygame.display.set_mode((self.windowWidth, self.windowHeight))
         self.clock = pygame.time.Clock()
         pygame.mixer.music.set_volume(self.config.volume)
 
-    def handleEvents(self):
+    def handleEvents(self) -> bool:
         for event in pygame.event.get():
-            if event.type == pygame.QUIT:
+            if event.type == pygame.QUIT or event.type == pygame.WINDOWEVENT:
                 self.quit()
-                continue
-            self.currentScene.handleEvent(event)
-        # if not self.game.connected:
-        #     self.currentScene.handleMessage(Message(Message.DISCONNECTED))
+                return True
+            elif event.type in mouseEvents:
+                if self.currentScene.handleMouseEvent(event):
+                    return True
+            elif event.type in keyEvents:
+                if self.currentScene.handleKeyEvent(event):
+                    return True
+        return False
 
     def update(self, deltaTime: float):
         self.currentScene.update(deltaTime)

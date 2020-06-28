@@ -16,7 +16,7 @@ class MainMenu(Scene):
         self.done = False
 
     def createUI(self):
-        grid1 = GridContainer(0, 0, self.game.surface.get_width() / 2, self.game.surface.get_height())
+        grid1 = GridContainer(0, 0, self.game.windowWidth / 2, self.game.windowHeight)
         grid1.setGrid(3, 1)
 
         buttonPlay = Button(0, 0, 450, 70, self.font, 'Quiero jugar!')
@@ -31,8 +31,8 @@ class MainMenu(Scene):
         buttonQuit.onClick = self.onGoQuit
         grid1.addControl(buttonQuit, (2, 0))
 
-        box1 = BoxContainer(BoxContainer.VERTICAL, 1 + self.game.surface.get_width() / 2, 0,
-                            self.game.surface.get_width() / 2, self.game.surface.get_height())
+        box1 = BoxContainer(BoxContainer.VERTICAL, 1 + self.game.windowWidth / 2, 0,
+                            self.game.windowWidth / 2, self.game.windowHeight)
 
         musicButton = Button(0, 0, 256, 64, self.font, 'Music: ON')
         musicButton.onClick = self.onMusicButton
@@ -68,7 +68,7 @@ class MainMenu(Scene):
         grid2.addControl(rightListButton, (0, 2))
         box1.addControl(grid2)
 
-        ui = Container(0, 0, self.game.surface.get_width(), self.game.surface.get_height())
+        ui = Container(0, 0, self.game.windowWidth, self.game.windowHeight)
         ui.addControl(grid1)
         ui.addControl(box1)
 
@@ -80,9 +80,6 @@ class MainMenu(Scene):
             # TODO: preguntarle al usuario si esta seguro de salir
             self.game.quit()
 
-    def handleMessage(self, message):
-        pass
-
     def render(self, surface: pygame.Surface):
         surface.fill((30, 30, 30))
         self.ui.render(surface, self.camera)
@@ -92,14 +89,14 @@ class MainMenu(Scene):
     def onEnterScene(self, data: dict = None):
         self.loadSettings()
 
-    def onEdit(self, sender):
+    def onEdit(self, event, sender):
         resourceManager.playSound('title')
         self.game.setScene('edit', dict(
             # game=self.game,
             mapName=self.game.config.map
         ))
 
-    def onGoPlay(self, sender):
+    def onGoPlay(self, event, sender):
         control = self.ui.getControlByName('playerName')
         if not self.game.client.connected:
             if not self.game.client.connect(control.text):
@@ -119,20 +116,20 @@ class MainMenu(Scene):
                 mapName=self.game.config.map
             ))
 
-    def onGoQuit(self, sender):
+    def onGoQuit(self, event, sender):
         resourceManager.playSound('select')
         # demorar aqui un poco, tal vez mostrar una animacion o algo mientras sale
         pygame.time.delay(100)
         self.game.quit()
 
-    def goToLeftList(self, sender):
+    def goToLeftList(self, event, sender):
         resourceManager.playSound('select')
         self.index -= 1
         if self.index < 0:
             self.index = resourceManager.getAnimCount() - 1
         self.changeAnim()
 
-    def goToRightList(self, sender):
+    def goToRightList(self, event, sender):
         resourceManager.playSound('select')
         self.index += 1
         if self.index > (resourceManager.getAnimCount() - 1):
@@ -144,13 +141,13 @@ class MainMenu(Scene):
         resourceManager.playSound('hit-key')
 
     @staticmethod
-    def onMusicButton(sender: Button):
+    def onMusicButton(event, sender: Button):
         enable = "ON" if resourceManager.flipEnableMusic() else "OFF"
         resourceManager.playSound('select')
         sender.text = "Music: " + enable
 
     @staticmethod
-    def onSoundButton(sender: Button):
+    def onSoundButton(event, sender: Button):
         enable = "ON" if resourceManager.flipEnableSound() else "OFF"
         resourceManager.playSound('select')
         sender.text = "Sounds: " + enable

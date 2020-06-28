@@ -57,7 +57,7 @@ class SimpleCamera(BaseCamera):
             offsetY = -int(self.target.centery)
 
             if self.__worldRect.width < self.view.width:
-                offsetX = -self.__worldRect.width/2
+                offsetX = -self.__worldRect.width / 2
             if self.__worldRect.height < self.view.height:
                 offsetY = -self.__worldRect.height / 2
 
