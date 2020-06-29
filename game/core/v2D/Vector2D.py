@@ -49,6 +49,9 @@ class Vector2D:
         self.x = 0.0
         self.y = 0.0
 
+    def copy(self):
+        return Vector2D(self.x, self.y)
+
     def isZero(self) -> bool:
         return self.x == 0.0 and self.y == 0.0
 

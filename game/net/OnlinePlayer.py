@@ -19,7 +19,7 @@ class OnlinePlayer(Character):
             (0, 24, 34, 32),
             *groups
         )
-        self.font = resourceManager.getFont('minecraft', 14)
+        self.font = resourceManager.getFont('MinecraftRegular', 14)
         self.setName(data.get("n"))
         self.animName = data.get("A")
         if self.animName is not None:

@@ -35,7 +35,6 @@ class Scene:
     def handleKeyEvent(self, event) -> bool:
         if self.ui.handleKeyEvent(event):
             return True
-        print(event.key)
         if event.type == pygame.KEYDOWN:
             self.onKeyDown(event)
         elif event.type == pygame.KEYUP:

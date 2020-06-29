@@ -1,4 +1,4 @@
-from . import gui
+from .gui import gui
 from .Container import Container
 from .Control import Control
 

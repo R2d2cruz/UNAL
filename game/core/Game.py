@@ -30,6 +30,8 @@ class Game:
         self.clock = None
         self.currentScene = None
         self.client = Client(self.config)
+        self.keysPressed = []
+        self.FPS = 0.0
         pygame.init()
         pygame.mixer.init()
 
@@ -48,6 +50,7 @@ class Game:
                 if self.currentScene.handleMouseEvent(event):
                     return True
             elif event.type in keyEvents:
+                self.keysPressed = pygame.key.get_pressed()
                 if self.currentScene.handleKeyEvent(event):
                     return True
         return False
@@ -63,10 +66,16 @@ class Game:
     def run(self):
         self.isRunning = True
         lastFrameTime = 0
+        deltaTime = 0
         while self.isRunning:
             self.handleEvents()
             t = pygame.time.get_ticks()
-            self.update((t - lastFrameTime))
+            deltaTime = t - lastFrameTime
+            self.update(deltaTime)
+
+            # FPS = (1000 - deltaTime) * (MaxFPS / 1000)
+            self.FPS = round((1000 - deltaTime) * (60 / 1000))
+
             lastFrameTime = t
             hermes.setDeltaTime(t)
             self.render()

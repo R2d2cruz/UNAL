@@ -9,6 +9,7 @@ class AnimatedEntity(Entity):
         self.frame = 0
         self.sheet = None
         self.image = None
+        self.defaultClip = None
         self.currentClip = None
         self.lastFrameTime = 0
         self.timeStep = 100
@@ -26,7 +27,11 @@ class AnimatedEntity(Entity):
         return frameSet[self.frame]
 
     def getNextFrame(self):
+        if self.currentClip is None:
+            self.currentClip = self.defaultClip
         clipFrame = self.clips.get(self.currentClip)
+        if clipFrame is None:
+            clipFrame = self.clips.get(self.defaultClip)
         frameRect = self.getFrame(clipFrame)
         self.sheet.set_clip(pygame.Rect(frameRect))
         self.image = self.sheet.subsurface(self.sheet.get_clip())

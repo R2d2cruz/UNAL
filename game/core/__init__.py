@@ -14,7 +14,7 @@ from .ResourceManager import resourceManager
 from .Scene import *
 from .SpacePartition import *
 from .TiledMap import *
-from .Vector2D import *
+from .v2D import *
 from .World import World
 from .camera import *
 from .misc import *

@@ -1,7 +1,7 @@
 import pygame
 
 from .Telegram import Telegram
-from .Vector2D import Vector2D
+from .v2D import Vector2D
 from .camera.BaseCamera import BaseCamera
 from .misc import Colors
 
@@ -127,6 +127,9 @@ class Entity(pygame.sprite.Sprite):
         self.rect.centery = centery
         self.refresh()
 
+    def radius(self):
+        return (self.rect.width / 2) * 1.4142
+
     def setPos(self, x: float, y: float):
         self.x, self.y = x, y
 
@@ -162,6 +165,7 @@ class Entity(pygame.sprite.Sprite):
             pygame.draw.rect(surface, Colors.GREEN, camera.apply(self.rect), 4)
         # # else:
         #     pygame.draw.rect(surface, Colors.BLACK, camera.apply(self.getCollisionRect()), 1)
+        pygame.draw.circle(surface, Colors.BLACK, camera.apply((self.x, self.y)), self.radius(), 1)
 
     def dispose(self):
         pass

@@ -133,16 +133,7 @@ class Control:
     def isVisible(self) -> bool:
         return self.__visible
 
-    # @property
-    # def active(self):
-    #     return self.__active
-    #
-    # @active.setter
-    # def active(self, active):
-    #     self.__active = active
-
     def setActive(self):
-        print('active', self.name)
         if self.parent is not None:
             self.parent.setActiveControl(self)
 

@@ -30,6 +30,9 @@ class ScrollBar(Control):
         self.__scrollButton.onMouseMove = self.__onMouseMove
         self.__scrollButton.parent = self
 
+        self.__startScroll = 0
+        self.__endScroll = 0
+
         self.activeControl = None
 
     @property
@@ -47,7 +50,8 @@ class ScrollBar(Control):
 
     @minValue.setter
     def minValue(self, minValue: int):
-        self.__minValue = min(minValue, self.__maxValue - 1)
+        self.__minValue = minValue  # min(minValue, self.__maxValue - 1)
+        self.__value = max(self.__value, self.__minValue)
         self.refresh()
 
     @property
@@ -56,7 +60,8 @@ class ScrollBar(Control):
 
     @maxValue.setter
     def maxValue(self, maxValue: int):
-        self.__maxValue = max(maxValue, self.__minValue + 1)
+        self.__maxValue = maxValue  # max(maxValue, self.__minValue + 1)
+        self.__value = min(self.__value, self.__maxValue)
         self.refresh()
 
     @property
@@ -80,23 +85,33 @@ class ScrollBar(Control):
     def __onClickMin(self, event, sender):
         self.value -= self.__step
         self.refresh()
+        self.onChange(self)
 
     def __onClickMax(self, event, sender):
         self.value += self.__step
         self.refresh()
+        self.onChange(self)
 
     def __onMouseMove(self, event, sender):
         if sender.isPressed():
             # self.value += self.__step
-            startScroll = self.__minButton.left + self.__minButton.width
-            endScroll = self.rect.right - self.__maxButton.width
 
-            mPos = (event.pos[0] - startScroll)
+            mPos = (event.pos[0] - self.__startScroll)
+            offset = mPos * (self.__endScroll - self.__startScroll - self.__scrollButton.width) // (self.__maxValue - self.__minValue)
 
-            offset = mPos * (endScroll - startScroll - self.__scrollButton.width) // (self.__maxValue - self.__minValue)
-
-            print(event.pos, offset, mPos)
+            # print(event.pos, offset, mPos)
             self.refresh()
+            self.onChange(self)
+
+    def onMouseUp(self, event, sender):
+        scale = (self.__maxValue - self.__minValue) / (self.__endScroll - self.__startScroll)
+        # falta el ajuste por el ancho del boton pero eso puede esperar
+        if self.direction == ScrollBar.HORIZONTAL:
+            value = event.pos[0] - self.__startScroll
+        elif self.direction == ScrollBar.VERTICAL:
+            value = event.pos[1] - self.__startScroll
+        self.value = self.__minValue + scale * value
+        self.onChange(self)
 
     def setActiveControl(self, control: Control):
         self.activeControl = control
@@ -108,7 +123,7 @@ class ScrollBar(Control):
             for control in [self.__minButton, self.__scrollButton, self.__maxButton]:
                 if control.handleMouseEvent(event):
                     return True
-            # hacer handle del panel como tal
+            super().handleMouseEvent(event)
             return True
         return False
 
@@ -122,28 +137,37 @@ class ScrollBar(Control):
 
         self.__minButton.top = self.rect.top
         self.__minButton.left = self.rect.left
+        value = self.__value - self.minValue
 
         if self.direction == ScrollBar.HORIZONTAL:
-            startScroll = self.__minButton.left + self.__minButton.width
-            endScroll = self.rect.right - self.__maxButton.width
-
-            offset = self.__value * (endScroll - startScroll - self.__scrollButton.width) // (
-                        self.__maxValue - self.__minValue)
-
-            self.__scrollButton.top = self.rect.top
-            self.__minButton.top = self.rect.top
-
             self.rect.height = ScrollBar.__minHeight
-            self.__minButton.left = self.rect.left
-            self.__scrollButton.left = startScroll + offset
-
+            self.__scrollButton.top = self.rect.top
+            self.__startScroll = self.__minButton.left + self.__minButton.width
+            self.__endScroll = self.rect.right - self.__maxButton.width
+            offset = value * (self.__endScroll - self.__startScroll - self.__scrollButton.width) // (
+                        self.__maxValue - self.__minValue)
+            self.__scrollButton.left = self.__startScroll + offset
             self.__maxButton.top = self.rect.top
-            self.__maxButton.left = endScroll
-        self.__scrollButton.text = str(self.__value)
+            self.__maxButton.left = self.__endScroll
+
+        elif self.direction == ScrollBar.VERTICAL:
+            self.rect.width = ScrollBar.__minWidth
+            self.__scrollButton.left = self.rect.left
+            self.__startScroll = self.__minButton.top + self.__minButton.height
+            self.__endScroll = self.rect.bottom - self.__maxButton.height
+            offset = value * (self.__endScroll - self.__startScroll - self.__scrollButton.height) // (
+                        self.__maxValue - self.__minValue)
+            self.__scrollButton.top = self.__startScroll + offset
+            self.__maxButton.top = self.__endScroll
+            self.__maxButton.left = self.rect.left
+
+        # self.__scrollButton.text = str(self.__value)
 
     def render(self, surface, camera):
         gui.renderElement(surface, self.rect, "panel")
-        if self.direction == ScrollBar.HORIZONTAL:
-            self.__minButton.render(surface, camera)
-            self.__scrollButton.render(surface, camera)
-            self.__maxButton.render(surface, camera)
+        self.__minButton.render(surface, camera)
+        self.__scrollButton.render(surface, camera)
+        self.__maxButton.render(surface, camera)
+
+    def onChange(self, sender):
+        pass

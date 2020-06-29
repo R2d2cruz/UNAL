@@ -18,9 +18,9 @@ class World:
         self.script = None
         self.cellSpace = SpacePartition(self.rect.w, self.rect.h, 100, 100)
         self.worldSurface = pygame.Surface((view.width, view.height))
-
-        self.cellSpace.registerEntities(tiledMap.getWalls())
-        # entityManager.registerEntities(tiledMap.getWalls())
+        self.walls = tiledMap.getWalls()
+        self.cellSpace.registerEntities(self.walls)
+        # entityManager.registerEntities(self.walls)
         self.cellSpace.registerEntities(tiledMap.objects)
         entityManager.registerEntities(tiledMap.objects)
         entityManager.registerEntity(self)
@@ -44,6 +44,7 @@ class World:
         if isSolid:
             self.cellSpace.registerEntity(entity)
         entityManager.registerEntity(entity)
+        entity.world = self
 
     def removeEntity(self, entity):
         collisionManager.unregisterMovingEntity(entity)

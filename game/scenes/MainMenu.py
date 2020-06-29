@@ -4,13 +4,14 @@ import pygame
 
 from ..core import AnimatedEntity, Game, NullCamera, Scene, resourceManager
 from ..ui import Button, InputBox, Label, GridContainer, Container, BoxContainer
+from ..ui.ScrollBar import ScrollBar
 
 
 class MainMenu(Scene):
     def __init__(self, game: Game):
         super().__init__(game)
         self.camera = NullCamera()
-        self.font = resourceManager.getFont('minecraft', 36)
+        self.font = resourceManager.getFont('MinecraftRegular', 36)
         self.index = 0
         self.ui = self.createUI()
         self.done = False
@@ -50,23 +51,32 @@ class MainMenu(Scene):
         inputBox1.onChange = self.onChangeName
         box1.addControl(inputBox1)
 
-        grid2 = GridContainer(0, 0, 450, 70)
-        grid2.setGrid(1, 3)
+        #grid2 = GridContainer(0, 0, 450, 70)
+        #grid2.setGrid(1, 3)
 
-        leftListButton = Button(0, 0, 64, 64, self.font, '<')
-        leftListButton.onClick = self.goToLeftList
-        grid2.addControl(leftListButton, (0, 0))
+        #leftListButton = Button(0, 0, 64, 64, self.font, '<')
+        #leftListButton.onClick = self.goToLeftList
+        #grid2.addControl(leftListButton, (0, 0))
 
         anim = AnimatedEntity()
         anim.name = 'selectAnim'
         anim.currentClip = 'down'
-        self.changeAnim(anim)
-        grid2.addControl(anim, (0, 1))
+        resourceManager.loadAnimation(anim, resourceManager.getAnimName(self.index))
+        #grid2.addControl(anim, (0, 1))
+        box1.addControl(anim)
 
-        rightListButton = Button(0, 0, 64, 64, self.font, '>')
-        rightListButton.onClick = self.goToRightList
-        grid2.addControl(rightListButton, (0, 2))
-        box1.addControl(grid2)
+        #rightListButton = Button(0, 0, 64, 64, self.font, '>')
+        #rightListButton.onClick = self.goToRightList
+        #box1.addControl(rightListButton, (0, 2))
+        #grid2.addControl(grid2)
+
+        scroll1 = ScrollBar(0, 0, 200, 32, self.font)
+        scroll1.minValue = 1
+        scroll1.maxValue = resourceManager.getAnimCount()
+        scroll1.step = 1
+        scroll1.onChange = self.onChangeAnim
+        box1.addControl(scroll1)
+
 
         ui = Container(0, 0, self.game.windowWidth, self.game.windowHeight)
         ui.addControl(grid1)
@@ -122,19 +132,12 @@ class MainMenu(Scene):
         pygame.time.delay(100)
         self.game.quit()
 
-    def goToLeftList(self, event, sender):
-        resourceManager.playSound('select')
-        self.index -= 1
-        if self.index < 0:
-            self.index = resourceManager.getAnimCount() - 1
-        self.changeAnim()
-
-    def goToRightList(self, event, sender):
-        resourceManager.playSound('select')
-        self.index += 1
-        if self.index > (resourceManager.getAnimCount() - 1):
-            self.index = 0
-        self.changeAnim()
+    def onChangeAnim(self, sender):
+        self.index = sender.value - 1
+        entity = self.ui.getControlByName('selectAnim')
+        if entity is not None:
+            resourceManager.loadAnimation(entity, resourceManager.getAnimName(self.index))
+            entity.currentClip = 'down'
 
     @staticmethod
     def onChangeName(sender):
@@ -151,13 +154,6 @@ class MainMenu(Scene):
         enable = "ON" if resourceManager.flipEnableSound() else "OFF"
         resourceManager.playSound('select')
         sender.text = "Sounds: " + enable
-
-    def changeAnim(self, entity: AnimatedEntity = None):
-        if entity is None:
-            entity = self.ui.getControlByName('selectAnim')
-        if entity is not None:
-            resourceManager.loadAnimation(entity, resourceManager.getAnimName(self.index))
-            entity.currentClip = 'down'
 
     def loadSettings(self):
         with open('saves/player.save', 'r') as infile:

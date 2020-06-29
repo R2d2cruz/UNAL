@@ -7,17 +7,16 @@ from game.scripts.CharacterWrapper import CharacterWrapper
 from .entities import HealthPotion
 from .entities.Item import Book
 from ..core import (Game, TiledMap, Scene, SimpleCamera,
-                    Vector2D, resourceManager, World, MovingEntity, Colors)
+                    Vector2D, resourceManager, World, MovingEntity, Colors, Character)
 from ..core.SelectionBox import SelectionBox
 from ..net.OnlinePlayer import OnlinePlayer
-from ..ui import Button, GridContainer, Container
+from ..ui import Button, GridContainer, Container, Label
 
 
 class Playground(Scene):
 
     def __init__(self, game: Game):
         super().__init__(game)
-        self.keysPressed = {}
         self.players = {}
         self.selectionBox = SelectionBox()
         self.world = None
@@ -34,8 +33,11 @@ class Playground(Scene):
         self.game.client.sendPlayerStatus(self.player)
 
     def createUI(self):
-        self.font = resourceManager.getFont('minecraft', 18)
+        self.font = resourceManager.getFont('MinecraftRegular', 18)
         # self.label = self.font.render('Juego en pausa por problemas conexión. Espere un momento', True, (255, 64, 64))
+
+        label = Label(160, 0, 100, 40, self.font, '')
+        label.name = 'status'
 
         grid = GridContainer(0, 0, 160, self.game.surface.get_height())
         grid.setGrid(10, 1)
@@ -62,12 +64,13 @@ class Playground(Scene):
         buttonText = Button(0, 0, 0, 0, self.font, 'Salir')
         buttonText.onClick = self.onQuit
         grid.addControl(buttonText, (9, 0))
+
         ui = Container(0, 0, self.game.windowWidth, self.game.windowHeight)
         ui.addControl(grid)
+        ui.addControl(label)
         return ui
 
     def onKeyDown(self, event):
-        self.keysPressed[event.key] = True
         self.evalMove()
 
     def onKeyUp(self, event):
@@ -75,8 +78,6 @@ class Playground(Scene):
             self.onQuit(None)
         elif event.key == pygame.K_f:
             self.player.dropBook()
-        else:
-            self.keysPressed[event.key] = False
         self.evalMove()
 
     def onRightMouseDown(self, event):
@@ -115,13 +116,13 @@ class Playground(Scene):
 
     def evalMove(self):
         vectorMov = Vector2D()
-        if self.keysPressed.get(pygame.K_RIGHT):
+        if self.game.keysPressed[pygame.K_RIGHT]:
             vectorMov.x = 1
-        if self.keysPressed.get(pygame.K_LEFT):
+        if self.game.keysPressed[pygame.K_LEFT]:
             vectorMov.x = -1
-        if self.keysPressed.get(pygame.K_DOWN):
+        if self.game.keysPressed[pygame.K_DOWN]:
             vectorMov.y = 1
-        if self.keysPressed.get(pygame.K_UP):
+        if self.game.keysPressed[pygame.K_UP]:
             vectorMov.y = -1
         self.player.velocity = vectorMov
 
@@ -160,6 +161,9 @@ class Playground(Scene):
         # )
         # self.world.cellSpace.tagNeighborhood(self.player)
         # pygame.draw.rect(surface, (255, 255, 0), self.camera.apply(queryRect), 4)
+        control = self.ui.getControlByName('status')
+        if control:
+            control.text = str(self.game.FPS)
         self.selectionBox.render(surface)
         self.ui.render(surface, self.camera)
 
@@ -192,7 +196,7 @@ class Playground(Scene):
         else:
             for entity in self.selectionBox.entities:
                 if issubclass(type(entity), MovingEntity):
-                    entity.steering.wanderEnabled = 0.0
+                    entity.steering.weightWander = 0.001
                     self.world.followRandomPath(entity)
 
     def onStartWander(self, event, sender):
@@ -242,13 +246,26 @@ class Playground(Scene):
         worldRect = pygame.Rect(
             160,
             0,
-            self.game.windowWidth - 100,
+            self.game.windowWidth - 160,
             self.game.windowHeight
         )
         self.world = World(TiledMap(mapName), worldRect)
         self.loadScripts()
         self.world.addEntity(HealthPotion('freshPotion', Vector2D(160, 288), 20))
         self.world.addEntity(Book('book', Vector2D(900, 900), dict(tittle='NN', text='', especial=None)))
+
+        perrito = resourceManager.loadCharacter('tony', 'perrito24')
+        perrito.steering.wanderEnabled = True
+        perrito.maxSpeed = 0.1
+        self.world.addEntity(perrito)
+        self.world.locateInValidRandomPos(perrito)
+
+        perrito = resourceManager.loadCharacter('chester', 'perrito48')
+        perrito.steering.wanderEnabled = True
+        perrito.maxSpeed = 0.25
+        self.world.addEntity(perrito)
+        self.world.locateInValidRandomPos(perrito)
+
         self.player = resourceManager.loadCharacter(playerName, animName)
         self.world.addEntity(self.player)
         self.world.locateInValidRandomPos(self.player)
@@ -270,7 +287,7 @@ class Playground(Scene):
                         moduleName, fileName)
                     foo = importlib.util.module_from_spec(spec)
                     spec.loader.exec_module(foo)
-                    character = resourceManager.loadCharacter(moduleName, 'Charly')
+                    character = resourceManager.loadCharacter(moduleName, 'charly')
                     character.script = foo.ScriptCharacter()
                     character.script.name = moduleName
                     spawn = choice(self.spawningPoints)

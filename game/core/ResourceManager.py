@@ -1,4 +1,5 @@
 import json
+import os
 from random import choice
 
 import pygame
@@ -11,7 +12,7 @@ class _ResourceManager:
         self.__soundLibrary = {}
         self.__enableSound = True
         self.__enableMusic = True
-        self.__resPath = {}
+        self.__resPath: str = ''
         self.__images = {}
         self.__sounds = {}
         self.__fonts = {}
@@ -20,22 +21,30 @@ class _ResourceManager:
         self.__maps = {}
         self.__namesAnimList = []
 
-    def init(self, resPathVal: str, imgsVal: {}, soundsVal: {}, fontsVal: {}, animsVal: {}, tilesetsVal: {},
-             mapsVal: {}):
+    def init(self, resPathVal: str, imgsVal: {}):
         self.__soundLibrary = {}
         self.__enableSound = True
         self.__enableMusic = True
         self.__resPath = resPathVal
         self.__images = imgsVal
-        self.__sounds = soundsVal
-        self.__fonts = fontsVal
-        self.__animations = animsVal
-        self.__tilesets = tilesetsVal
-        self.__maps = mapsVal
-        self.__namesAnimList = ['Bob', 'Henry', 'John', 'Charly']
+        self.__sounds = self.loadListFromPath('sounds')
+        self.__fonts = self.loadListFromPath('fonts')
+        self.__animations = self.loadListFromPath('sprites')
+        self.__tilesets = self.loadListFromPath('tilesets')
+        self.__maps = self.loadListFromPath('maps')
+        self.__namesAnimList = list(self.__animations.keys())  # <-- esto es trampa, arreglar
+        self.__namesAnimList.remove("fire")
+
+    def loadListFromPath(self, path: str):
+        files = next(os.walk(self.fixPath(path)))[2]
+        resources = {}
+        for file in files:
+            name = os.path.splitext(file)[0]
+            resources[name] = os.path.join(path, file)
+        return resources
 
     def fixPath(self, filePath: str) -> str:
-        return self.__resPath + filePath
+        return os.path.join(self.__resPath, filePath)
 
     def getImageFile(self, name: str) -> str:
         return self.fixPath(self.__images.get(name))
@@ -51,10 +60,14 @@ class _ResourceManager:
         return pygame.font.Font(fontDef, size)
 
     def getTileset(self, name: str) -> str:
-        return self.fixPath(self.__tilesets.get(name))
+        if self.__tilesets.get(name) is not None:
+            return self.fixPath(self.__tilesets.get(name))
+        raise Exception('No se encontró el tileset', name)
 
     def getMap(self, name: str) -> str:
-        return self.fixPath(self.__maps.get(name))
+        if self.__maps.get(name) is not None:
+            return self.fixPath(self.__maps.get(name))
+        raise Exception('No se encontró el mapa', name)
 
     def loadImage(self, name: str, rect=None) -> pygame.Surface:
         return self.loadImageByPath(self.getImageFile(name), rect)
@@ -126,8 +139,8 @@ class _ResourceManager:
         pass
 
     def loadCharacter(self, characterName: str, animationName: str = None) -> Character:
-        character = Character((0, 0), (6, 28, 26, 30))
-        character.font = resourceManager.getFont('minecraft', 14)
+        character = Character((0, 0), (0, 0, 0, 0))
+        character.font = resourceManager.getFont('MinecraftRegular', 14)
         character.setName(characterName)
         if animationName is None:  # esto no deberia ocurrir, arreglar!!
             animationName = resourceManager.getRandomCharAnimName()
@@ -146,7 +159,9 @@ class _ResourceManager:
             entity.width = data.get("width")
             entity.height = data.get("height")
             entity.timeStep = data.get("timeStep")
-            entity.currentClip = data.get("defaultSprite")
+            entity.defaultClip = data.get("defaultSprite")
+            if issubclass(type(entity), Character):
+                entity.setCollisionRect(data.get("collisionRect"))
             entity.getNextFrame()
 
 

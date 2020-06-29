@@ -1,6 +1,6 @@
 import pygame
 
-from .Vector2D import Vector2D
+from .v2D import Vector2D
 
 
 class Path:
@@ -24,7 +24,7 @@ class Path:
 
     def render(self, surface, camera):
         nodeColor = (64, 64, 64)
-        currentColor = (64, 64, 64)
+        currentColor = (255, 0, 0)
         prevPoint = None
         for point in self.points:
             pygame.draw.circle(surface, nodeColor, camera.apply(point), 5, 3)
