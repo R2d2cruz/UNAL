@@ -9,9 +9,9 @@ from .Telegram import Telegram
 
 class World:
     def __init__(self, tiledMap: TiledMap, view: pygame.Rect):
+        self.debug = True
         self.rect = pygame.Rect(0, 0, tiledMap.width, tiledMap.height)
         self.view = view
-        self.player = None
         self.map = tiledMap
         self.graph = Graph()
         self.graph.nodes = Graph.getGraph(tiledMap, True)
@@ -20,7 +20,7 @@ class World:
         self.worldSurface = pygame.Surface((view.width, view.height))
         self.walls = tiledMap.getWalls()
         self.cellSpace.registerEntities(self.walls)
-        # entityManager.registerEntities(self.walls)
+        entityManager.registerEntities(self.walls)
         self.cellSpace.registerEntities(tiledMap.objects)
         entityManager.registerEntities(tiledMap.objects)
         entityManager.registerEntity(self)
@@ -67,8 +67,15 @@ class World:
         self.map.render(self.worldSurface, camera)
         for entity in entityManager.allEntities:
             entity.render(self.worldSurface, camera)
-        # self.graph.render(self.worldSurface, camera)
-        # self.cellSpace.render(self.worldSurface, camera)
+
+        if self.debug:
+            # self.graph.render(self.worldSurface, camera)
+            # pintar los vecinos mas cercanos y la grida
+            queryRect = self.cellSpace.getQueryRect(camera.target.getCollisionRect())
+            self.cellSpace.tagNeighborhood(camera.target)
+            self.cellSpace.render(self.worldSurface, camera)
+            pygame.draw.rect(self.worldSurface, (255, 255, 0), camera.apply(queryRect), 4)
+
         surface.blit(self.worldSurface, self.view)
 
     def getValidRandomPos(self, entity: Entity) -> Vector2D:

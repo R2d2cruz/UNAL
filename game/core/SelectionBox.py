@@ -67,7 +67,7 @@ class SelectionBox:
         point.y -= world.view.y
         return point
 
-    def selectEntities(self, world: World, camera: SimpleCamera):
+    def selectEntities(self, world: World, camera: SimpleCamera) -> list:
         rect = self.getSelectionPoint(self.getRect(), world, camera)
         self.visible = False
         for entity in self.__entities:
@@ -75,3 +75,4 @@ class SelectionBox:
         self.__entities = world.cellSpace.queryObjects(rect)
         for entity in self.__entities:
             entity.selected = True
+        return self.__entities

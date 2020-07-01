@@ -22,6 +22,7 @@ class Entity(pygame.sprite.Sprite):
         self.wrapper = None
         self.data = {}
         self.tangible = True
+        self.world = None
 
     def __repr__(self):
         return f'[{self.id}: {self.name}: {self.type}: {self.__pos}]'
@@ -159,13 +160,13 @@ class Entity(pygame.sprite.Sprite):
     def render(self, surface, camera: BaseCamera):
         surface.blit(self.image, camera.apply(self.rect))
         # pygame.draw.rect(surface, Colors.GREEN, camera.apply(self.getCollisionRect()), 1)
-        # if self.tag:
-        #     pygame.draw.rect(surface, Colors.RED, camera.apply(self.getCollisionRect()), 4)
+        if self.tag and self.world.debug:
+            pygame.draw.rect(surface, Colors.RED, camera.apply(self.getCollisionRect()), 4)
+            pygame.draw.circle(surface, Colors.BLACK, camera.apply((self.x, self.y)), self.radius(), 1)
         if self.selected:
             pygame.draw.rect(surface, Colors.GREEN, camera.apply(self.rect), 4)
         # # else:
         #     pygame.draw.rect(surface, Colors.BLACK, camera.apply(self.getCollisionRect()), 1)
-        pygame.draw.circle(surface, Colors.BLACK, camera.apply((self.x, self.y)), self.radius(), 1)
 
     def dispose(self):
         pass

@@ -61,6 +61,10 @@ class Playground(Scene):
         buttonRandom.onClick = self.onRandomPos
         grid.addControl(buttonRandom, (3, 0))
 
+        buttonDebug = Button(0, 0, 0, 0, self.font, 'Debug')
+        buttonDebug.onClick = self.onToggleDebug
+        grid.addControl(buttonDebug, (4, 0))
+
         buttonText = Button(0, 0, 0, 0, self.font, 'Salir')
         buttonText.onClick = self.onQuit
         grid.addControl(buttonText, (9, 0))
@@ -108,7 +112,10 @@ class Playground(Scene):
         if self.selectionBox.visible:
             # resourceManager.playSound('select')
             self.selectionBox.setPointB(event.pos)
-            self.selectionBox.selectEntities(self.world, self.camera)
+            entities = self.selectionBox.selectEntities(self.world, self.camera)
+            if len(entities) == 1 and isinstance(entities[0], MovingEntity):
+                self.player = entities[0]
+                self.camera.follow(entities[0])
 
     def onMouseMove(self, event):
         if self.selectionBox.visible:
@@ -151,16 +158,6 @@ class Playground(Scene):
         # point = self.map.cellToPoint(node)
         # pygame.draw.circle(surface, (0, 255, 0), self.camera.apply(point), 5, 3)
 
-        # pintar los vecinos mas cercanos y la grida
-        # queryRadius = 75
-        # queryRect = pygame.Rect(
-        #     self.player.x - queryRadius,
-        #     self.player.y - queryRadius,
-        #     queryRadius * 2,
-        #     queryRadius * 2
-        # )
-        # self.world.cellSpace.tagNeighborhood(self.player)
-        # pygame.draw.rect(surface, (255, 255, 0), self.camera.apply(queryRect), 4)
         control = self.ui.getControlByName('status')
         if control:
             control.text = str(self.game.FPS)
@@ -217,6 +214,9 @@ class Playground(Scene):
             if issubclass(type(entity), MovingEntity):
                 self.world.locateInValidRandomPos(entity)
 
+    def onToggleDebug(self, event, sender):
+        self.world.debug = not self.world.debug
+        self.world.cellSpace.tagAll(False)
     # def onShowText(self, event, sender):
     #     resourceManager.playSound('select')
     #     if sender.tag is None:

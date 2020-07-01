@@ -314,7 +314,7 @@ class SteeringBehavior:
     # la suma de todas las fuerzas que operan sobre la entidad
     def calculate(self) -> Vector2D:
         steering = [Vector2D()]
-
+        self.createFeelers()
         # if self.wallAvoidanceEnabled:
         #     force = self.wallAvoidance(self.agent.world.walls) * self.wallAvoidanceWeight
         #     if not self.accumulateForce(steering, force):

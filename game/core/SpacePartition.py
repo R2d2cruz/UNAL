@@ -23,12 +23,12 @@ class SpacePartition:
         self.__numCellsY = (height // cellHeight) + 1
         self.__cells = []
         self.__numCells = 0
-        offsetX = ((cellWidth - (width % cellWidth)) / 2)
-        offsetY = ((cellHeight - (height % cellHeight)) / 2)
+        self.__offsetX = ((cellWidth - (width % cellWidth)) / 2)
+        self.__offsetY = ((cellHeight - (height % cellHeight)) / 2)
         for y in range(0, self.__numCellsY):
             for x in range(0, self.__numCellsX):
-                left = x * self.__cellWidth - offsetX
-                top = y * self.__cellHeight - offsetY
+                left = x * self.__cellWidth - self.__offsetX
+                top = y * self.__cellHeight - self.__offsetY
                 self.__cells.append(Cell(
                     pygame.Rect(left, top, self.__cellWidth, self.__cellHeight)
                 ))
@@ -52,19 +52,23 @@ class SpacePartition:
         return self.__cellHeight
 
     # def calculateNeighbors(self, targetPos: Vector2D, queryRadius: float) -> list:
-    def calculateNeighbors(self, queryRect) -> list:
+    def calculateNeighbors(self, rect) -> list:
         neighbors = []
         # y si la particion del espacio indexa las entidades entodas las
         # celdas que toca ya no se tendria que arreglar este query rect
-        fixedRect = pygame.Rect((0, 0), (self.cellWidth + queryRect.width / 2, self.cellHeight + queryRect.height / 2))
-        fixedRect.center = queryRect.center
+        queryRect = self.getQueryRect(rect)
         for cell in self.__cells:
-            if len(cell.members) and fixedRect.colliderect(cell.rect):
+            if len(cell.members) and queryRect.colliderect(cell.rect):
                 neighbors += cell.members
                 cell.tag = True
-            else:
-                cell.tag = False
+            # else:
+            #     cell.tag = False
         return neighbors
+
+    def getQueryRect(self, rect):
+        queryRect = pygame.Rect((0, 0), (self.cellWidth + rect.width / 2, self.cellHeight + rect.height / 2))
+        queryRect.center = rect.center
+        return queryRect
 
     def registerEntities(self, entities: list):
         for entity in entities:
@@ -89,9 +93,9 @@ class SpacePartition:
 
     def posToIndex(self, pos: Vector2D) -> int:
         index = int(
-            self.__numCellsX * pos.x / self.__spaceWidth
+            (self.__numCellsX * (pos.x + self.__offsetX)) / self.__spaceWidth
         ) + int(
-            self.__numCellsY * pos.y / self.__spaceHeight
+            self.__numCellsY * (pos.y + self.__offsetX) / self.__spaceHeight
         ) * self.__numCellsX
         numCells = len(self.__cells) - 1
         if index > numCells:
