@@ -159,12 +159,13 @@ class Entity(pygame.sprite.Sprite):
 
     def render(self, surface, camera: BaseCamera):
         surface.blit(self.image, camera.apply(self.rect))
-        # pygame.draw.rect(surface, Colors.GREEN, camera.apply(self.getCollisionRect()), 1)
-        if self.tag and self.world.debug:
-            pygame.draw.rect(surface, Colors.RED, camera.apply(self.getCollisionRect()), 4)
-            pygame.draw.circle(surface, Colors.BLACK, camera.apply((self.x, self.y)), self.radius(), 1)
+        if self.world and self.world.debug:
+            pygame.draw.rect(surface, Colors.BLACK, camera.apply(self.getCollisionRect()), 1)
+            # pygame.draw.circle(surface, Colors.BLACK, camera.apply((self.x, self.y)), self.radius(), 1)
+            if self.tag:
+                pygame.draw.rect(surface, Colors.RED, camera.apply(self.getCollisionRect()), 1)
         if self.selected:
-            pygame.draw.rect(surface, Colors.GREEN, camera.apply(self.rect), 4)
+            pygame.draw.rect(surface, Colors.GREEN, camera.apply(self.rect), 1)
         # # else:
         #     pygame.draw.rect(surface, Colors.BLACK, camera.apply(self.getCollisionRect()), 1)
 

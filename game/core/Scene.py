@@ -84,3 +84,6 @@ class Scene:
 
     def render(self, surface):
         pass
+
+    def onQuit(self):
+        pass

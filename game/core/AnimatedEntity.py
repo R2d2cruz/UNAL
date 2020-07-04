@@ -16,6 +16,7 @@ class AnimatedEntity(Entity):
         self.clips = {}
         self.width = 0
         self.height = 0
+        self.animName = None
 
     def handleEvent(self, event) -> bool:
         pass

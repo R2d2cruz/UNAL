@@ -152,6 +152,7 @@ class _ResourceManager:
         fileName = self.getAnimFile(animName)
         with open(fileName) as json_file:
             data = json.load(json_file)
+            entity.animName = animName
             entity.sheet = self.loadImageByPath(self.fixPath(data.get("image")))
             sprites = data.get("sprites")
             for key in sprites:

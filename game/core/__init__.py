@@ -1,6 +1,5 @@
 from .AnimatedEntity import AnimatedEntity
 from .Character import Character
-from .Client import *
 from .CollisionManager import collisionManager
 from .Config import *
 from .Entity import Entity

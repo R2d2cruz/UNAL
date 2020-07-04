@@ -2,7 +2,6 @@ import sys
 
 import pygame
 
-from .Client import Client
 from .Config import Config
 from .Hermes import hermes
 from .ResourceManager import resourceManager
@@ -29,7 +28,6 @@ class Game:
         self.windowHeight = self.config.windowHeight
         self.clock = None
         self.currentScene = None
-        self.client = Client(self.config)
         self.keysPressed = []
         self.FPS = 0.0
         pygame.init()
@@ -81,7 +79,7 @@ class Game:
             self.render()
 
     def quit(self):
-        self.client.disconnect()
+        self.currentScene.onQuit()
         self.isRunning = False
         pygame.quit()
         sys.exit()

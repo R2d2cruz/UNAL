@@ -26,7 +26,7 @@ class Client:
                     self.socket.setsockopt(zmq.RCVTIMEO, 1000)
                     self.socket.setsockopt(zmq.LINGER, 1000)
                     self.socket.connect(server)
-                    self.id = self.getId(playerName)
+                    self.id = self.signIn(playerName)
                     self.connected = True
                     print('👍 Conexión exitosa. Id de cliente: ' + str(self.id))
                     return True
@@ -55,9 +55,9 @@ class Client:
         return self.__read()
 
     # este no debe usar `try` para permitir generar excepcion en connect
-    def getId(self, playerName):
+    def signIn(self, playerName):
         id = self.sendDict(dict(
-            command='createPlayer',
+            command='signIn',
             data=dict(name=playerName)
         ), True)
         if id is None:

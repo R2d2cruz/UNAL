@@ -78,7 +78,8 @@ class Character(MovingEntity):
         return dict(
             x=self.x,
             y=self.y,
-            a=translate.get(self.currentClip)
+            a=translate.get(self.currentClip),
+            A=self.animName
         )
 
     def setName(self, name: str):

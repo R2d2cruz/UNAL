@@ -122,7 +122,7 @@ class SpacePartition:
     def render(self, surface, camera: BaseCamera):
         for cell in self.__cells:
             if cell.tag:
-                pygame.draw.rect(surface, Colors.RED, camera.apply(cell.rect), 4)
+                pygame.draw.rect(surface, Colors.RED, camera.apply(cell.rect), 1)
             else:
                 pygame.draw.rect(surface, Colors.GRAY, camera.apply(cell.rect), 1)
 

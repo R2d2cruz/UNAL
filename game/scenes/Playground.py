@@ -17,7 +17,6 @@ class Playground(Scene):
 
     def __init__(self, game: Game):
         super().__init__(game)
-        self.players = {}
         self.selectionBox = SelectionBox()
         self.world = None
         self.camera = None
@@ -25,12 +24,18 @@ class Playground(Scene):
         self.paused = False
         self.player = None
         self.font = None
+        self.client = None
+        self.players = {}
 
     def onEnterScene(self, data: dict = None):
         if self.ui is None:
             self.ui = self.createUI()
         self.loadWorld(data.get('mapName'), data.get('playerName'), data.get('animName'))
-        self.game.client.sendPlayerStatus(self.player)
+        self.client = data.get('client')
+        self.client.sendPlayerStatus(self.player)
+
+    def onQuit(self):
+        self.client.disconnect()
 
     def createUI(self):
         self.font = resourceManager.getFont('MinecraftRegular', 18)
@@ -66,7 +71,7 @@ class Playground(Scene):
         grid.addControl(buttonDebug, (4, 0))
 
         buttonText = Button(0, 0, 0, 0, self.font, 'Salir')
-        buttonText.onClick = self.onQuit
+        buttonText.onClick = self.onQuitButton
         grid.addControl(buttonText, (9, 0))
 
         ui = Container(0, 0, self.game.windowWidth, self.game.windowHeight)
@@ -135,13 +140,8 @@ class Playground(Scene):
 
     def update(self, deltaTime: float):
         if not self.paused:
-            self.updateOtherPlayers(deltaTime)
             self.world.update(deltaTime)
-
-            if self.player.hasChanged:
-                self.player.hasChanged = False
-                self.game.client.sendPlayerStatus(self.player)
-
+            self.updateClient(deltaTime)
             self.camera.update(deltaTime)
 
     def render(self, surface: pygame.Surface):
@@ -163,24 +163,6 @@ class Playground(Scene):
             control.text = str(self.game.FPS)
         self.selectionBox.render(surface)
         self.ui.render(surface, self.camera)
-
-    def updateOtherPlayers(self, deltaTime: float):
-        # que deberia ocurrir si durante el juego se desconecta?
-        playersData = self.game.client.getStatus()
-        if playersData is not None:
-            playerKeys = self.players.keys()
-            for playerKey in playersData.keys():
-                if playerKey in playerKeys:
-                    self.players[playerKey].setData(playersData.get(playerKey))
-                else:
-                    self.players[playerKey] = OnlinePlayer(playersData.get(playerKey))
-                    self.world.addEntity(self.players[playerKey])
-
-            # remover los que no se actualizaron
-            toDelete = set(self.players.keys()).difference(playersData.keys())
-            for playerKey in toDelete:
-                self.world.removeEntity(self.players[playerKey])
-                del self.players[playerKey]
 
     def onGoPath(self, event, sender):
         resourceManager.playSound('select')
@@ -217,6 +199,7 @@ class Playground(Scene):
     def onToggleDebug(self, event, sender):
         self.world.debug = not self.world.debug
         self.world.cellSpace.tagAll(False)
+
     # def onShowText(self, event, sender):
     #     resourceManager.playSound('select')
     #     if sender.tag is None:
@@ -228,7 +211,7 @@ class Playground(Scene):
     #         self.ui.removeControl(bubble)
     #         sender.tag = None
 
-    def onQuit(self, event, sender):
+    def onQuitButton(self, event, sender):
         # tal vez preguntar al usuario si esta seguro
         # se guarda el juego? se cierra y libera? o se mantiene en memoria?
         self.world.clear()
@@ -302,3 +285,26 @@ class Playground(Scene):
     @staticmethod
     def createBook(name: str, position: Vector2D, data: dict, rect: tuple = (12, 12, 32, 40)):
         return Book(name, position, data, rect)
+
+    def updateClient(self, deltaTime: float):
+        # que deberia ocurrir si durante el juego se desconecta?
+        if self.client.connected:
+            playersData = self.client.getStatus()
+            if playersData is not None:
+                playerKeys = self.players.keys()
+                for playerKey in playersData.keys():
+                    if playerKey in playerKeys:
+                        self.players[playerKey].setData(playersData.get(playerKey))
+                    else:
+                        self.players[playerKey] = OnlinePlayer(playersData.get(playerKey))
+                        self.world.addEntity(self.players[playerKey])
+
+                # remover los que no se actualizaron
+                toDelete = set(self.players.keys()).difference(playersData.keys())
+                for playerKey in toDelete:
+                    self.world.removeEntity(self.players[playerKey])
+                    del self.players[playerKey]
+
+            if self.player.hasChanged:
+                self.player.hasChanged = False
+                self.client.sendPlayerStatus(self.player)

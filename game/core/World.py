@@ -9,7 +9,7 @@ from .Telegram import Telegram
 
 class World:
     def __init__(self, tiledMap: TiledMap, view: pygame.Rect):
-        self.debug = True
+        self.debug = False
         self.rect = pygame.Rect(0, 0, tiledMap.width, tiledMap.height)
         self.view = view
         self.map = tiledMap
@@ -47,7 +47,6 @@ class World:
         entity.world = self
 
     def removeEntity(self, entity):
-        collisionManager.unregisterMovingEntity(entity)
         entityManager.unregisterEntity(entity)
         self.cellSpace.unregisterEntity(entity)
 
@@ -74,7 +73,7 @@ class World:
             queryRect = self.cellSpace.getQueryRect(camera.target.getCollisionRect())
             self.cellSpace.tagNeighborhood(camera.target)
             self.cellSpace.render(self.worldSurface, camera)
-            pygame.draw.rect(self.worldSurface, (255, 255, 0), camera.apply(queryRect), 4)
+            pygame.draw.rect(self.worldSurface, (255, 255, 0), camera.apply(queryRect), 1)
 
         surface.blit(self.worldSurface, self.view)
 

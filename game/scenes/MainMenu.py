@@ -3,6 +3,7 @@ import json
 import pygame
 
 from ..core import AnimatedEntity, Game, NullCamera, Scene, resourceManager
+from ..net.Client import Client
 from ..ui import Button, InputBox, Label, GridContainer, Container, BoxContainer
 from ..ui.ScrollBar import ScrollBar
 
@@ -15,6 +16,7 @@ class MainMenu(Scene):
         self.index = 0
         self.ui = self.createUI()
         self.done = False
+        self.client = Client(game.config)
 
     def createUI(self):
         grid1 = GridContainer(0, 0, self.game.windowWidth / 2, self.game.windowHeight)
@@ -108,13 +110,13 @@ class MainMenu(Scene):
 
     def onGoPlay(self, event, sender):
         control = self.ui.getControlByName('playerName')
-        if not self.game.client.connected:
-            if not self.game.client.connect(control.text):
+        if not self.client.connected:
+            if not self.client.connect(control.text):
                 # TODO: en vez de finaizar aqui simplemente se muestra un mensaje en pantalla indicandole al usuario
                 #  que no se pudo conectar un boton en la pantalla permite salir, esta linea va allá
                 resourceManager.playSound('error')
                 pass
-        if self.game.client.connected:
+        if self.client.connected:
             # TODO: evaluar si se escribió un nombre valido y arrojar un error en pantalla si no
             animName = resourceManager.getAnimName(self.index)
             self.saveSettings()
@@ -123,7 +125,8 @@ class MainMenu(Scene):
                 playerName=control.text,
                 game=self.game,
                 animName=animName,
-                mapName=self.game.config.map
+                mapName=self.game.config.map,
+                client=self.client
             ))
 
     def onGoQuit(self, event, sender):
