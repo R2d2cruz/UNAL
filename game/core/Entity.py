@@ -1,7 +1,7 @@
 import pygame
 
 from .Telegram import Telegram
-from .Vector2D import Vector2D
+from .v2D import Vector2D
 from .camera.BaseCamera import BaseCamera
 from .misc import Colors
 
@@ -22,6 +22,7 @@ class Entity(pygame.sprite.Sprite):
         self.wrapper = None
         self.data = {}
         self.tangible = True
+        self.world = None
 
     def __repr__(self):
         return f'[{self.id}: {self.name}: {self.type}: {self.__pos}]'
@@ -127,6 +128,9 @@ class Entity(pygame.sprite.Sprite):
         self.rect.centery = centery
         self.refresh()
 
+    def radius(self):
+        return (self.rect.width / 2) * 1.4142
+
     def setPos(self, x: float, y: float):
         self.x, self.y = x, y
 
@@ -155,11 +159,13 @@ class Entity(pygame.sprite.Sprite):
 
     def render(self, surface, camera: BaseCamera):
         surface.blit(self.image, camera.apply(self.rect))
-        # pygame.draw.rect(surface, Colors.GREEN, camera.apply(self.getCollisionRect()), 1)
-        # if self.tag:
-        #     pygame.draw.rect(surface, Colors.RED, camera.apply(self.getCollisionRect()), 4)
+        if self.world and self.world.debug:
+            pygame.draw.rect(surface, Colors.BLACK, camera.apply(self.getCollisionRect()), 1)
+            # pygame.draw.circle(surface, Colors.BLACK, camera.apply((self.x, self.y)), self.radius(), 1)
+            if self.tag:
+                pygame.draw.rect(surface, Colors.RED, camera.apply(self.getCollisionRect()), 1)
         if self.selected:
-            pygame.draw.rect(surface, Colors.GREEN, camera.apply(self.rect), 4)
+            pygame.draw.rect(surface, Colors.GREEN, camera.apply(self.rect), 1)
         # # else:
         #     pygame.draw.rect(surface, Colors.BLACK, camera.apply(self.getCollisionRect()), 1)
 

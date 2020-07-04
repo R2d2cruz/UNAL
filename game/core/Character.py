@@ -61,7 +61,7 @@ class Character(MovingEntity):
         self.renderHealthBar(surface, camera)
         if (self.name is not None) and (self.__nameSurface is not None):
             surface.blit(self.__nameSurface, camera.apply(self.__nameRect))
-        if self.steering.followPathTarget is not None:
+        if self.steering.followPathTarget is not None and self.world.debug:
             self.steering.followPathTarget.render(surface, camera)
 
     def renderHealthBar(self, surface, camera):
@@ -78,7 +78,8 @@ class Character(MovingEntity):
         return dict(
             x=self.x,
             y=self.y,
-            a=translate.get(self.currentClip)
+            a=translate.get(self.currentClip),
+            A=self.animName
         )
 
     def setName(self, name: str):

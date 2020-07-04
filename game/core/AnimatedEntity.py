@@ -9,24 +9,30 @@ class AnimatedEntity(Entity):
         self.frame = 0
         self.sheet = None
         self.image = None
+        self.defaultClip = None
         self.currentClip = None
         self.lastFrameTime = 0
         self.timeStep = 100
         self.clips = {}
         self.width = 0
         self.height = 0
+        self.animName = None
 
-    def handleEvent(self, event):
+    def handleEvent(self, event) -> bool:
         pass
 
     def getFrame(self, frameSet):
         self.frame += 1
-        if self.frame > (len(frameSet) - 1):
+        if self.frame >= len(frameSet):
             self.frame = 0
         return frameSet[self.frame]
 
     def getNextFrame(self):
+        if self.currentClip is None:
+            self.currentClip = self.defaultClip
         clipFrame = self.clips.get(self.currentClip)
+        if clipFrame is None:
+            clipFrame = self.clips.get(self.defaultClip)
         frameRect = self.getFrame(clipFrame)
         self.sheet.set_clip(pygame.Rect(frameRect))
         self.image = self.sheet.subsurface(self.sheet.get_clip())

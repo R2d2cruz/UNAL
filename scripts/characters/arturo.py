@@ -1,6 +1,6 @@
+from game.core.Telegram import Telegram
 from game.scripts.CharacterWrapper import CharacterWrapper
 from game.scripts.Script import Script
-from game.core.Telegram import Telegram
 
 
 class ScriptCharacter(Script):

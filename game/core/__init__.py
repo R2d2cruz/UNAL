@@ -1,6 +1,5 @@
 from .AnimatedEntity import AnimatedEntity
 from .Character import Character
-from .Client import *
 from .CollisionManager import collisionManager
 from .Config import *
 from .Entity import Entity
@@ -14,7 +13,7 @@ from .ResourceManager import resourceManager
 from .Scene import *
 from .SpacePartition import *
 from .TiledMap import *
-from .Vector2D import *
+from .v2D import *
 from .World import World
 from .camera import *
 from .misc import *

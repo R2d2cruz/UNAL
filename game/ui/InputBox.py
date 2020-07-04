@@ -58,15 +58,15 @@ class InputBox(Control):
         surface.blit(self.__surface, self.__textRect)
         #  TODO: self.caret.render(surface)
 
-    def onMouseEnter(self, event):
+    def onMouseEnter(self, event, sender):
         # self.__color = self.COLOR_ACTIVE
         pass
 
-    def onMouseLeave(self, event):
+    def onMouseLeave(self, event, sender):
         # self.__color = self.COLOR_INACTIVE
         pass
 
-    def onKeyDown(self, event):
+    def onKeyDown(self, event, sender):
         if event.key == pygame.K_RETURN:
             if self.onEnter is not None:
                 pass
@@ -75,6 +75,7 @@ class InputBox(Control):
             self.text = self.text[:-1]
         elif not self.maxLengthReached:
             self.text += event.unicode
+        return True
 
     def onChange(self, sender):
         pass

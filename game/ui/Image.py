@@ -28,8 +28,8 @@ class Image(Control):
         surface.blit(self.__surface, self.rect)
         pygame.draw.rect(surface, Colors.GRAY, self.rect, 3)
 
-    def onMouseUp(self, event):
-        self.onClick(self)
+    def onMouseUp(self, event, sender):
+        self.onClick(event, sender)
 
-    def onClick(self, sender):
+    def onClick(self, event, sender):
         pass

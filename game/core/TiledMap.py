@@ -21,6 +21,7 @@ class Wall(Entity):
         self.height = height
 
     def render(self, surface, camera):
+        # if self.world and self.world.debug:
         if self.tag:
             pygame.draw.rect(surface, Colors.RED, camera.apply(self.getCollisionRect()), 4)
         else:

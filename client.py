@@ -1,8 +1,8 @@
 import signal
 import sys
 
-from constants import anims, fonts, imgs, maps, sounds, tilesets
-from game.core import Config, Game, resourceManager, TiledMap
+from constants import imgs
+from game.core import Config, Game, resourceManager
 from game.scenes import MainMenu, Playground, Editor
 from game.ui.gui import gui
 
@@ -15,7 +15,7 @@ def signal_handler(sig, frame):
 
 def main():
     signal.signal(signal.SIGINT, signal_handler)
-    resourceManager.init('assets/', imgs, sounds, fonts, anims, tilesets, maps)
+    resourceManager.init('assets/', imgs)
     config = Config('config.json')
     gui.loadSkin(config.skin)
     game = Game(config)

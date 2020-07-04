@@ -9,18 +9,18 @@ from .Telegram import Telegram
 
 class World:
     def __init__(self, tiledMap: TiledMap, view: pygame.Rect):
+        self.debug = False
         self.rect = pygame.Rect(0, 0, tiledMap.width, tiledMap.height)
         self.view = view
-        self.player = None
         self.map = tiledMap
         self.graph = Graph()
         self.graph.nodes = Graph.getGraph(tiledMap, True)
         self.script = None
         self.cellSpace = SpacePartition(self.rect.w, self.rect.h, 100, 100)
         self.worldSurface = pygame.Surface((view.width, view.height))
-
-        self.cellSpace.registerEntities(tiledMap.getWalls())
-        # entityManager.registerEntities(tiledMap.getWalls())
+        self.walls = tiledMap.getWalls()
+        self.cellSpace.registerEntities(self.walls)
+        entityManager.registerEntities(self.walls)
         self.cellSpace.registerEntities(tiledMap.objects)
         entityManager.registerEntities(tiledMap.objects)
         entityManager.registerEntity(self)
@@ -39,14 +39,14 @@ class World:
 
     def createBook(self, name: str, position: Vector2D, data: dict, rect: tuple = (12, 12, 32, 40)) -> Entity:
         pass
-        
+
     def addEntity(self, entity, isSolid: bool = True):
         if isSolid:
             self.cellSpace.registerEntity(entity)
         entityManager.registerEntity(entity)
+        entity.world = self
 
     def removeEntity(self, entity):
-        collisionManager.unregisterMovingEntity(entity)
         entityManager.unregisterEntity(entity)
         self.cellSpace.unregisterEntity(entity)
 
@@ -66,8 +66,15 @@ class World:
         self.map.render(self.worldSurface, camera)
         for entity in entityManager.allEntities:
             entity.render(self.worldSurface, camera)
-        # self.graph.render(self.worldSurface, camera)
-        # self.cellSpace.render(self.worldSurface, camera)
+
+        if self.debug:
+            # self.graph.render(self.worldSurface, camera)
+            # pintar los vecinos mas cercanos y la grida
+            queryRect = self.cellSpace.getQueryRect(camera.target.getCollisionRect())
+            self.cellSpace.tagNeighborhood(camera.target)
+            self.cellSpace.render(self.worldSurface, camera)
+            pygame.draw.rect(self.worldSurface, (255, 255, 0), camera.apply(queryRect), 1)
+
         surface.blit(self.worldSurface, self.view)
 
     def getValidRandomPos(self, entity: Entity) -> Vector2D:

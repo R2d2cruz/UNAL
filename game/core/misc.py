@@ -11,7 +11,7 @@ class Colors:
 
 
 def blitMultiLineText(surface, text, rect, font, color=pygame.Color('black')):
-    words = [word.split(' ') for word in text.splitlines()]  # 2D array where each row is a list of words.
+    words = [word.split(' ') for word in text.splitlines()]  # v2D array where each row is a list of words.
     space = font.size(' ')[0]  # The width of a space.
     maxWidth, maxHeight = rect.w, rect.h
     wordWidth, wordHeight = 0, 0
@@ -31,7 +31,7 @@ def blitMultiLineText(surface, text, rect, font, color=pygame.Color('black')):
 
 def getText(text, font, col):
     surface = font.render(text, True, col)
-    return surface, pygame.Rect(0, 0, surface.get_width(), surface.get_height())
+    return surface, surface.get_rect()
 
 
 def getFirst(itemList: list, itemFilter):

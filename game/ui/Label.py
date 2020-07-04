@@ -14,7 +14,7 @@ class Label(Control):
         self.__font = font
         self.__color = foreColor
         self.__padding = 5
-        self.__isPressed = False
+        self.__pressed = False
         self.text = text
 
     def refresh(self):

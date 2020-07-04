@@ -6,6 +6,7 @@
   "height": 56,
   "collisionRect": [6, 24, 26, 32],
   "timeStep": 100,
+  "type": "character",
   "sprites": {
       "stand_up": [
         [1, 1, 34, 56]

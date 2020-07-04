@@ -14,7 +14,7 @@ class Text(Control):
         self.__font = font
         self.__color = foreColor
         self.__padding = 10
-        self.__isPressed = False
+        self.__pressed = False
         self.text = text
 
     @property

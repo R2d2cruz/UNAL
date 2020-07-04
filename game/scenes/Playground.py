@@ -3,22 +3,20 @@ from random import choice
 
 import pygame
 
+from game.scripts.CharacterWrapper import CharacterWrapper
 from .entities import HealthPotion
 from .entities.Item import Book
 from ..core import (Game, TiledMap, Scene, SimpleCamera,
-                    Vector2D, resourceManager, World, MovingEntity, Colors)
-from game.scripts.CharacterWrapper import CharacterWrapper
+                    Vector2D, resourceManager, World, MovingEntity, Colors, Character)
 from ..core.SelectionBox import SelectionBox
 from ..net.OnlinePlayer import OnlinePlayer
-from ..ui import Button, GridContainer, Container
+from ..ui import Button, GridContainer, Container, Label
 
 
 class Playground(Scene):
 
     def __init__(self, game: Game):
         super().__init__(game)
-        self.keysPressed = {}
-        self.players = {}
         self.selectionBox = SelectionBox()
         self.world = None
         self.camera = None
@@ -26,16 +24,25 @@ class Playground(Scene):
         self.paused = False
         self.player = None
         self.font = None
+        self.client = None
+        self.players = {}
 
     def onEnterScene(self, data: dict = None):
         if self.ui is None:
             self.ui = self.createUI()
         self.loadWorld(data.get('mapName'), data.get('playerName'), data.get('animName'))
-        self.game.client.sendPlayerStatus(self.player)
+        self.client = data.get('client')
+        self.client.sendPlayerStatus(self.player)
+
+    def onQuit(self):
+        self.client.disconnect()
 
     def createUI(self):
-        self.font = resourceManager.getFont('minecraft', 18)
+        self.font = resourceManager.getFont('MinecraftRegular', 18)
         # self.label = self.font.render('Juego en pausa por problemas conexión. Espere un momento', True, (255, 64, 64))
+
+        label = Label(160, 0, 100, 40, self.font, '')
+        label.name = 'status'
 
         grid = GridContainer(0, 0, 160, self.game.surface.get_height())
         grid.setGrid(10, 1)
@@ -59,15 +66,20 @@ class Playground(Scene):
         buttonRandom.onClick = self.onRandomPos
         grid.addControl(buttonRandom, (3, 0))
 
+        buttonDebug = Button(0, 0, 0, 0, self.font, 'Debug')
+        buttonDebug.onClick = self.onToggleDebug
+        grid.addControl(buttonDebug, (4, 0))
+
         buttonText = Button(0, 0, 0, 0, self.font, 'Salir')
-        buttonText.onClick = self.onQuit
+        buttonText.onClick = self.onQuitButton
         grid.addControl(buttonText, (9, 0))
-        ui = Container(0, 0, self.game.surface.get_width(), self.game.surface.get_height())
+
+        ui = Container(0, 0, self.game.windowWidth, self.game.windowHeight)
         ui.addControl(grid)
+        ui.addControl(label)
         return ui
 
     def onKeyDown(self, event):
-        self.keysPressed[event.key] = True
         self.evalMove()
 
     def onKeyUp(self, event):
@@ -75,8 +87,6 @@ class Playground(Scene):
             self.onQuit(None)
         elif event.key == pygame.K_f:
             self.player.dropBook()
-        else:
-            self.keysPressed[event.key] = False
         self.evalMove()
 
     def onRightMouseDown(self, event):
@@ -107,7 +117,10 @@ class Playground(Scene):
         if self.selectionBox.visible:
             # resourceManager.playSound('select')
             self.selectionBox.setPointB(event.pos)
-            self.selectionBox.selectEntities(self.world, self.camera)
+            entities = self.selectionBox.selectEntities(self.world, self.camera)
+            if len(entities) == 1 and isinstance(entities[0], MovingEntity):
+                self.player = entities[0]
+                self.camera.follow(entities[0])
 
     def onMouseMove(self, event):
         if self.selectionBox.visible:
@@ -115,29 +128,20 @@ class Playground(Scene):
 
     def evalMove(self):
         vectorMov = Vector2D()
-        if self.keysPressed.get(pygame.K_RIGHT):
+        if self.game.keysPressed[pygame.K_RIGHT]:
             vectorMov.x = 1
-        if self.keysPressed.get(pygame.K_LEFT):
+        if self.game.keysPressed[pygame.K_LEFT]:
             vectorMov.x = -1
-        if self.keysPressed.get(pygame.K_DOWN):
+        if self.game.keysPressed[pygame.K_DOWN]:
             vectorMov.y = 1
-        if self.keysPressed.get(pygame.K_UP):
+        if self.game.keysPressed[pygame.K_UP]:
             vectorMov.y = -1
         self.player.velocity = vectorMov
 
-    def handleMessage(self, message):
-        if message.type == 'diconnected':
-            self.paused = True
-
     def update(self, deltaTime: float):
         if not self.paused:
-            self.updateOtherPlayers(deltaTime)
             self.world.update(deltaTime)
-
-            if self.player.hasChanged:
-                self.player.hasChanged = False
-                self.game.client.sendPlayerStatus(self.player)
-
+            self.updateClient(deltaTime)
             self.camera.update(deltaTime)
 
     def render(self, surface: pygame.Surface):
@@ -154,38 +158,13 @@ class Playground(Scene):
         # point = self.map.cellToPoint(node)
         # pygame.draw.circle(surface, (0, 255, 0), self.camera.apply(point), 5, 3)
 
-        # pintar los vecinos mas cercanos y la grida
-        # queryRadius = 75
-        # queryRect = pygame.Rect(
-        #     self.player.x - queryRadius,
-        #     self.player.y - queryRadius,
-        #     queryRadius * 2,
-        #     queryRadius * 2
-        # )
-        # self.world.cellSpace.tagNeighborhood(self.player)
-        # pygame.draw.rect(surface, (255, 255, 0), self.camera.apply(queryRect), 4)
+        control = self.ui.getControlByName('status')
+        if control:
+            control.text = str(self.game.FPS)
         self.selectionBox.render(surface)
         self.ui.render(surface, self.camera)
 
-    def updateOtherPlayers(self, deltaTime: float):
-        # que deberia ocurrir si durante el juego se desconecta?
-        playersData = self.game.client.getStatus()
-        if playersData is not None:
-            playerKeys = self.players.keys()
-            for playerKey in playersData.keys():
-                if playerKey in playerKeys:
-                    self.players[playerKey].setData(playersData.get(playerKey))
-                else:
-                    self.players[playerKey] = OnlinePlayer(playersData.get(playerKey))
-                    self.world.addEntity(self.players[playerKey])
-
-            # remover los que no se actualizaron
-            toDelete = set(self.players.keys()).difference(playersData.keys())
-            for playerKey in toDelete:
-                self.world.removeEntity(self.players[playerKey])
-                del self.players[playerKey]
-
-    def onGoPath(self, sender):
+    def onGoPath(self, event, sender):
         resourceManager.playSound('select')
         if self.player.steering.followPathEnabled:
             for entity in self.selectionBox.entities:
@@ -196,28 +175,32 @@ class Playground(Scene):
         else:
             for entity in self.selectionBox.entities:
                 if issubclass(type(entity), MovingEntity):
-                    entity.steering.wanderEnabled = 0.0
+                    entity.steering.weightWander = 0.001
                     self.world.followRandomPath(entity)
 
-    def onStartWander(self, sender):
+    def onStartWander(self, event, sender):
         resourceManager.playSound('select')
         for entity in self.selectionBox.entities:
             if issubclass(type(entity), MovingEntity):
                 entity.steering.wanderEnabled = True
 
-    def onStopWander(self, sender):
+    def onStopWander(self, event, sender):
         resourceManager.playSound('select')
         for entity in self.selectionBox.entities:
             if issubclass(type(entity), MovingEntity):
                 entity.steering.wanderEnabled = False
 
-    def onRandomPos(self, sender):
+    def onRandomPos(self, event, sender):
         resourceManager.playSound('select')
         for entity in self.selectionBox.entities:
             if issubclass(type(entity), MovingEntity):
                 self.world.locateInValidRandomPos(entity)
 
-    # def onShowText(self, sender):
+    def onToggleDebug(self, event, sender):
+        self.world.debug = not self.world.debug
+        self.world.cellSpace.tagAll(False)
+
+    # def onShowText(self, event, sender):
     #     resourceManager.playSound('select')
     #     if sender.tag is None:
     #         bubble = Text(100, 100, 800, 400, self.font, longtText)
@@ -228,7 +211,7 @@ class Playground(Scene):
     #         self.ui.removeControl(bubble)
     #         sender.tag = None
 
-    def onQuit(self, sender):
+    def onQuitButton(self, event, sender):
         # tal vez preguntar al usuario si esta seguro
         # se guarda el juego? se cierra y libera? o se mantiene en memoria?
         self.world.clear()
@@ -244,15 +227,28 @@ class Playground(Scene):
         ]
         v = 50
         worldRect = pygame.Rect(
-            160 + v,
-            0 + v,
-            self.game.surface.get_width() - 100 - v * 4,
-            self.game.surface.get_height() - v * 4
+            160,
+            0,
+            self.game.windowWidth - 160,
+            self.game.windowHeight
         )
         self.world = World(TiledMap(mapName), worldRect)
-        self.loadScripts(self.world.rect)
+        self.loadScripts()
         self.world.addEntity(HealthPotion('freshPotion', Vector2D(160, 288), 20))
         self.world.addEntity(Book('book', Vector2D(900, 900), dict(tittle='NN', text='', especial=None)))
+
+        perrito = resourceManager.loadCharacter('tony', 'perrito24')
+        perrito.steering.wanderEnabled = True
+        perrito.maxSpeed = 0.1
+        self.world.addEntity(perrito)
+        self.world.locateInValidRandomPos(perrito)
+
+        perrito = resourceManager.loadCharacter('chester', 'perrito48')
+        perrito.steering.wanderEnabled = True
+        perrito.maxSpeed = 0.25
+        self.world.addEntity(perrito)
+        self.world.locateInValidRandomPos(perrito)
+
         self.player = resourceManager.loadCharacter(playerName, animName)
         self.world.addEntity(self.player)
         self.world.locateInValidRandomPos(self.player)
@@ -262,7 +258,7 @@ class Playground(Scene):
         self.camera.follow(self.player)
         self.world.createBook = self.createBook
 
-    def loadScripts(self, worlRect):
+    def loadScripts(self):
         print('📜 Cargando scripts...')
         import importlib.util
         for script in os.listdir('./scripts/characters'):
@@ -274,7 +270,7 @@ class Playground(Scene):
                         moduleName, fileName)
                     foo = importlib.util.module_from_spec(spec)
                     spec.loader.exec_module(foo)
-                    character = resourceManager.loadCharacter(moduleName, 'Charly')
+                    character = resourceManager.loadCharacter(moduleName, 'charly')
                     character.script = foo.ScriptCharacter()
                     character.script.name = moduleName
                     spawn = choice(self.spawningPoints)
@@ -289,3 +285,26 @@ class Playground(Scene):
     @staticmethod
     def createBook(name: str, position: Vector2D, data: dict, rect: tuple = (12, 12, 32, 40)):
         return Book(name, position, data, rect)
+
+    def updateClient(self, deltaTime: float):
+        # que deberia ocurrir si durante el juego se desconecta?
+        if self.client.connected:
+            playersData = self.client.getStatus()
+            if playersData is not None:
+                playerKeys = self.players.keys()
+                for playerKey in playersData.keys():
+                    if playerKey in playerKeys:
+                        self.players[playerKey].setData(playersData.get(playerKey))
+                    else:
+                        self.players[playerKey] = OnlinePlayer(playersData.get(playerKey))
+                        self.world.addEntity(self.players[playerKey])
+
+                # remover los que no se actualizaron
+                toDelete = set(self.players.keys()).difference(playersData.keys())
+                for playerKey in toDelete:
+                    self.world.removeEntity(self.players[playerKey])
+                    del self.players[playerKey]
+
+            if self.player.hasChanged:
+                self.player.hasChanged = False
+                self.client.sendPlayerStatus(self.player)

@@ -14,8 +14,9 @@ class Control:
         self.__id = self.__getNextID()
         self.__visible = True
         self.__enabled = True
-        self.__active = False
         self.__hovered = False
+        self.parent = None
+        self.zIndex = 0
         self.tag = None
         self.name = 'Control' + str(self.__id)
         self.rect = pygame.Rect(x, y, width, height)
@@ -132,8 +133,18 @@ class Control:
     def isVisible(self) -> bool:
         return self.__visible
 
+    def setActive(self):
+        if self.parent is not None:
+            self.parent.setActiveControl(self)
+
+    def setInactive(self):
+        if self.parent is not None and self == self.parent.activeControl:
+            self.parent.setActiveControl(None)
+
     def isActive(self) -> bool:
-        return self.__active
+        if self.parent is not None:
+            return self == self.parent.activeControl
+        return False
 
     def isHovered(self) -> bool:
         return self.__hovered
@@ -154,50 +165,65 @@ class Control:
         if self.__visible:
             self.onRender(surface, camera)
 
-    def handleEvent(self, event):
-        if (not self.__visible) or (not self.__enabled):
-            return
+    def handleKeyEvent(self, event) -> bool:
+        if event.type == pygame.KEYDOWN:
+            if self.isActive():
+                return self.onKeyDown(event, self)
+        return False
 
+    def handleMouseEvent(self, event) -> bool:
+        if (not self.__visible) or (not self.__enabled):
+            return False
         if event.type == pygame.MOUSEBUTTONDOWN:
+            # print(self.name, self.isActive(), 'MOUSEBUTTONDOWN')
             if self.rect.collidepoint(event.pos):
-                self.__active = True
-                self.onMouseDown(event)
+                self.setActive()
+                self.onMouseDown(event, self)
+                return True
             else:
-                self.__active = False
+                self.setInactive()
         elif event.type == pygame.MOUSEBUTTONUP:
+            # print(self.name, self.isActive(), 'MOUSEBUTTONUP')
             if self.rect.collidepoint(event.pos):
-                if self.__active:
-                    self.onMouseUp(event)
+                if self.isActive():
+                    self.onMouseUp(event, self)
+                return True
+            else:
+                self.setInactive()
         elif event.type == pygame.MOUSEMOTION:
+            # print(self.name, self.isActive(), 'MOUSEMOTION')
             if self.rect.collidepoint(event.pos):
                 if not self.__hovered:
-                    self.onMouseEnter(event)
+                    self.onMouseEnter(event, self)
                 self.__hovered = True
+                # self.onMouseMove(event, self)
+                return True
             else:
                 if self.__hovered:
-                    self.onMouseLeave(event)
+                    self.onMouseLeave(event, self)
                 self.__hovered = False
-        elif event.type == pygame.KEYDOWN:
-            if self.__active:
-                self.onKeyDown(event)
+        return False
 
     def onRender(self, surface, camera):
         pass
 
-    def onMouseUp(self, event):
+    def onMouseUp(self, event, sender):
         pass
 
-    def onMouseDown(self, event):
+    def onMouseDown(self, event, sender):
         pass
 
-    def onMouseEnter(self, event):
+    def onMouseEnter(self, event, sender):
         pass
 
-    def onMouseLeave(self, event):
+    def onMouseMove(self, event, sender):
         pass
 
-    def onKeyDown(self, event):
+    def onMouseLeave(self, event, sender):
         pass
 
-    def onKeyUp(self, event):
-        pass
+    def onKeyDown(self, event, sender) -> bool:
+        return False
+
+    def onKeyUp(self, event, sender) -> bool:
+        return False

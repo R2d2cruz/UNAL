@@ -10,14 +10,14 @@
 
 
 class Player:
-    def __init__(self, name: str, anim: str):
+    def __init__(self, name: str):
         self.prevMovement = "std"
         self.x = 0
         self.y = 0
         self.movement = "std"
         self.id = id
         self.name = name
-        self.animName = anim
+        self.animName = None
 
     def update(self, data):
         self.x = data.get("x")

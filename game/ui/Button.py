@@ -14,7 +14,7 @@ class Button(Control):
         self.__textRect = None
         self.__font = font
         self.__color = foreColor
-        self.__isPressed = False
+        self.__pressed = False
         self.text = text
         self.backColor = (123, 123, 123)
 
@@ -33,11 +33,27 @@ class Button(Control):
         self.__surface, self.__textRect = getText(self.__text, self.__font, self.__color)
         self.refresh()
 
+    # @Control.active.setter
+    # def active(self, active):
+    #     self._Control__active = active
+    #     self.__pressed = False
+
+    def isPressed(self) -> bool:
+        return self.__pressed
+
+    @property
+    def pressed(self):
+        return self.__pressed
+
+    @pressed.setter
+    def pressed(self, pressed):
+        self.__pressed = pressed
+
     def onRender(self, surface, camera: BaseCamera):
         # surface.fill(self.backColor, self.rect)
         if not self.isEnabled():
             skinElement = 'button-disabled'
-        elif self.__isPressed:
+        elif self.__pressed:
             skinElement = 'button-pressed'
         elif self.isHovered():
             skinElement = 'button-active'
@@ -49,12 +65,12 @@ class Button(Control):
         surface.blit(self.__surface, self.__textRect)
         # pygame.draw.rect(surface, self.COLOR_INACTIVE, self.rect, 3)
 
-    def onMouseUp(self, event):
-        self.__isPressed = False
-        self.onClick(self)
+    def onMouseUp(self, event, sender):
+        self.__pressed = False
+        self.onClick(event, sender)
 
-    def onMouseDown(self, event):
-        self.__isPressed = True
+    def onMouseDown(self, event, sender):
+        self.__pressed = True
 
-    def onClick(self, sender):
+    def onClick(self, event, sender):
         pass

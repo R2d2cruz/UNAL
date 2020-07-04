@@ -36,7 +36,7 @@ class _CollisionManager:
     @staticmethod
     def update(cellSpace: SpacePartition, worldRect):
         for entityA in entityManager.movingEntities:
-            entityA.tag = False
+            # entityA.tag = False
             if not _CollisionManager.inBoundaries(worldRect, entityA.getCollisionRect()):
                 # side = sideColl(entityA, worldRect)
                 side = [True, True]

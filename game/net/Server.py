@@ -16,7 +16,7 @@ class Server:
         self.counter = 0
         self.players = {}
         self.commands = dict(
-            createPlayer=self.createPlayer,
+            signIn=self.signIn,
             update=self.updatePlayer,
             act=self.returnPlayers,
             bye=self.kickOutPlayer
@@ -62,9 +62,9 @@ class Server:
             time.sleep(0.02)
         print('\n🍺 Se ha cerrado el server. Ahora vamos a por una cerveza!')
 
-    def createPlayer(self, senderId, playerData):
+    def signIn(self, senderId, playerData):
         if isinstance(playerData, dict):
-            self.players[self.counter] = Player(playerData.get("name"), playerData.get("anim"))
+            self.players[self.counter] = Player(playerData.get("name"))
             self.players[self.counter].id = self.counter
             print('🎮 Se ha conectado el jugador ' +
                   self.players[self.counter].name)
