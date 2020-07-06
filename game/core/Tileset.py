@@ -17,7 +17,16 @@ class Tileset:
         self.__clip = pygame.Rect(0, 0, 0, 0)
         self.__sheet = None
         self.__tiles = []
+        self.__tileStart = 0
         self.name = name
+
+    @property
+    def tileStart(self):
+        return self.__tileStart
+
+    @tileStart.setter
+    def tileStart(self, tileStart: int):
+        self.__tileStart = tileStart
 
     @property
     def tileWidth(self):
@@ -39,8 +48,11 @@ class Tileset:
         return self.__tiles[tileId]
 
     def getTileSurface(self, tileId: int):
-        self.__clip.x = self.__tiles[tileId].x
-        self.__clip.y = self.__tiles[tileId].y
+        if tileId < self.__tileStart:
+            self.__sheet.set_clip()
+            return self.__sheet.subsurface(self.__sheet.get_clip())
+        self.__clip.x = self.__tiles[tileId - self.__tileStart].x
+        self.__clip.y = self.__tiles[tileId - self.__tileStart].y
         self.__sheet.set_clip(self.__clip)
         return self.__sheet.subsurface(self.__sheet.get_clip())
 
@@ -53,6 +65,7 @@ class Tileset:
             tileset.__sheet = resourceManager.loadImageByPath(resourceManager.fixPath(data.get("image")))
             tileset.tileWidth = data.get("tileWidth")
             tileset.tileHeight = data.get("tileHeight")
+            tileset.tileStart = data.get("tileStart")
             cols = int(tileset.__sheet.get_width() / tileset.tileWidth)
             rows = int(tileset.__sheet.get_height() / tileset.tileHeight)
             for row in range(rows):
@@ -60,5 +73,7 @@ class Tileset:
                     tileset.__tiles.append(Tile(col * tileset.tileWidth, row * tileset.tileHeight))
             tiles = data.get("tiles")
             for tile in tiles:
-                tileset.__tiles[tile.get("id")].walkable = tile.get("walkable")
+                tileId = tile.get("id") # - tileset.tileStart
+                if 0 <= tileId < len(tileset.__tiles):
+                    tileset.__tiles[tileId].walkable = tile.get("walkable")
         return tileset

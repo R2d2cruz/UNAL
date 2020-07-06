@@ -21,11 +21,11 @@ class Wall(Entity):
         self.height = height
 
     def render(self, surface, camera):
-        # if self.world and self.world.debug:
         if self.tag:
             pygame.draw.rect(surface, Colors.RED, camera.apply(self.getCollisionRect()), 4)
         else:
-            pygame.draw.rect(surface, Colors.BLUE, camera.apply(self.rect), 1)
+            if self.world and self.world.debug:
+                pygame.draw.rect(surface, Colors.BLUE, camera.apply(self.rect), 1)
 
 
 class TiledMap:
@@ -55,19 +55,31 @@ class TiledMap:
                 print('❌ Error cargando mapa', fileName, ': tileset sin especificar')
             self.rows = data.get("rows")
             self.cols = data.get("cols")
-            cells = data.get("cells")
-            for row in cells:
-                newRow = []
-                for col in row:
-                    newRow.append(col)
-                if self.cols != len(newRow):
-                    print('❌ Error cargando mapa', fileName, ': número de columnas no coincide ', self.cols, '<>',
-                          len(newRow))
-                self.cells.append(newRow)
+            mapData = data.get("data")
+            encoding = data.get("encoding")
+            self.cells = []
+            if encoding == 'matrix':
+                for row in mapData:
+                    newRow = []
+                    for col in row:
+                        newRow.append(col)
+                    if self.cols != len(newRow):
+                        print('❌ Error cargando mapa', fileName, ': número de columnas no coincide ', self.cols, '<>',
+                              len(newRow))
+                    self.cells.append(newRow)
+            elif encoding == 'array':
+                row = -1
+                col = 0
+                for value in mapData:
+                    if col % self.cols == 0:
+                        row += 1
+                        self.cells.append([])
+                    self.cells[row].append(value)
+                    col += 1
+
             objs = data.get('objects')
             if objs is not None:
                 for obj in objs:
-                    pos = obj.get('pos')
                     anim = obj.get('animation')
                     if anim is None:
                         entity = Entity()
@@ -75,8 +87,13 @@ class TiledMap:
                     else:
                         entity = AnimatedEntity()
                         resourceManager.loadAnimation(entity, anim)
+                    pos = obj.get('pos')
+                    if pos is not None:
+                        entity.setPos(pos[0] * self.tileset.tileWidth, pos[1] * self.tileset.tileHeight)
+                    else:
+                        entity.setPos(obj.get('x'), obj.get('y'))
+                        entity.y -= self.tileset.tileHeight # fix for Tiled app
                     entity.tangible = not obj.get('walkable')
-                    entity.setPos(pos[0] * self.tileset.tileWidth, pos[1] * self.tileset.tileHeight)
                     entity.width = self.tileset.tileWidth
                     entity.height = self.tileset.tileHeight
                     self.objects.append(entity)

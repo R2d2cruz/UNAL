@@ -5,8 +5,10 @@ from game.scripts.Script import Script
 
 class ScriptCharacter(Script):
 
+    name = 'Arthur'
+
     def onInit(self, character: CharacterWrapper):
-        character.onInit('Arthur')
+        character.onInit(self.name)
         character.wander(0.2)
 
     def onUpdate(self, character: CharacterWrapper, neighbors: list):
@@ -14,3 +16,7 @@ class ScriptCharacter(Script):
 
     def onMessage(self, character: CharacterWrapper, telegram: Telegram):
         pass
+
+    @staticmethod
+    def getAnimName():
+        return 'charly'

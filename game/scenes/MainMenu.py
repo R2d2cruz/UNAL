@@ -53,24 +53,11 @@ class MainMenu(Scene):
         inputBox1.onChange = self.onChangeName
         box1.addControl(inputBox1)
 
-        #grid2 = GridContainer(0, 0, 450, 70)
-        #grid2.setGrid(1, 3)
-
-        #leftListButton = Button(0, 0, 64, 64, self.font, '<')
-        #leftListButton.onClick = self.goToLeftList
-        #grid2.addControl(leftListButton, (0, 0))
-
         anim = AnimatedEntity()
         anim.name = 'selectAnim'
         anim.currentClip = 'down'
         resourceManager.loadAnimation(anim, resourceManager.getAnimName(self.index))
-        #grid2.addControl(anim, (0, 1))
         box1.addControl(anim)
-
-        #rightListButton = Button(0, 0, 64, 64, self.font, '>')
-        #rightListButton.onClick = self.goToRightList
-        #box1.addControl(rightListButton, (0, 2))
-        #grid2.addControl(grid2)
 
         scroll1 = ScrollBar(0, 0, 200, 32, self.font)
         scroll1.minValue = 1
@@ -78,7 +65,6 @@ class MainMenu(Scene):
         scroll1.step = 1
         scroll1.onChange = self.onChangeAnim
         box1.addControl(scroll1)
-
 
         ui = Container(0, 0, self.game.windowWidth, self.game.windowHeight)
         ui.addControl(grid1)

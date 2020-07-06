@@ -35,7 +35,12 @@ class Game:
 
     def init(self):
         pygame.display.set_icon(resourceManager.loadImage("logo"))
-        self.surface = pygame.display.set_mode((self.windowWidth, self.windowHeight))
+        if self.config.fullScreen:
+            self.surface = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
+            self.windowWidth = self.surface.get_width()
+            self.windowHeight = self.surface.get_height()
+        else:
+            self.surface = pygame.display.set_mode((self.windowWidth, self.windowHeight))
         self.clock = pygame.time.Clock()
         pygame.mixer.music.set_volume(self.config.volume)
 

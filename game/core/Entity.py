@@ -174,3 +174,6 @@ class Entity(pygame.sprite.Sprite):
 
     def onMessage(self, telegram: Telegram) -> bool:
         pass
+
+    def onCollision(self, entity):
+        pass
