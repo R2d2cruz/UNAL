@@ -4,28 +4,28 @@ from game.ui import Control, Button, gui
 class ScrollBar(Control):
     VERTICAL = 'VERTICAL'
     HORIZONTAL = 'HORIZONTAL'
-    __minHeight = 28
-    __minWidth = 28
 
     def __init__(self, x: int, y: int, width: int, height: int, font):
         super().__init__(x, y, width, height)
+        self.__minHeight = gui.skin['button'].styles['minWidth'] or 28
+        self.__minWidth = gui.skin['button'].styles['minHeight'] or 28
         self.__minValue: int = 0
         self.__maxValue: int = 100
         self.__step: int = 5
         self.__direction = ScrollBar.HORIZONTAL
         self.__value: int = 0
 
-        self.__minButton = Button(0, 0, ScrollBar.__minWidth, ScrollBar.__minHeight, font, '<')
+        self.__minButton = Button(0, 0, self.__minWidth, self.__minHeight, font, '<')
         self.__minButton.name = self.name + '__minButton'
         self.__minButton.onClick = self.__onClickMin
         self.__minButton.parent = self
 
-        self.__maxButton = Button(0, 0, ScrollBar.__minWidth, ScrollBar.__minHeight, font, '>')
+        self.__maxButton = Button(0, 0, self.__minWidth, self.__minHeight, font, '>')
         self.__maxButton.name = self.name + '__maxButton'
         self.__maxButton.onClick = self.__onClickMax
         self.__maxButton.parent = self
 
-        self.__scrollButton = Button(0, 0, ScrollBar.__minWidth, ScrollBar.__minHeight, font, '')
+        self.__scrollButton = Button(0, 0, self.__minWidth, self.__minHeight, font, '')
         self.__scrollButton.name = self.name + '__scrollButton'
         self.__scrollButton.onMouseMove = self.__onMouseMove
         self.__scrollButton.parent = self
@@ -128,19 +128,19 @@ class ScrollBar(Control):
         return False
 
     def refresh(self):
-        self.__minButton.width = ScrollBar.__minWidth
-        self.__minButton.height = ScrollBar.__minHeight
-        self.__scrollButton.width = ScrollBar.__minWidth
-        self.__scrollButton.height = ScrollBar.__minHeight
-        self.__maxButton.width = ScrollBar.__minWidth
-        self.__maxButton.height = ScrollBar.__minHeight
+        self.__minButton.width = self.__minWidth
+        self.__minButton.height = self.__minHeight
+        self.__scrollButton.width = self.__minWidth
+        self.__scrollButton.height = self.__minHeight
+        self.__maxButton.width = self.__minWidth
+        self.__maxButton.height = self.__minHeight
 
         self.__minButton.top = self.rect.top
         self.__minButton.left = self.rect.left
         value = self.__value - self.minValue
 
         if self.direction == ScrollBar.HORIZONTAL:
-            self.rect.height = ScrollBar.__minHeight
+            self.rect.height = self.__minHeight
             self.__scrollButton.top = self.rect.top
             self.__startScroll = self.__minButton.left + self.__minButton.width
             self.__endScroll = self.rect.right - self.__maxButton.width
@@ -151,7 +151,7 @@ class ScrollBar(Control):
             self.__maxButton.left = self.__endScroll
 
         elif self.direction == ScrollBar.VERTICAL:
-            self.rect.width = ScrollBar.__minWidth
+            self.rect.width = self.__minWidth
             self.__scrollButton.left = self.rect.left
             self.__startScroll = self.__minButton.top + self.__minButton.height
             self.__endScroll = self.rect.bottom - self.__maxButton.height

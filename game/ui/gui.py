@@ -2,6 +2,8 @@ import json
 
 import pygame
 
+from game.core import Colors
+
 zones = [
     'top-left',
     'top-right',
@@ -14,6 +16,12 @@ zones = [
     'center'
 ]
 
+styles = [
+    'fontColor',
+    'minWidth',
+    'minHeight'
+]
+
 elementNames = [
     'button',
     'button-pressed',
@@ -24,6 +32,12 @@ elementNames = [
     'input-active',
     'input-disabled'
 ]
+
+
+class SkinElement:
+    def __init__(self):
+        self.styles = {}
+        self.surfaces = {}
 
 
 class GUI:
@@ -43,43 +57,64 @@ class GUI:
                 self.loadSkinElement(data, name, skinPath)
 
     def loadSkinElement(self, data, element, skinPath):
-        self.skin[element] = {}
+        self.skin[element] = SkinElement()
         elementData = data.get(element)
         sheetFile = elementData.get('sheet')
         sheet = pygame.image.load(skinPath + '/' + sheetFile)
         for zone in zones:
             box = elementData.get(zone)
-            sheet.set_clip(box)
-            self.skin[element][zone] = sheet.subsurface(sheet.get_clip())
+            if box is not None:
+                sheet.set_clip(box)
+                self.skin[element].surfaces[zone] = sheet.subsurface(sheet.get_clip())
+        for style in styles:
+            if style is not None:
+                self.skin[element].styles[style] = elementData.get(style)
+        if self.skin[element].styles['minWidth'] is None:
+            min = 0
+            if self.skin[element].surfaces['left'] is not None:
+                min += self.skin[element].surfaces['left'].get_width()
+            if self.skin[element].surfaces['right'] is not None:
+                min += self.skin[element].surfaces['right'].get_width()
+            self.skin[element].styles['minWidth'] = min
+        if self.skin[element].styles['minHeight'] is None:
+            min = 0
+            if self.skin[element].surfaces['top'] is not None:
+                min += self.skin[element].surfaces['top'].get_width()
+            if self.skin[element].surfaces['bottom'] is not None:
+                min += self.skin[element].surfaces['bottom'].get_width()
+            self.skin[element].styles['minHeight'] = min
+        if self.skin[element].styles['fontColor'] is None:
+            self.skin[element].styles['fontColor'] = Colors.BLACK
+
 
     @staticmethod
     def renderSkin(surface, rect, skin):
         center = pygame.Rect(
-            rect.left + skin['top-left'].get_width(),
-            rect.top + skin['top-left'].get_height(),
-            rect.width - skin['top-left'].get_width() - skin['bottom-right'].get_width(),
-            rect.height - skin['top-right'].get_height() - skin['bottom-right'].get_height()
+            rect.left + skin.surfaces['top-left'].get_width(),
+            rect.top + skin.surfaces['top-left'].get_height(),
+            rect.width - skin.surfaces['top-left'].get_width() - skin.surfaces['bottom-right'].get_width(),
+            rect.height - skin.surfaces['top-right'].get_height() - skin.surfaces['bottom-right'].get_height()
         )
         bottomRightPos = (
-            rect.right - skin['bottom-right'].get_width(), rect.bottom - skin['bottom-right'].get_height())
-        surface.blit(skin['top-left'], rect.topleft)
-        surface.blit(skin['top-right'], (rect.right - skin['top-right'].get_width(), rect.top))
-        surface.blit(skin['bottom-left'], (rect.left, rect.bottom - skin['bottom-left'].get_height()))
-        surface.blit(skin['bottom-right'], bottomRightPos)
+            rect.right - skin.surfaces['bottom-right'].get_width(), rect.bottom - skin.surfaces['bottom-right'].get_height())
+        surface.blit(skin.surfaces['top-left'], rect.topleft)
+        surface.blit(skin.surfaces['top-right'], (rect.right - skin.surfaces['top-right'].get_width(), rect.top))
+        surface.blit(skin.surfaces['bottom-left'], (rect.left, rect.bottom - skin.surfaces['bottom-left'].get_height()))
+        surface.blit(skin.surfaces['bottom-right'], bottomRightPos)
 
-        GUI.repeatH(surface, skin['top'], pygame.Rect(
-            center.left, rect.top, center.width, skin['top'].get_height()))
+        GUI.repeatH(surface, skin.surfaces['top'], pygame.Rect(
+            center.left, rect.top, center.width, skin.surfaces['top'].get_height()))
 
-        GUI.repeatH(surface, skin['bottom'], pygame.Rect(
-            center.left, center.bottom, center.width, skin['top'].get_height()))
+        GUI.repeatH(surface, skin.surfaces['bottom'], pygame.Rect(
+            center.left, center.bottom, center.width, skin.surfaces['top'].get_height()))
 
-        GUI.repeatV(surface, skin['left'], pygame.Rect(
-            rect.left, center.top, skin['left'].get_width(), center.height))
+        GUI.repeatV(surface, skin.surfaces['left'], pygame.Rect(
+            rect.left, center.top, skin.surfaces['left'].get_width(), center.height))
 
-        GUI.repeatV(surface, skin['right'], pygame.Rect(
-            center.right, center.top, skin['right'].get_width(), center.height))
+        GUI.repeatV(surface, skin.surfaces['right'], pygame.Rect(
+            center.right, center.top, skin.surfaces['right'].get_width(), center.height))
 
-        GUI.repeatHV(surface, skin['center'], center)
+        GUI.repeatHV(surface, skin.surfaces['center'], center)
 
     @staticmethod
     def repeatH(surface, source, destRect):

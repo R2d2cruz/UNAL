@@ -15,14 +15,15 @@ class Button(Control):
         self.__font = font
         self.__color = foreColor
         self.__pressed = False
+        self.skinElement = 'button'
         self.text = text
         self.backColor = (123, 123, 123)
 
-    def refresh(self):
-        self.__textSurface, self.__textRect = getText(self.__text, self.__font, self.__color)
-        if self.text is not None:
-            self.__textRect.x = 2 + self.rect.x + (self.rect.w - self.__textSurface.get_width()) / 2
-            self.__textRect.y = 2 + self.rect.y + (self.rect.h - self.__textSurface.get_height()) / 2
+    # def refresh(self):
+    #     self.__textSurface, self.__textRect = getText(self.__text, self.__font, gui.skin['']['top-left'])
+    #     if self.text is not None:
+    #         self.__textRect.x = 2 + self.rect.x + (self.rect.w - self.__textSurface.get_width()) / 2
+    #         self.__textRect.y = 2 + self.rect.y + (self.rect.h - self.__textSurface.get_height()) / 2
 
     @property
     def text(self):
@@ -62,6 +63,12 @@ class Button(Control):
         else:
             skinElement = 'button'
         gui.renderElement(surface, self.rect, skinElement)
+
+        self.__textSurface, self.__textRect = getText(self.__text, self.__font, gui.skin[self.skinElement].styles['fontColor'])
+        if self.text is not None:
+            self.__textRect.x = 2 + self.rect.x + (self.rect.w - self.__textSurface.get_width()) / 2
+            self.__textRect.y = 2 + self.rect.y + (self.rect.h - self.__textSurface.get_height()) / 2
+
         surface.blit(self.__textSurface, self.__textRect)
         # pygame.draw.rect(surface, self.COLOR_INACTIVE, self.rect, 3)
 

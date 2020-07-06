@@ -15,6 +15,7 @@ class Control:
         self.__visible = True
         self.__enabled = True
         self.__hovered = False
+        self.skinElement = None
         self.parent = None
         self.zIndex = 0
         self.tag = None

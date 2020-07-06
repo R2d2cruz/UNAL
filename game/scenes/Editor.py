@@ -38,7 +38,7 @@ class Editor(Scene):
         if control is not None:
             for i in range(control.rows * control.cols):
                 image = Image(0, 0, 0, 0)
-                image.image = self.world.map.tileset.getTileSurface(i)
+                image.image = self.world.map.tileset.getTileSurface(i + 1)
                 control.addControl(image, (i // control.cols, i % control.cols))
 
         halfX = (self.world.view.width - self.cross.width) / 2

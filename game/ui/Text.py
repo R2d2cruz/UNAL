@@ -10,6 +10,8 @@ class Text(Control):
                  foreColor=Control.WHITE):
         super().__init__(x, y, width, height)
         self.__surface = None
+        self.borderColor = (128, 128, 128)
+        self.backgroundColor = (255, 255, 255)
         self.__textRect = None
         self.__font = font
         self.__color = foreColor
@@ -27,12 +29,18 @@ class Text(Control):
         self.__surface = pygame.Surface((self.rect.w, self.rect.h))
         self.__surface.fill((255, 255, 255))
         pygame.draw.rect(self.__surface, (128, 128, 128), (0, 0, self.rect.w, self.rect.h), 5)
+        self.refresh()
+
+    def refresh(self):
+        self.__surface.fill(self.backgroundColor)
+        pygame.draw.rect(self.__surface, self.borderColor, (0, 0, self.rect.w, self.rect.h), 5)
         self.__textRect = pygame.Rect(
             self.__padding,
             self.__padding,
             self.rect.w - (self.__padding * 2),
             self.rect.h - (self.__padding * 2))
-        blitMultiLineText(self.__surface, text, self.__textRect, self.__font)
+        blitMultiLineText(self.__surface, self.__text, self.__textRect, self.__font)
 
     def onRender(self, surface, camera: BaseCamera):
         surface.blit(self.__surface, self.rect)
+        blitMultiLineText(self.__surface, self.__text, self.__textRect, self.__font)
