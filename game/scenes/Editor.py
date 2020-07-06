@@ -73,7 +73,7 @@ class Editor(Scene):
         menu.addControl(buttonTileset)
 
         buttonText = Button(0, 0, 60, 36, self.font, 'Salir')
-        buttonText.onClick = self.onQuit
+        buttonText.onClick = self.onClickQuit
         menu.addControl(buttonText)
         ui = Container(0, 0, self.game.surface.get_width(), self.game.surface.get_height())
         ui.addControl(menu)
@@ -173,9 +173,9 @@ class Editor(Scene):
         self.ui.render(surface, self.camera)
         # pygame.draw.rect(surface, (255, 0, 0), self.camera.apply(self.cross), 2)
 
-    def onQuit(self, event, sender):
+    def onClickQuit(self, event, sender):
         self.world.clear()
-        self.game.setScene("main")
+        self.game.quit()
 
     def onChangeScrollH(self, sender):
         self.cross.centerx = sender.value

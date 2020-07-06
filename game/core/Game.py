@@ -59,17 +59,20 @@ class Game:
         return False
 
     def update(self, deltaTime: float):
-        self.currentScene.update(deltaTime)
+        if self.isRunning:
+            self.currentScene.update(deltaTime)
 
     def render(self):
-        self.currentScene.render(self.surface)
-        pygame.display.update()
-        self.clock.tick(20)
+        if self.isRunning:
+            self.currentScene.render(self.surface)
+            pygame.display.update()
+            self.clock.tick(20)
 
     def run(self):
+        if self.currentScene is None:
+            print('No se ha establecido escena inicial')
         self.isRunning = True
         lastFrameTime = 0
-        deltaTime = 0
         while self.isRunning:
             self.handleEvents()
             t = pygame.time.get_ticks()
@@ -84,8 +87,8 @@ class Game:
             self.render()
 
     def quit(self):
-        self.currentScene.onQuit()
         self.isRunning = False
+        self.currentScene.onExitScene()
         pygame.quit()
         sys.exit()
 

@@ -4,7 +4,7 @@ import pygame
 
 from ..core import AnimatedEntity, Game, NullCamera, Scene, resourceManager
 from ..net.Client import Client
-from ..ui import Button, InputBox, Label, GridContainer, Container, BoxContainer
+from ..ui import Button, InputBox, Label, GridContainer, Container, BoxContainer, AnimatedBox
 from ..ui.ScrollBar import ScrollBar
 
 
@@ -26,12 +26,8 @@ class MainMenu(Scene):
         buttonPlay.onClick = self.onGoPlay
         grid1.addControl(buttonPlay, (0, 0))
 
-        buttonEdit = Button(0, 0, 450, 70, self.font, 'Editar mapa')
-        buttonEdit.onClick = self.onEdit
-        grid1.addControl(buttonEdit, (1, 0))
-
         buttonQuit = Button(0, 0, 450, 70, self.font, 'Tengo miedo!, me salgo')
-        buttonQuit.onClick = self.onGoQuit
+        buttonQuit.onClick = self.onClickQuit
         grid1.addControl(buttonQuit, (2, 0))
 
         box1 = BoxContainer(BoxContainer.VERTICAL, 1 + self.game.windowWidth / 2, 0,
@@ -53,11 +49,13 @@ class MainMenu(Scene):
         inputBox1.onChange = self.onChangeName
         box1.addControl(inputBox1)
 
+        animation = AnimatedBox(0, 0, 100, 100)
         anim = AnimatedEntity()
-        anim.name = 'selectAnim'
         anim.currentClip = 'down'
         resourceManager.loadAnimation(anim, resourceManager.getAnimName(self.index))
-        box1.addControl(anim)
+        animation.animation = anim
+        animation.name = 'selectAnim'
+        box1.addControl(animation)
 
         scroll1 = ScrollBar(0, 0, 200, 32, self.font)
         scroll1.minValue = 1
@@ -77,6 +75,9 @@ class MainMenu(Scene):
         if event.key == pygame.K_ESCAPE:
             # TODO: preguntarle al usuario si esta seguro de salir
             self.game.quit()
+
+    def update(self, deltaTime: float):
+        pass
 
     def render(self, surface: pygame.Surface):
         surface.fill((30, 30, 30))
@@ -115,7 +116,7 @@ class MainMenu(Scene):
                 client=self.client
             ))
 
-    def onGoQuit(self, event, sender):
+    def onClickQuit(self, event, sender):
         resourceManager.playSound('select')
         # demorar aqui un poco, tal vez mostrar una animacion o algo mientras sale
         pygame.time.delay(100)
@@ -123,10 +124,11 @@ class MainMenu(Scene):
 
     def onChangeAnim(self, sender):
         self.index = sender.value - 1
-        entity = self.ui.getControlByName('selectAnim')
-        if entity is not None:
-            resourceManager.loadAnimation(entity, resourceManager.getAnimName(self.index))
-            entity.currentClip = 'down'
+        control = self.ui.getControlByName('selectAnim')
+        if control is not None:
+            resourceManager.loadAnimation(control.animation, resourceManager.getAnimName(self.index))
+            control.animation.currentClip = 'down'
+            control.refresh()
 
     @staticmethod
     def onChangeName(sender):

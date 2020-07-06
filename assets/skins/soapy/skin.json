@@ -1,102 +1,131 @@
 {
   "input": {
     "sheet": "input.png",
-    "top-left": [3, 3, 7, 7],
-    "top-right": [20, 3, 7, 7],
-    "bottom-left": [3, 20, 7, 7],
-    "bottom-right": [20, 20, 7, 7],
-    "left": [3, 10, 7, 10],
-    "right": [20, 10, 7, 10],
-    "top": [10, 3, 10, 7],
-    "bottom": [10, 20, 10, 7],
-    "center": [10, 10, 10, 10]
-  },
-  "input-active": {
-    "sheet": "input.png",
-    "top-left": [33, 3, 7, 7],
-    "top-right": [50, 3, 7, 7],
-    "bottom-left": [33, 20, 7, 7],
-    "bottom-right": [50, 20, 7, 7],
-    "left": [33, 10, 7, 10],
-    "right": [50, 10, 7, 10],
-    "top": [40, 3, 10, 7],
-    "bottom": [40, 20, 10, 7],
-    "center": [40, 10, 10, 10]
-  },
-  "input-disabled": {
-    "sheet": "input.png",
-    "top-left": [63, 3, 7, 7],
-    "top-right": [80, 3, 7, 7],
-    "bottom-left": [63, 20, 7, 7],
-    "bottom-right": [80, 20, 7, 7],
-    "left": [63, 10, 7, 10],
-    "right": [80, 10, 7, 10],
-    "top": [70, 3, 10, 7],
-    "bottom": [70, 20, 10, 7],
-    "center": [70, 10, 10, 10]
+    "fontColor": [255, 255, 255],
+    "states": {
+      "default": {
+        "top-left": [3, 3, 7, 7],
+        "top-right": [20, 3, 7, 7],
+        "bottom-left": [3, 20, 7, 7],
+        "bottom-right": [20, 20, 7, 7],
+        "left": [3, 10, 7, 10],
+        "right": [20, 10, 7, 10],
+        "top": [10, 3, 10, 7],
+        "bottom": [10, 20, 10, 7],
+        "center": [10, 10, 10, 10]
+      },
+      "active": {
+        "top-left": [33, 3, 7, 7],
+        "top-right": [50, 3, 7, 7],
+        "bottom-left": [33, 20, 7, 7],
+        "bottom-right": [50, 20, 7, 7],
+        "left": [33, 10, 7, 10],
+        "right": [50, 10, 7, 10],
+        "top": [40, 3, 10, 7],
+        "bottom": [40, 20, 10, 7],
+        "center": [40, 10, 10, 10]
+      },
+      "disabled": {
+        "top-left": [63, 3, 7, 7],
+        "top-right": [80, 3, 7, 7],
+        "bottom-left": [63, 20, 7, 7],
+        "bottom-right": [80, 20, 7, 7],
+        "left": [63, 10, 7, 10],
+        "right": [80, 10, 7, 10],
+        "top": [70, 3, 10, 7],
+        "bottom": [70, 20, 10, 7],
+        "center": [70, 10, 10, 10]
+      }
+    }
   },
   "button": {
     "sheet": "button.png",
-    "top-left": [0, 0, 20, 20],
-    "top-right": [40, 0, 20, 20],
-    "bottom-left": [0, 40, 20, 20],
-    "bottom-right": [40, 40, 20, 20],
-    "left": [0, 20, 20, 20],
-    "right": [40, 20, 20, 20],
-    "top": [20, 0, 20, 20],
-    "bottom": [20, 40, 20, 20],
-    "center": [20, 20, 20, 20],
-    "fontColor": [10, 63, 31]
-  },
-  "button-active": {
-    "sheet": "button.png",
-    "top-left": [60, 0, 20, 20],
-    "top-right": [100, 0, 20, 20],
-    "bottom-left": [60, 40, 20, 20],
-    "bottom-right": [100, 40, 20, 20],
-    "left": [60, 20, 20, 20],
-    "right": [100, 20, 20, 20],
-    "top": [80, 0, 20, 20],
-    "bottom": [80, 40, 20, 20],
-    "center": [80, 20, 20, 20],
-    "fontColor": [10, 63, 31]
-  },
-  "button-pressed": {
-    "sheet": "button.png",
-    "top-left": [120, 0, 20, 20],
-    "top-right": [160, 0, 20, 20],
-    "bottom-left": [120, 40, 20, 20],
-    "bottom-right": [160, 40, 20, 20],
-    "left": [120, 20, 20, 20],
-    "right": [160, 20, 20, 20],
-    "top": [140, 0, 20, 20],
-    "bottom": [140, 40, 20, 20],
-    "center": [140, 20, 20, 20],
-    "fontColor": [10, 63, 31]
-  },
-  "button-disabled": {
-    "sheet": "button.png",
-    "top-left": [180, 0, 20, 20],
-    "top-right": [220, 0, 20, 20],
-    "bottom-left": [180, 40, 20, 20],
-    "bottom-right": [220, 40, 20, 20],
-    "left": [180, 20, 20, 20],
-    "right": [220, 20, 20, 20],
-    "top": [200, 0, 20, 20],
-    "bottom": [200, 40, 20, 20],
-    "center": [200, 20, 20, 20],
-    "fontColor": [0, 0, 0]
+    "fontColor": [255, 255, 255],
+    "states": {
+      "default": {
+        "top-left": [0, 0, 20, 20],
+        "top-right": [40, 0, 20, 20],
+        "bottom-left": [0, 40, 20, 20],
+        "bottom-right": [40, 40, 20, 20],
+        "left": [0, 20, 20, 20],
+        "right": [40, 20, 20, 20],
+        "top": [20, 0, 20, 20],
+        "bottom": [20, 40, 20, 20],
+        "center": [20, 20, 20, 20]
+      },
+      "active": {
+        "top-left": [60, 0, 20, 20],
+        "top-right": [100, 0, 20, 20],
+        "bottom-left": [60, 40, 20, 20],
+        "bottom-right": [100, 40, 20, 20],
+        "left": [60, 20, 20, 20],
+        "right": [100, 20, 20, 20],
+        "top": [80, 0, 20, 20],
+        "bottom": [80, 40, 20, 20],
+        "center": [80, 20, 20, 20]
+      },
+      "pressed": {
+        "top-left": [120, 0, 20, 20],
+        "top-right": [160, 0, 20, 20],
+        "bottom-left": [120, 40, 20, 20],
+        "bottom-right": [160, 40, 20, 20],
+        "left": [120, 20, 20, 20],
+        "right": [160, 20, 20, 20],
+        "top": [140, 0, 20, 20],
+        "bottom": [140, 40, 20, 20],
+        "center": [140, 20, 20, 20]
+      },
+      "disabled": {
+        "top-left": [180, 0, 20, 20],
+        "top-right": [220, 0, 20, 20],
+        "bottom-left": [180, 40, 20, 20],
+        "bottom-right": [220, 40, 20, 20],
+        "left": [180, 20, 20, 20],
+        "right": [220, 20, 20, 20],
+        "top": [200, 0, 20, 20],
+        "bottom": [200, 40, 20, 20],
+        "center": [200, 20, 20, 20]
+      }
+    }
   },
   "panel": {
     "sheet": "panel.png",
-    "top-left": [2, 2, 8, 8],
-    "top-right": [30, 2, 8, 8],
-    "bottom-left": [2, 20, 8, 8],
-    "bottom-right": [30, 20, 8, 8],
-    "left": [2, 10, 8, 10],
-    "right": [30, 10, 8, 10],
-    "top": [10, 2, 10, 8],
-    "bottom": [10, 20, 10, 8],
-    "center": [10, 10, 20, 10]
+    "fontColor": [255, 255, 255],
+    "states": {
+      "default": {
+        "top-left": [2, 2, 8, 8],
+        "top-right": [30, 2, 8, 8],
+        "bottom-left": [2, 20, 8, 8],
+        "bottom-right": [30, 20, 8, 8],
+        "left": [2, 10, 8, 10],
+        "right": [30, 10, 8, 10],
+        "top": [10, 2, 10, 8],
+        "bottom": [10, 20, 10, 8],
+        "center": [10, 10, 20, 10]
+      }
+    }
+  },
+  "scrollBar": {
+    "sheet": "scroll.png",
+    "fontColor": [255, 255, 255],
+    "states": {
+      "default": {
+        "top-left": [2, 2, 8, 8],
+        "top-right": [30, 2, 8, 8],
+        "bottom-left": [2, 20, 8, 8],
+        "bottom-right": [30, 20, 8, 8],
+        "left": [2, 10, 8, 10],
+        "right": [30, 10, 8, 10],
+        "top": [10, 2, 10, 8],
+        "bottom": [10, 20, 10, 8],
+        "center": [10, 10, 20, 10]
+      }
+    },
+    "icons": {
+      "up": [45, 5, 20, 20],
+      "down": [75, 5, 20, 20],
+      "right": [105, 5, 20, 20],
+      "left": [135, 5, 20, 20]
+    }
   }
 }
