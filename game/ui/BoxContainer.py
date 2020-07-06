@@ -22,9 +22,9 @@ class BoxContainer(Container):
         super().addControl(control)
         self.refresh()
 
-    def render(self, surface, camera):
+    def onRender(self, surface, camera):
         gui.renderElement(surface, self.rect, "panel")
-        super().render(surface, camera)
+        super().onRender(surface, camera)
 
     def refresh(self):
         n = len(self.children)

@@ -50,6 +50,8 @@ class Editor(Scene):
         self.scrollH.value = self.cross.centerx
         self.scrollH.step = self.scrollH.maxValue // 100  # self.world.map.tileset.tileWidth
         self.scrollH.onChange = self.onChangeScrollH
+        if self.scrollH.minValue > self.scrollH.maxValue:
+            self.scrollH.hide()
 
         self.scrollV = self.ui.getControlByName('scrollVertical')
         self.scrollV.minValue = halfY
@@ -57,6 +59,8 @@ class Editor(Scene):
         self.scrollV.value = self.cross.centery
         self.scrollV.step = self.scrollV.maxValue // 100  # self.world.map.tileset.tileHeight
         self.scrollV.onChange = self.onChangeScrollV
+        if self.scrollV.minValue > self.scrollV.maxValue:
+            self.scrollV.hide()
 
     def createUI(self):
         self.font = resourceManager.getFont('MinecraftRegular', 18)
@@ -82,11 +86,11 @@ class Editor(Scene):
         tools.name = 'toolBar'
         tools.setGrid(20, 4)
 
-        scrollH = ScrollBar(160, self.game.surface.get_height() - 28, self.game.surface.get_width() - 160, 28, self.font)
+        scrollH = ScrollBar(160, self.game.surface.get_height() - 34, self.game.surface.get_width() - 160, 34, self.font)
         scrollH.direction = ScrollBar.HORIZONTAL
         scrollH.name = 'scrollHorizontal'
 
-        scrollV = ScrollBar(self.game.surface.get_width() - 28, 52, 28, self.game.surface.get_height() - 52 - 28, self.font)
+        scrollV = ScrollBar(self.game.surface.get_width() - 34, 52, 34, self.game.surface.get_height() - 52 - 34, self.font)
         scrollV.direction = ScrollBar.VERTICAL
         scrollV.name = 'scrollVertical'
 
@@ -184,7 +188,7 @@ class Editor(Scene):
         self.cross.centery = sender.value
 
     def loadWorld(self, mapName: str):
-        worldRect = pygame.Rect(160, 52, self.game.windowWidth - 160 - 28, self.game.windowHeight - 52 - 28)
+        worldRect = pygame.Rect(160, 52, self.game.windowWidth - 160 - 34, self.game.windowHeight - 52 - 34)
         self.world = World(TiledMap(mapName), worldRect)
         self.world.addEntity(HealthPotion("freshPotion", Vector2D(160, 288), 20, (0, 0, 10, 12)))
         self.camera = SimpleCamera(

@@ -34,7 +34,7 @@ class Container(Control):
         if self.parent is not None:
             self.parent.setActiveControl(control)
 
-    def render(self, surface, camera):
+    def onRender(self, surface, camera):
         # gui.renderElement(surface, self.rect, "panel")
         for control in self.children:
             control.render(surface, camera)

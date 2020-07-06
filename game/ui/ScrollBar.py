@@ -85,12 +85,12 @@ class ScrollBar(Control):
 
     def __onClickMin(self, event, sender):
         self.value -= self.__step
-        self.refresh()
+        # self.refresh()
         self.onChange(self)
 
     def __onClickMax(self, event, sender):
         self.value += self.__step
-        self.refresh()
+        # self.refresh()
         self.onChange(self)
 
     def __onMouseMove(self, event, sender):
@@ -179,7 +179,7 @@ class ScrollBar(Control):
 
         # self.__scrollButton.text = str(self.__value)
 
-    def render(self, surface, camera):
+    def onRender(self, surface, camera):
         gui.renderElement(surface, self.rect, ScrollBar.skinElement)
         self.__minButton.render(surface, camera)
         self.__scrollButton.render(surface, camera)

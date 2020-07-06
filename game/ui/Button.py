@@ -88,15 +88,15 @@ class Button(Control):
             self.__skinState = 'default'
         gui.renderElement(surface, self.rect, Button.skinElement, self.__skinState)
 
-        if self.image is None:
-            self.__refreshText()
-            if self.__textSurface is not None:
-                surface.blit(self.__textSurface, self.__textRect)
-                # pygame.draw.rect(surface, self.COLOR_INACTIVE, self.rect, 3)
-        else:
+        if self.image is not None:
             rect = self.image.get_rect()
             rect.center = self.rect.center
             surface.blit(self.image, rect)
+
+        self.__refreshText()
+        if self.__textSurface is not None:
+            surface.blit(self.__textSurface, self.__textRect)
+            # pygame.draw.rect(surface, self.COLOR_INACTIVE, self.rect, 3)
 
     def onMouseUp(self, event, sender):
         self.__pressed = False
