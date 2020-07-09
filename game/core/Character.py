@@ -111,7 +111,7 @@ class Character(MovingEntity):
             self.__books[name]['data'] = book
         else:
             self.__books[name] = dict(
-                index=0,
+                index=1,
                 data=book
             )
 
@@ -120,7 +120,7 @@ class Character(MovingEntity):
         if book.get('index') <= 1:
             del self.__books[bookName]
         else:
-            self.__books['index'] -= 1
+            book['index'] -= 1
 
     def dropBook(self, index: int = -1):
         try:
