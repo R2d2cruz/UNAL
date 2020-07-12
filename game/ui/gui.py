@@ -2,6 +2,8 @@ import json
 
 import pygame
 
+from game.core import Colors
+
 zones = [
     'top-left',
     'top-right',
@@ -14,27 +16,51 @@ zones = [
     'center'
 ]
 
+styles = [
+    'fontColor'
+]
+
 elementNames = [
     'button',
-    'button-pressed',
-    'button-active',
-    'button-disabled',
     'panel',
     'input',
-    'input-active',
-    'input-disabled'
+    'scrollBar',
 ]
 
 
+class SkinElementState:
+    def __init__(self):
+        pass
+
+
+class SkinElement:
+    def __init__(self, elementKey: str):
+        self.type = elementKey
+        self.styles = {}
+        self.states = {}
+        self.icons = {}
+
+    def getMinWidth(self):
+        min = 0
+        if self.states['default']['left'] is not None:
+            min += self.states['default']['left'].get_width()
+        if self.states['default']['right'] is not None:
+            min += self.states['default']['right'].get_width()
+        return min
+
+    def getMinHeight(self):
+        min = 0
+        if self.states['default']['top'] is not None:
+            min += self.states['default']['top'].get_height()
+        if self.states['default']['bottom'] is not None:
+            min += self.states['default']['bottom'].get_height()
+        return min
+
+
 class GUI:
+
     def __init__(self):
         self.skin = {}
-
-    def renderElement(self, surface, rect, element):
-        if element in self.skin:
-            GUI.renderSkin(surface, rect, self.skin[element])
-        else:
-            print('Element', element, 'not present in skin')
 
     def loadSkin(self, skinPath: str):
         with open(skinPath + '/skin.json') as jsonFile:
@@ -42,15 +68,39 @@ class GUI:
             for name in elementNames:
                 self.loadSkinElement(data, name, skinPath)
 
-    def loadSkinElement(self, data, element, skinPath):
-        self.skin[element] = {}
-        elementData = data.get(element)
+    def loadSkinElement(self, data, elementKey, skinPath):
+        elementData = data.get(elementKey)
+        if elementData is None:
+            return
         sheetFile = elementData.get('sheet')
         sheet = pygame.image.load(skinPath + '/' + sheetFile)
-        for zone in zones:
-            box = elementData.get(zone)
-            sheet.set_clip(box)
-            self.skin[element][zone] = sheet.subsurface(sheet.get_clip())
+        self.skin[elementKey] = SkinElement(elementKey)
+        for stateKey in elementData.get('states').keys():
+            stateData = elementData.get('states')[stateKey]
+            self.skin[elementKey].states[stateKey] = {}
+            for zone in zones:
+                box = stateData.get(zone)
+                if box is not None:
+                    sheet.set_clip(box)
+                    self.skin[elementKey].states[stateKey][zone] = sheet.subsurface(sheet.get_clip())
+        for style in styles:
+            if style is not None:
+                self.skin[elementKey].styles[style] = elementData.get(style)
+        if self.skin[elementKey].styles['fontColor'] is None:
+            self.skin[elementKey].styles['fontColor'] = Colors.BLACK
+        iconsData = elementData.get('icons')
+        if iconsData is not None:
+            for iconKey in iconsData.keys():
+                box = iconsData[iconKey]
+                if box is not None:
+                    sheet.set_clip(box)
+                    self.skin[elementKey].icons[iconKey] = sheet.subsurface(sheet.get_clip())
+
+    def renderElement(self, surface, rect, element, skinState: str = 'default'):
+        if element in self.skin:
+            GUI.renderSkin(surface, rect, self.skin[element].states[skinState])
+        else:
+            print('Element', element, 'not present in skin')
 
     @staticmethod
     def renderSkin(surface, rect, skin):
@@ -61,7 +111,8 @@ class GUI:
             rect.height - skin['top-right'].get_height() - skin['bottom-right'].get_height()
         )
         bottomRightPos = (
-            rect.right - skin['bottom-right'].get_width(), rect.bottom - skin['bottom-right'].get_height())
+            rect.right - skin['bottom-right'].get_width(),
+            rect.bottom - skin['bottom-right'].get_height())
         surface.blit(skin['top-left'], rect.topleft)
         surface.blit(skin['top-right'], (rect.right - skin['top-right'].get_width(), rect.top))
         surface.blit(skin['bottom-left'], (rect.left, rect.bottom - skin['bottom-left'].get_height()))

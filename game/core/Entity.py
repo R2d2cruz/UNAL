@@ -117,6 +117,7 @@ class Entity(pygame.sprite.Sprite):
     @centerx.setter
     def centerx(self, centerx):
         self.rect.centerx = centerx
+        self.__pos.x = self.rect.x
         self.refresh()
 
     @property
@@ -126,6 +127,18 @@ class Entity(pygame.sprite.Sprite):
     @centery.setter
     def centery(self, centery):
         self.rect.centery = centery
+        self.__pos.y = self.rect.y
+        self.refresh()
+
+    @property
+    def center(self):
+        return self.rect.center
+
+    @center.setter
+    def center(self, center):
+        self.rect.center = center
+        self.__pos.x = self.rect.x
+        self.__pos.y = self.rect.y
         self.refresh()
 
     def radius(self):
@@ -173,4 +186,7 @@ class Entity(pygame.sprite.Sprite):
         pass
 
     def onMessage(self, telegram: Telegram) -> bool:
+        pass
+
+    def onCollision(self, entity):
         pass

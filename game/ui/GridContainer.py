@@ -34,7 +34,7 @@ class GridContainer(Container):
             self.__cells[pos[0]][pos[1]] = control
             self.refresh()
 
-    def render(self, surface, camera):
+    def onRender(self, surface, camera):
         gui.renderElement(surface, self.rect, "panel")
         for row in self.__cells:
             for cell in row:

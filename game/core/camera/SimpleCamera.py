@@ -67,15 +67,17 @@ class SimpleCamera(BaseCamera):
             # offsetY = -int(self.target.y + (self.target.height / 2))
             offsetY = -int(self.target.centery)
 
-            if self.__worldRect.width < self.view.width:
-                offsetX = -self.__worldRect.width / 2
-            if self.__worldRect.height < self.view.height:
-                offsetY = -self.__worldRect.height / 2
-
             # limitar el movimiento de la camara para que el foco no se salga del mapa
             # se mueve la camara a la posicion calculada en el centro de la ventanda
-            self.view.x = max(self.boundLeft, min(self.boundRight, offsetX))
-            self.view.y = max(self.boundTop, min(self.boundBottom, offsetY))
+            if self.__worldRect.width < self.view.width:
+                self.view.x = -self.__worldRect.width / 2
+            else:
+                self.view.x = max(self.boundLeft, min(self.boundRight, offsetX))
+
+            if self.__worldRect.height < self.view.height:
+                self.view.y = -self.__worldRect.height / 2
+            else:
+                self.view.y = max(self.boundTop, min(self.boundBottom, offsetY))
 
     def render(self, surface):
         pygame.draw.rect(surface, (255, 0, 0), self.apply(self.view), 1)

@@ -10,7 +10,7 @@ from ..core import (Game, TiledMap, Scene, SimpleCamera,
                     Vector2D, resourceManager, World, MovingEntity, Colors, Character)
 from ..core.SelectionBox import SelectionBox
 from ..net.OnlinePlayer import OnlinePlayer
-from ..ui import Button, GridContainer, Container, Label
+from ..ui import Button, GridContainer, Container, Label, Text
 
 
 class Playground(Scene):
@@ -58,9 +58,9 @@ class Playground(Scene):
         buttonWander2.onClick = self.onStopWander
         grid.addControl(buttonWander2, (2, 0))
 
-        # buttonText = Button(0, 0, 0, 0, self.font, 'Text')
-        # buttonText.onClick = self.onShowText
-        # grid.addControl(buttonText, (3, 0))
+        buttonText = Button(0, 0, 0, 0, self.font, 'Text')
+        buttonText.onClick = self.onShowText
+        grid.addControl(buttonText, (5, 0))
 
         buttonRandom = Button(0, 0, 0, 0, self.font, 'Random Pos')
         buttonRandom.onClick = self.onRandomPos
@@ -84,7 +84,7 @@ class Playground(Scene):
 
     def onKeyUp(self, event):
         if event.key == pygame.K_ESCAPE:
-            self.onQuit(None)
+            self.onQuit()
         elif event.key == pygame.K_f:
             self.player.dropBook()
         self.evalMove()
@@ -200,16 +200,16 @@ class Playground(Scene):
         self.world.debug = not self.world.debug
         self.world.cellSpace.tagAll(False)
 
-    # def onShowText(self, event, sender):
-    #     resourceManager.playSound('select')
-    #     if sender.tag is None:
-    #         bubble = Text(100, 100, 800, 400, self.font, longtText)
-    #         sender.tag = bubble.id
-    #         self.ui.addControl(bubble)
-    #     else:
-    #         bubble = self.ui.getControlById(sender.tag)
-    #         self.ui.removeControl(bubble)
-    #         sender.tag = None
+    def onShowText(self, event, sender):
+        resourceManager.playSound('select')
+        if sender.tag is None:
+            bubble = Text(100, 100, 800, 400, self.font, longtText)
+            sender.tag = bubble.id
+            self.ui.addControl(bubble)
+        else:
+            bubble = self.ui.getControlById(sender.tag)
+            self.ui.removeControl(bubble)
+            sender.tag = None
 
     def onQuitButton(self, event, sender):
         # tal vez preguntar al usuario si esta seguro
@@ -270,15 +270,20 @@ class Playground(Scene):
                         moduleName, fileName)
                     foo = importlib.util.module_from_spec(spec)
                     spec.loader.exec_module(foo)
-                    character = resourceManager.loadCharacter(moduleName, 'charly')
-                    character.script = foo.ScriptCharacter()
-                    character.script.name = moduleName
-                    spawn = choice(self.spawningPoints)
-                    character.wrapper = CharacterWrapper(character, spawn)
-                    self.spawningPoints.remove(spawn)
-                    character.script.onInit(character.wrapper)
-                    self.world.addEntity(character)
-                    print('📜 script ', moduleName, '... Cargado! 👍')
+                    script = foo.ScriptCharacter()
+                    animName = script.getAnimName()
+                    if animName:
+                        character = resourceManager.loadCharacter(moduleName, animName)
+                        character.script = script
+                        character.script.name = moduleName
+                        spawn = choice(self.spawningPoints)
+                        character.wrapper = CharacterWrapper(character, spawn)
+                        self.spawningPoints.remove(spawn)
+                        character.script.onInit(character.wrapper)
+                        self.world.addEntity(character)
+                        print('📜 script ', moduleName, '... Cargado! 👍')
+                    else:
+                        print('❌ script ', moduleName, ' con valores iniciales inválidos')
                 except Exception as e:
                     print('❌ No se pudo cargar script', moduleName, e)
 
@@ -308,3 +313,18 @@ class Playground(Scene):
             if self.player.hasChanged:
                 self.player.hasChanged = False
                 self.client.sendPlayerStatus(self.player)
+
+
+longtText = """Yo soy Juan
+
+Un matón de metro noventa y casi cien kilos de peso entra en el bar, le da un puñetazo a la barra y pregunta con voz amenazante:
+
+—¿QUIÉN ES JUAN?
+
+Un tipo delgadito y bajito se levanta de una de las mesas, apurando su cerveza, y contesta.
+
+—Yo soy Juan, ¿pasa algo?
+
+El matón agarra a Juan, lo saca del bar y le pega una paliza. Juan vuelve a entrar en el bar. Cojeando. Con toda la cara y la camisa manchada de sangre. A pesar de que le duele respirar, se está riendo, muy flojito.
+
+—He engañado a ese estúpido -dice-. Yo no soy Juan."""

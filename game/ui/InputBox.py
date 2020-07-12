@@ -7,6 +7,9 @@ from ..core.misc import getText
 
 
 class InputBox(Control):
+
+    skinElement = 'input'
+
     def __init__(self, x: int, y: int, width: int, height: int, font: pygame.font.Font, text='',
                  foreColor=Control.WHITE):
         super().__init__(x, y, width, height)
@@ -47,14 +50,14 @@ class InputBox(Control):
 
     def onRender(self, surface, camera: BaseCamera):
         if not self.isEnabled():
-            skinElement = 'input-disabled'
+            skinState = 'disabled'
         elif self.isHovered():
-            skinElement = 'input-active'
+            skinState = 'active'
         elif self.isActive():
-            skinElement = 'input-active'
+            skinState = 'active'
         else:
-            skinElement = 'input'
-        gui.renderElement(surface, self.rect, skinElement)
+            skinState = 'default'
+        gui.renderElement(surface, self.rect, InputBox.skinElement, skinState)
         surface.blit(self.__surface, self.__textRect)
         #  TODO: self.caret.render(surface)
 

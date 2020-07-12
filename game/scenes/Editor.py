@@ -38,7 +38,7 @@ class Editor(Scene):
         if control is not None:
             for i in range(control.rows * control.cols):
                 image = Image(0, 0, 0, 0)
-                image.image = self.world.map.tileset.getTileSurface(i)
+                image.image = self.world.map.tileset.getTileSurface(i + 1)
                 control.addControl(image, (i // control.cols, i % control.cols))
 
         halfX = (self.world.view.width - self.cross.width) / 2
@@ -50,6 +50,8 @@ class Editor(Scene):
         self.scrollH.value = self.cross.centerx
         self.scrollH.step = self.scrollH.maxValue // 100  # self.world.map.tileset.tileWidth
         self.scrollH.onChange = self.onChangeScrollH
+        if self.scrollH.minValue > self.scrollH.maxValue:
+            self.scrollH.hide()
 
         self.scrollV = self.ui.getControlByName('scrollVertical')
         self.scrollV.minValue = halfY
@@ -57,6 +59,8 @@ class Editor(Scene):
         self.scrollV.value = self.cross.centery
         self.scrollV.step = self.scrollV.maxValue // 100  # self.world.map.tileset.tileHeight
         self.scrollV.onChange = self.onChangeScrollV
+        if self.scrollV.minValue > self.scrollV.maxValue:
+            self.scrollV.hide()
 
     def createUI(self):
         self.font = resourceManager.getFont('MinecraftRegular', 18)
@@ -73,7 +77,7 @@ class Editor(Scene):
         menu.addControl(buttonTileset)
 
         buttonText = Button(0, 0, 60, 36, self.font, 'Salir')
-        buttonText.onClick = self.onQuit
+        buttonText.onClick = self.onClickQuit
         menu.addControl(buttonText)
         ui = Container(0, 0, self.game.surface.get_width(), self.game.surface.get_height())
         ui.addControl(menu)
@@ -82,11 +86,11 @@ class Editor(Scene):
         tools.name = 'toolBar'
         tools.setGrid(20, 4)
 
-        scrollH = ScrollBar(160, self.game.surface.get_height() - 28, self.game.surface.get_width() - 160, 28, self.font)
+        scrollH = ScrollBar(160, self.game.surface.get_height() - 34, self.game.surface.get_width() - 160, 34, self.font)
         scrollH.direction = ScrollBar.HORIZONTAL
         scrollH.name = 'scrollHorizontal'
 
-        scrollV = ScrollBar(self.game.surface.get_width() - 28, 52, 28, self.game.surface.get_height() - 52 - 28, self.font)
+        scrollV = ScrollBar(self.game.surface.get_width() - 34, 52, 34, self.game.surface.get_height() - 52 - 34, self.font)
         scrollV.direction = ScrollBar.VERTICAL
         scrollV.name = 'scrollVertical'
 
@@ -173,9 +177,9 @@ class Editor(Scene):
         self.ui.render(surface, self.camera)
         # pygame.draw.rect(surface, (255, 0, 0), self.camera.apply(self.cross), 2)
 
-    def onQuit(self, event, sender):
+    def onClickQuit(self, event, sender):
         self.world.clear()
-        self.game.setScene("main")
+        self.game.quit()
 
     def onChangeScrollH(self, sender):
         self.cross.centerx = sender.value
@@ -184,7 +188,7 @@ class Editor(Scene):
         self.cross.centery = sender.value
 
     def loadWorld(self, mapName: str):
-        worldRect = pygame.Rect(160, 52, self.game.windowWidth - 160 - 28, self.game.windowHeight - 52 - 28)
+        worldRect = pygame.Rect(160, 52, self.game.windowWidth - 160 - 34, self.game.windowHeight - 52 - 34)
         self.world = World(TiledMap(mapName), worldRect)
         self.world.addEntity(HealthPotion("freshPotion", Vector2D(160, 288), 20, (0, 0, 10, 12)))
         self.camera = SimpleCamera(

@@ -34,6 +34,18 @@ class SpacePartition:
                 ))
         self.__numCells = len(self.__cells)
 
+    @property
+    def cellWidth(self):
+        return self.__cellWidth
+
+    @property
+    def cellHeight(self):
+        return self.__cellHeight
+
+    def registerEntities(self, entities: list):
+        for entity in entities:
+            self.registerEntity(entity)
+
     def clear(self):
         self.emptyCells()
         self.__cells.clear()
@@ -43,13 +55,22 @@ class SpacePartition:
         for cell in self.__cells:
             cell.members.clear()
 
-    @property
-    def cellWidth(self):
-        return self.__cellWidth
+    def registerEntity(self, entity: Entity):
+        index = self.posToIndex(entity.getPos())
+        if 0 <= index < self.__numCells:
+            self.__cells[index].members.append(entity)
+            entity.cellIndex = index
+        else:
+            print('❌ No se pudo registrar la entidad', entity)
+        return index
 
-    @property
-    def cellHeight(self):
-        return self.__cellHeight
+    def unregisterEntity(self, entity: Entity):
+        index = self.posToIndex(entity.getPos())
+        if 0 <= index < self.__numCells:
+            if entity in self.__cells[index].members:
+                self.__cells[index].members.remove(entity)
+        else:
+            print('❌ No se pudo desregistrar la entidad', entity)
 
     # def calculateNeighbors(self, targetPos: Vector2D, queryRadius: float) -> list:
     def calculateNeighbors(self, rect) -> list:
@@ -69,27 +90,6 @@ class SpacePartition:
         queryRect = pygame.Rect((0, 0), (self.cellWidth + rect.width / 2, self.cellHeight + rect.height / 2))
         queryRect.center = rect.center
         return queryRect
-
-    def registerEntities(self, entities: list):
-        for entity in entities:
-            self.registerEntity(entity)
-
-    def registerEntity(self, entity: Entity):
-        index = self.posToIndex(entity.getPos())
-        if 0 <= index < self.__numCells:
-            self.__cells[index].members.append(entity)
-            entity.cellIndex = index
-        else:
-            print('❌ No se pudo registrar la entidad', entity)
-        return index
-
-    def unregisterEntity(self, entity: Entity):
-        index = self.posToIndex(entity.getPos())
-        if 0 <= index < self.__numCells:
-            if entity in self.__cells[index].members:
-                self.__cells[index].members.remove(entity)
-        else:
-            print('❌ No se pudo desregistrar la entidad', entity)
 
     def posToIndex(self, pos: Vector2D) -> int:
         index = int(
@@ -119,13 +119,6 @@ class SpacePartition:
                 self.__cells[newIndex].members.append(entity)
                 entity.cellIndex = newIndex
 
-    def render(self, surface, camera: BaseCamera):
-        for cell in self.__cells:
-            if cell.tag:
-                pygame.draw.rect(surface, Colors.RED, camera.apply(cell.rect), 1)
-            else:
-                pygame.draw.rect(surface, Colors.GRAY, camera.apply(cell.rect), 1)
-
     def tagAll(self, value):
         for cell in self.__cells:
             cell.tag = value
@@ -151,3 +144,18 @@ class SpacePartition:
                 if validation(entity):
                     entities.append(entity)
         return entities
+
+    def getCloseNeighbors(self, entity: Entity, validation=None) -> list:
+        entities = self.queryObjects(entity.getCollisionRect(), validation=validation)
+        if entities is not None:
+            if entity in entities:
+                entities.remove(entity)
+            return [x.getMe for x in entities]
+        return []
+
+    def render(self, surface, camera: BaseCamera):
+        for cell in self.__cells:
+            if cell.tag:
+                pygame.draw.rect(surface, Colors.RED, camera.apply(cell.rect), 1)
+            else:
+                pygame.draw.rect(surface, Colors.GRAY, camera.apply(cell.rect), 1)

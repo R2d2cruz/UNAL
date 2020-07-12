@@ -6,3 +6,4 @@ from .Image import Image
 from .InputBox import *
 from .Label import *
 from .Text import *
+from .AnimatedBox import *

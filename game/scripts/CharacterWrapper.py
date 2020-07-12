@@ -39,6 +39,7 @@ class CharacterWrapper:
         self._entity.velocity = direction
 
     def goDirectionWithPoint(self, point: Vector2D):
+        # puede que haya errores en el futuro ya que el target debe ser otra entidad no un punto
         if self._steeringOn:
             self.setSteeringOff()
         self._entity.steering.arriveEnabled = True

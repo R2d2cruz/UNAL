@@ -4,7 +4,7 @@ import pygame
 
 from ..core import AnimatedEntity, Game, NullCamera, Scene, resourceManager
 from ..net.Client import Client
-from ..ui import Button, InputBox, Label, GridContainer, Container, BoxContainer
+from ..ui import Button, InputBox, Label, GridContainer, Container, BoxContainer, AnimatedBox
 from ..ui.ScrollBar import ScrollBar
 
 
@@ -14,6 +14,7 @@ class MainMenu(Scene):
         self.camera = NullCamera()
         self.font = resourceManager.getFont('MinecraftRegular', 36)
         self.index = 0
+        self.anim = None
         self.ui = self.createUI()
         self.done = False
         self.client = Client(game.config)
@@ -26,12 +27,8 @@ class MainMenu(Scene):
         buttonPlay.onClick = self.onGoPlay
         grid1.addControl(buttonPlay, (0, 0))
 
-        buttonEdit = Button(0, 0, 450, 70, self.font, 'Editar mapa')
-        buttonEdit.onClick = self.onEdit
-        grid1.addControl(buttonEdit, (1, 0))
-
         buttonQuit = Button(0, 0, 450, 70, self.font, 'Tengo miedo!, me salgo')
-        buttonQuit.onClick = self.onGoQuit
+        buttonQuit.onClick = self.onClickQuit
         grid1.addControl(buttonQuit, (2, 0))
 
         box1 = BoxContainer(BoxContainer.VERTICAL, 1 + self.game.windowWidth / 2, 0,
@@ -53,24 +50,13 @@ class MainMenu(Scene):
         inputBox1.onChange = self.onChangeName
         box1.addControl(inputBox1)
 
-        #grid2 = GridContainer(0, 0, 450, 70)
-        #grid2.setGrid(1, 3)
-
-        #leftListButton = Button(0, 0, 64, 64, self.font, '<')
-        #leftListButton.onClick = self.goToLeftList
-        #grid2.addControl(leftListButton, (0, 0))
-
-        anim = AnimatedEntity()
-        anim.name = 'selectAnim'
-        anim.currentClip = 'down'
-        resourceManager.loadAnimation(anim, resourceManager.getAnimName(self.index))
-        #grid2.addControl(anim, (0, 1))
-        box1.addControl(anim)
-
-        #rightListButton = Button(0, 0, 64, 64, self.font, '>')
-        #rightListButton.onClick = self.goToRightList
-        #box1.addControl(rightListButton, (0, 2))
-        #grid2.addControl(grid2)
+        animation = AnimatedBox(0, 0, 100, 100)
+        self.anim = AnimatedEntity()
+        self.anim.currentClip = 'down'
+        resourceManager.loadAnimation(self.anim, resourceManager.getAnimName(self.index))
+        animation.animation = self.anim
+        animation.name = 'selectAnim'
+        box1.addControl(animation)
 
         scroll1 = ScrollBar(0, 0, 200, 32, self.font)
         scroll1.minValue = 1
@@ -78,7 +64,6 @@ class MainMenu(Scene):
         scroll1.step = 1
         scroll1.onChange = self.onChangeAnim
         box1.addControl(scroll1)
-
 
         ui = Container(0, 0, self.game.windowWidth, self.game.windowHeight)
         ui.addControl(grid1)
@@ -91,6 +76,10 @@ class MainMenu(Scene):
         if event.key == pygame.K_ESCAPE:
             # TODO: preguntarle al usuario si esta seguro de salir
             self.game.quit()
+
+    def update(self, deltaTime: float):
+        if self.anim:
+            self.anim.update(deltaTime)
 
     def render(self, surface: pygame.Surface):
         surface.fill((30, 30, 30))
@@ -129,7 +118,7 @@ class MainMenu(Scene):
                 client=self.client
             ))
 
-    def onGoQuit(self, event, sender):
+    def onClickQuit(self, event, sender):
         resourceManager.playSound('select')
         # demorar aqui un poco, tal vez mostrar una animacion o algo mientras sale
         pygame.time.delay(100)
@@ -137,10 +126,11 @@ class MainMenu(Scene):
 
     def onChangeAnim(self, sender):
         self.index = sender.value - 1
-        entity = self.ui.getControlByName('selectAnim')
-        if entity is not None:
-            resourceManager.loadAnimation(entity, resourceManager.getAnimName(self.index))
-            entity.currentClip = 'down'
+        control = self.ui.getControlByName('selectAnim')
+        if control is not None:
+            resourceManager.loadAnimation(control.animation, resourceManager.getAnimName(self.index))
+            control.animation.currentClip = 'down'
+            control.refresh()
 
     @staticmethod
     def onChangeName(sender):

@@ -7,6 +7,7 @@
   "volume": 0.5,
   "windowWidth": 1024,
   "windowHeight": 768,
+  "fullScreen": false,
   "skin": "assets/skins/rock",
-  "map": "laberinto"
+  "map": "laberinto2"
 }

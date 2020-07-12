@@ -2,21 +2,22 @@
   "image": "images/tilesets/nature.png",
   "tileWidth": 32,
   "tileHeight": 32,
+  "tileStart": 1,
   "tiles": [
     {
-      "id": 43,
+      "id": 44,
       "walkable": false
     },
     {
-      "id": 41,
-      "walkable": false
-    },
-    {
-      "id": 21,
+      "id": 42,
       "walkable": false
     },
     {
       "id": 22,
+      "walkable": false
+    },
+    {
+      "id": 23,
       "walkable": false
     }
   ]

@@ -35,7 +35,12 @@ class Game:
 
     def init(self):
         pygame.display.set_icon(resourceManager.loadImage("logo"))
-        self.surface = pygame.display.set_mode((self.windowWidth, self.windowHeight))
+        if self.config.fullScreen:
+            self.surface = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
+            self.windowWidth = self.surface.get_width()
+            self.windowHeight = self.surface.get_height()
+        else:
+            self.surface = pygame.display.set_mode((self.windowWidth, self.windowHeight))
         self.clock = pygame.time.Clock()
         pygame.mixer.music.set_volume(self.config.volume)
 
@@ -54,17 +59,20 @@ class Game:
         return False
 
     def update(self, deltaTime: float):
-        self.currentScene.update(deltaTime)
+        if self.isRunning:
+            self.currentScene.update(deltaTime)
 
     def render(self):
-        self.currentScene.render(self.surface)
-        pygame.display.update()
-        self.clock.tick(20)
+        if self.isRunning:
+            self.currentScene.render(self.surface)
+            pygame.display.update()
+            self.clock.tick(20)
 
     def run(self):
+        if self.currentScene is None:
+            print('No se ha establecido escena inicial')
         self.isRunning = True
         lastFrameTime = 0
-        deltaTime = 0
         while self.isRunning:
             self.handleEvents()
             t = pygame.time.get_ticks()
@@ -79,8 +87,8 @@ class Game:
             self.render()
 
     def quit(self):
-        self.currentScene.onQuit()
         self.isRunning = False
+        self.currentScene.onExitScene()
         pygame.quit()
         sys.exit()
 

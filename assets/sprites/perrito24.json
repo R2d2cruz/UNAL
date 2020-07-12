@@ -1,12 +1,15 @@
 {
   "name": "tony",
   "image": "images/perritos24.png",
-  "defaultSprite": "down",
+  "defaultSprite": "stand",
   "width": 24,
   "height": 24,
   "collisionRect": [0, 0, 24, 24],
   "timeStep": 100,
   "sprites": {
+      "stand": [
+        [24, 0, 24, 24]
+      ],
       "up": [
         [0, 72, 24, 24],
         [24, 72, 24, 24],

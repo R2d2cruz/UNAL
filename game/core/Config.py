@@ -8,6 +8,7 @@ class Config:
         self.volume = 0
         self.windowWidth = 800
         self.windowHeight = 600
+        self.fullScreen = False
         self.skin = None
         self.map = None
         self.load(fileName)
@@ -27,3 +28,4 @@ class Config:
             self.map = data['map']
             self.windowWidth = data['windowWidth']
             self.windowHeight = data['windowHeight']
+            self.fullScreen = data['fullScreen']

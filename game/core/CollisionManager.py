@@ -54,6 +54,8 @@ class _CollisionManager:
                                 side = sideColl(entityA, entityB)
                                 # side = [True, True]
                                 entityA.stop(side[0], side[1])
+                                entityA.onCollision(entityB)
+                                entityB.onCollision(entityA)
 
     @staticmethod
     def checkCollition(queryRect, cellSpace, worldRect) -> bool:
@@ -64,11 +66,6 @@ class _CollisionManager:
             if queryRect.colliderect(neighbor.getCollisionRect()):
                 return True
         return False
-
-    @staticmethod
-    def getCloseNeighbors(entity: Entity, cellSpace, validation=None) -> list:
-        entities = cellSpace.queryObjects(entity.getCollisionRect(), validation=validation)
-        return [x.getMe for x in entities]
 
 
 collisionManager = _CollisionManager()
