@@ -14,6 +14,7 @@ class MainMenu(Scene):
         self.camera = NullCamera()
         self.font = resourceManager.getFont('MinecraftRegular', 36)
         self.index = 0
+        self.anim = None
         self.ui = self.createUI()
         self.done = False
         self.client = Client(game.config)
@@ -50,10 +51,10 @@ class MainMenu(Scene):
         box1.addControl(inputBox1)
 
         animation = AnimatedBox(0, 0, 100, 100)
-        anim = AnimatedEntity()
-        anim.currentClip = 'down'
-        resourceManager.loadAnimation(anim, resourceManager.getAnimName(self.index))
-        animation.animation = anim
+        self.anim = AnimatedEntity()
+        self.anim.currentClip = 'down'
+        resourceManager.loadAnimation(self.anim, resourceManager.getAnimName(self.index))
+        animation.animation = self.anim
         animation.name = 'selectAnim'
         box1.addControl(animation)
 
@@ -77,7 +78,8 @@ class MainMenu(Scene):
             self.game.quit()
 
     def update(self, deltaTime: float):
-        pass
+        if self.anim:
+            self.anim.update(deltaTime)
 
     def render(self, surface: pygame.Surface):
         surface.fill((30, 30, 30))
