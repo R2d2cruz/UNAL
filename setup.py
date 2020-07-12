@@ -7,7 +7,7 @@ executables = [
 
 cx_Freeze.setup(
     name="A bit Racey",
-    options={"build_exe": {"packages": ["pygame"], "include_files": [
+    options={"build_exe": {"packages": ["pygame", "pyqueue"], "include_files": [
         'assets/',
         'config.json',
         'constants.py',
